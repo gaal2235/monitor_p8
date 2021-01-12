@@ -1,5 +1,5 @@
 class User {
-  String codUser;
+  String userCode;
   String user;
   String name;
   String department;
@@ -7,10 +7,10 @@ class User {
   String email;
   String token;
   List<OperatorWMS> operatorWms;
-  List<CodVend> codSalesman;
+  List<SalesmanCode> salesmanCode;
 
   User(
-      {this.codUser,
+      {this.userCode,
       this.user,
       this.name,
       this.department,
@@ -18,10 +18,10 @@ class User {
       this.email,
       this.token,
       this.operatorWms,
-      this.codSalesman});
+      this.salesmanCode});
 
   User.fromJson(Map<String, dynamic> json) {
-    codUser = json['codUser'];
+    userCode = json['codUser'];
     user = json['user'];
     name = json['nome'];
     department = json['depart'];
@@ -35,16 +35,16 @@ class User {
       });
     }
     if (json['codVend'] != null) {
-      codSalesman = new List<CodVend>();
+      salesmanCode = new List<SalesmanCode>();
       json['codVend'].forEach((v) {
-        codSalesman.add(new CodVend.fromJson(v));
+        salesmanCode.add(new SalesmanCode.fromJson(v));
       });
     }
   }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['codUser'] = this.codUser;
+    data['codUser'] = this.userCode;
     data['user'] = this.user;
     data['nome'] = this.name;
     data['depart'] = this.department;
@@ -54,8 +54,8 @@ class User {
     if (this.operatorWms != null) {
       data['operadorWMS'] = this.operatorWms.map((v) => v.toJson()).toList();
     }
-    if (this.codSalesman != null) {
-      data['codVend'] = this.codSalesman.map((v) => v.toJson()).toList();
+    if (this.salesmanCode != null) {
+      data['codVend'] = this.salesmanCode.map((v) => v.toJson()).toList();
     }
     return data;
   }
@@ -65,19 +65,19 @@ class OperatorWMS {
   String branchOperator;
   String branchOperatorName;
   String statusOperator;
-  String codUsrOperator;
+  String usrOperatorCode;
 
   OperatorWMS(
       {this.branchOperator,
       this.branchOperatorName,
       this.statusOperator,
-      this.codUsrOperator});
+      this.usrOperatorCode});
 
   OperatorWMS.fromJson(Map<String, dynamic> json) {
     branchOperator = json['filialOperador'];
     branchOperatorName = json['siglaFilialOperador'];
     statusOperator = json['statusOperador'];
-    codUsrOperator = json['codUsrOperador'];
+    usrOperatorCode = json['codUsrOperador'];
   }
 
   Map<String, dynamic> toJson() {
@@ -85,12 +85,12 @@ class OperatorWMS {
     data['filialOperador'] = this.branchOperator;
     data['siglaFilialOperador'] = this.branchOperatorName;
     data['statusOperador'] = this.statusOperator;
-    data['codUsrOperador'] = this.codUsrOperator;
+    data['codUsrOperador'] = this.usrOperatorCode;
     return data;
   }
 }
 
-class CodVend {
+class SalesmanCode {
   String branchCrj;
   String uf;
   String branchCrjName;
@@ -102,12 +102,12 @@ class CodVend {
   String companyNeighborhood;
   String companyCep;
   String ip;
-  dynamic porcPromotion;
-  String codSalesman;
-  String codOffice;
+  dynamic discountPercentage;
+  String salesmanCode;
+  String officeCode;
   String officeName;
 
-  CodVend(
+  SalesmanCode(
       {this.branchCrj,
       this.uf,
       this.branchCrjName,
@@ -119,12 +119,12 @@ class CodVend {
       this.companyNeighborhood,
       this.companyCep,
       this.ip,
-      this.porcPromotion,
-      this.codSalesman,
-      this.codOffice,
+      this.discountPercentage,
+      this.salesmanCode,
+      this.officeCode,
       this.officeName});
 
-  CodVend.fromJson(Map<String, dynamic> json) {
+  SalesmanCode.fromJson(Map<String, dynamic> json) {
     branchCrj = json['filial'];
     uf = json['uf'];
     branchCrjName = json['sigla'];
@@ -136,9 +136,9 @@ class CodVend {
     companyNeighborhood = json['bairroEmpresa'];
     companyCep = json['cepEmpresa'];
     ip = json['ip'];
-    porcPromotion = json['percDesconto'];
-    codSalesman = json['codVend'];
-    codOffice = json['codCargo'];
+    discountPercentage = json['percDesconto'];
+    salesmanCode = json['codVend'];
+    officeCode = json['codCargo'];
     officeName = json['nomeCargo'];
   }
 
@@ -155,9 +155,9 @@ class CodVend {
     data['bairroEmpresa'] = this.companyNeighborhood;
     data['cepEmpresa'] = this.companyCep;
     data['ip'] = this.ip;
-    data['percDesconto'] = this.porcPromotion;
-    data['codVend'] = this.codSalesman;
-    data['codCargo'] = this.codOffice;
+    data['percDesconto'] = this.discountPercentage;
+    data['codVend'] = this.salesmanCode;
+    data['codCargo'] = this.officeCode;
     data['nomeCargo'] = this.officeName;
     return data;
   }

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-class AppTextSenha extends StatelessWidget {
+class AppTextPassword extends StatelessWidget {
   String label;
   String hint;
   bool password;
@@ -10,7 +10,7 @@ class AppTextSenha extends StatelessWidget {
   TextInputAction textInputAction;
   FocusNode focusNode;
 
-  AppTextSenha(
+  AppTextPassword(
     this.label,
     this.hint, {
     this.password,

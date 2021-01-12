@@ -40,5 +40,5 @@ List general0108 = [0, 0, 0, 0, 0];
 List general0109 = [0, 0, 0, 0, 0];
 List general0110 = [0, 0, 0, 0, 0];
 List general0113 = [0, 0, 0, 0, 0];
-List<Monitor> monitorGeral;
+List<Monitor> monitorGeneral;
 int totalGeneral = 0;

@@ -31,7 +31,8 @@ class _MonitoringState extends State<Monitoring> {
   final int timerMaxSeconds = 300;
   int currentSeconds = 0;
   String get timerText =>
-      '${((timerMaxSeconds - currentSeconds) ~/ 60).toString().padLeft(2, '0')}: ${((timerMaxSeconds - currentSeconds) % 60).toString().padLeft(2, '0')}';
+      '${((timerMaxSeconds - currentSeconds) ~/ 60).toString().padLeft(2, '0')}:'
+      ' ${((timerMaxSeconds - currentSeconds) % 60).toString().padLeft(2, '0')}';
 
   startTimeout([int milliseconds]) {
     var duration = interval;
@@ -39,7 +40,6 @@ class _MonitoringState extends State<Monitoring> {
     Timer.periodic(duration, (timer) {
       if (mounted) {
         setState(() {
-
           currentSeconds = timer.tick;
           if (timer.tick >= timerMaxSeconds) {
             timer.cancel();
@@ -346,180 +346,6 @@ class _MonitoringState extends State<Monitoring> {
                     context,
                     MaterialPageRoute(
                         builder: (BuildContext context) => Monitoring()));
-
-                /* showDialog<void>(
-                  context: context,
-                  barrierDismissible: false, // user must tap button!
-                  builder: (BuildContext context) {
-                    return GestureDetector(
-                      onTap: () {
-                        Navigator.of(context).pop();
-                      },
-                      child: AlertDialog(
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(20.0)),
-                        backgroundColor: Colors.white,
-                        title: SingleChildScrollView(
-                          child: Column(
-                            children: [
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.end,
-                                children: [
-                                  Row(
-                                    children: [
-                                      Icon(Icons.timer),
-                                      SizedBox(
-                                        width: 5,
-                                      ),
-                                      Text("Tempo desde a ultima atualização:"),
-                                      SizedBox(
-                                        width: 5,
-                                      ),
-                                      //Text(timerText),
-                                    ],
-                                  )
-                                ],
-                              ),
-                              Padding(
-                                padding:
-                                    const EdgeInsets.only(left: 8, right: 8),
-                                child: Container(
-                                  decoration: BoxDecoration(
-                                    border: Border.all(
-                                      color: emtranspad,
-                                      width: 1.0,
-                                    ),
-                                    borderRadius: BorderRadius.only(
-                                        topLeft: const Radius.circular(5.0),
-                                        topRight: const Radius.circular(5.0)),
-                                    color: emtranspad[400],
-                                  ),
-                                  width: MediaQuery.of(context).size.width,
-                                  height: 50,
-                                  child: Row(
-                                    children: [
-                                      Expanded(
-                                        child: Container(
-                                          height: MediaQuery.of(context)
-                                              .size
-                                              .height,
-                                          color: emtranspad,
-                                          child: Center(
-                                            child: Text(
-                                              "FILIAL",
-                                              textAlign: TextAlign.center,
-                                              style: TextStyle(
-                                                  color: Colors.white,
-                                                  fontSize: 17),
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                      Container(
-                                        width: 1.5,
-                                        height:
-                                            MediaQuery.of(context).size.height,
-                                        color: emtranspad,
-                                      ),
-                                      Expanded(
-                                        child: Text(
-                                          "Auditoria P8",
-                                          textAlign: TextAlign.center,
-                                          style: TextStyle(
-                                              color: Colors.white,
-                                              fontSize: 17),
-                                        ),
-                                      ),
-                                      Container(
-                                        width: 1.5,
-                                        height:
-                                            MediaQuery.of(context).size.height,
-                                        color: emtranspad,
-                                      ),
-                                      Expanded(
-                                        child: Text(
-                                          "CONFERÊNCIA",
-                                          textAlign: TextAlign.center,
-                                          style: TextStyle(
-                                              color: Colors.white,
-                                              fontSize: 17),
-                                        ),
-                                      ),
-                                      Container(
-                                        width: 1.5,
-                                        height:
-                                            MediaQuery.of(context).size.height,
-                                        color: emtranspad,
-                                      ),
-                                      Expanded(
-                                        child: Text(
-                                          "ENTRADA NF",
-                                          textAlign: TextAlign.center,
-                                          style: TextStyle(
-                                              color: Colors.white,
-                                              fontSize: 17),
-                                        ),
-                                      ),
-                                      Container(
-                                        width: 1.5,
-                                        height:
-                                            MediaQuery.of(context).size.height,
-                                        color: emtranspad,
-                                      ),
-                                      Expanded(
-                                        child: Text(
-                                          "ENDEREÇAMENTO",
-                                          textAlign: TextAlign.center,
-                                          style: TextStyle(
-                                              color: Colors.white,
-                                              fontSize: 17),
-                                        ),
-                                      ),
-                                      Container(
-                                        width: 1.5,
-                                        height:
-                                            MediaQuery.of(context).size.height,
-                                        color: emtranspad,
-                                      ),
-                                      Expanded(
-                                        child: Container(
-                                          height: MediaQuery.of(context)
-                                              .size
-                                              .height,
-                                          color: emtranspad[800],
-                                          child: Center(
-                                            child: Text(
-                                              "TOTAL",
-                                              textAlign: TextAlign.center,
-                                              style: TextStyle(
-                                                  color: Colors.white,
-                                                  fontSize: 17),
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                              linha(0, "MCZ - 0101"),
-                              linha(1, "ARA - 0103"),
-                              linha(2, "JPA - 0104"),
-                              linha(3, "CD - 0105"),
-                              linha(4, "CGD - 0106"),
-                              linha(5, "NAT - 0107"),
-                              linha(6, "CBD - 0108"),
-                              linha(7, "FOR - 0109"),
-                              linha(8, "JUA - 0110"),
-                              linha(9, "DVM - 0201"),
-                              linhatotal(10, "TOTAL"),
-                            ],
-                          ),
-                        ),
-                      ),
-                    );
-                  },
-                );*/
               },
               child: Row(
                 children: [
@@ -986,217 +812,7 @@ class _MonitoringState extends State<Monitoring> {
                           child: Padding(
                             padding: const EdgeInsets.fromLTRB(0, 8, 8, 8.0),
                             child: GestureDetector(
-                              onTap: () {
-                                /*showDialog<void>(
-                                  context: context,
-                                  barrierDismissible:
-                                      false, // user must tap button!
-                                  builder: (BuildContext context) {
-                                    return GestureDetector(
-                                      onTap: () {
-                                        Navigator.of(context).pop();
-                                      },
-                                      child: AlertDialog(
-                                        shape: RoundedRectangleBorder(
-                                            borderRadius:
-                                                BorderRadius.circular(20.0)),
-                                        backgroundColor: Colors.white,
-                                        title: SingleChildScrollView(
-                                          child: Column(
-                                            children: [
-                                              Row(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment.end,
-                                                children: [
-                                                  Row(
-                                                    children: [
-                                                      Icon(Icons.timer),
-                                                      SizedBox(
-                                                        width: 5,
-                                                      ),
-                                                      Text(
-                                                          "Tempo desde a ultima atualização:"),
-                                                      SizedBox(
-                                                        width: 5,
-                                                      ),
-                                                      //Text(timerText),
-                                                    ],
-                                                  )
-                                                ],
-                                              ),
-                                              Padding(
-                                                padding: const EdgeInsets.only(
-                                                    left: 8, right: 8),
-                                                child: Container(
-                                                  decoration: BoxDecoration(
-                                                    border: Border.all(
-                                                      color: Colors.indigo,
-                                                      width: 1.0,
-                                                    ),
-                                                    borderRadius:
-                                                        BorderRadius.only(
-                                                            topLeft: const Radius
-                                                                .circular(5.0),
-                                                            topRight: const Radius
-                                                                .circular(5.0)),
-                                                    color: Colors.indigo[400],
-                                                  ),
-                                                  width: MediaQuery.of(context)
-                                                      .size
-                                                      .width,
-                                                  height: 50,
-                                                  child: Row(
-                                                    children: [
-                                                      Expanded(
-                                                        child: Container(
-                                                          height: MediaQuery.of(
-                                                                  context)
-                                                              .size
-                                                              .height,
-                                                          color: emtranspad,
-                                                          child: Center(
-                                                            child: Text(
-                                                              "FILIAL",
-                                                              textAlign:
-                                                                  TextAlign
-                                                                      .center,
-                                                              style: TextStyle(
-                                                                  color: Colors
-                                                                      .white,
-                                                                  fontSize: 17),
-                                                            ),
-                                                          ),
-                                                        ),
-                                                      ),
-                                                      Container(
-                                                        width: 1.5,
-                                                        height: MediaQuery.of(
-                                                                context)
-                                                            .size
-                                                            .height,
-                                                        color: emtranspad,
-                                                      ),
-                                                      Expanded(
-                                                        child: Text(
-                                                          "Auditoria P8",
-                                                          textAlign:
-                                                              TextAlign.center,
-                                                          style: TextStyle(
-                                                              color:
-                                                                  Colors.white,
-                                                              fontSize: 17),
-                                                        ),
-                                                      ),
-                                                      Container(
-                                                        width: 1.5,
-                                                        height: MediaQuery.of(
-                                                                context)
-                                                            .size
-                                                            .height,
-                                                        color: emtranspad,
-                                                      ),
-                                                      Expanded(
-                                                        child: Text(
-                                                          "CONFERÊNCIA",
-                                                          textAlign:
-                                                              TextAlign.center,
-                                                          style: TextStyle(
-                                                              color:
-                                                                  Colors.white,
-                                                              fontSize: 17),
-                                                        ),
-                                                      ),
-                                                      Container(
-                                                        width: 1.5,
-                                                        height: MediaQuery.of(
-                                                                context)
-                                                            .size
-                                                            .height,
-                                                        color: emtranspad,
-                                                      ),
-                                                      Expanded(
-                                                        child: Text(
-                                                          "ENTRADA NF",
-                                                          textAlign:
-                                                              TextAlign.center,
-                                                          style: TextStyle(
-                                                              color:
-                                                                  Colors.white,
-                                                              fontSize: 17),
-                                                        ),
-                                                      ),
-                                                      Container(
-                                                        width: 1.5,
-                                                        height: MediaQuery.of(
-                                                                context)
-                                                            .size
-                                                            .height,
-                                                        color: emtranspad,
-                                                      ),
-                                                      Expanded(
-                                                        child: Text(
-                                                          "ENDEREÇAMENTO",
-                                                          textAlign:
-                                                              TextAlign.center,
-                                                          style: TextStyle(
-                                                              color:
-                                                                  Colors.white,
-                                                              fontSize: 17),
-                                                        ),
-                                                      ),
-                                                      Container(
-                                                        width: 1.5,
-                                                        height: MediaQuery.of(
-                                                                context)
-                                                            .size
-                                                            .height,
-                                                        color: emtranspad,
-                                                      ),
-                                                      Expanded(
-                                                        child: Container(
-                                                          height: MediaQuery.of(
-                                                                  context)
-                                                              .size
-                                                              .height,
-                                                          color:
-                                                              emtranspad[800],
-                                                          child: Center(
-                                                            child: Text(
-                                                              "TOTAL",
-                                                              textAlign:
-                                                                  TextAlign
-                                                                      .center,
-                                                              style: TextStyle(
-                                                                  color: Colors
-                                                                      .white,
-                                                                  fontSize: 17),
-                                                            ),
-                                                          ),
-                                                        ),
-                                                      ),
-                                                    ],
-                                                  ),
-                                                ),
-                                              ),
-                                              linha(0, "MCZ - 0101"),
-                                              linha(1, "ARA - 0103"),
-                                              linha(2, "JPA - 0104"),
-                                              linha(3, "CD - 0105"),
-                                              linha(4, "CGD - 0106"),
-                                              linha(5, "NAT - 0107"),
-                                              linha(6, "CBD - 0108"),
-                                              linha(7, "FOR - 0109"),
-                                              linha(8, "JUA - 0110"),
-                                              linha(9, "DVM - 0201"),
-                                              linhatotal(10, "TOTAL"),
-                                            ],
-                                          ),
-                                        ),
-                                      ),
-                                    );
-                                  },
-                                );*/
-                              },
+                              onTap: () {},
                               child: Container(
                                   decoration: BoxDecoration(
                                     border: Border.all(
@@ -1995,32 +1611,9 @@ class _MonitoringState extends State<Monitoring> {
                                                                       LocaleType
                                                                           .pt);
                                                             },
-                                                            child: Stack(
-                                                                children: <
-                                                                    Widget>[
-                                                                  dateInitGeneral ==
-                                                                          null
-                                                                      ? Row(
-                                                                          children: [
-                                                                            // Icon(Icons.calendar_today,color: Colors.white,),
-                                                                            Text('De: ${DateFormat('dd/MM/yyyy').format(DateTime.now())}',
-                                                                                style: TextStyle(
-                                                                                  color: Colors.black,
-                                                                                  fontSize: MediaQuery.of(context).size.height * 0.02,
-                                                                                )),
-                                                                          ],
-                                                                        )
-                                                                      : Row(
-                                                                          children: [
-                                                                            // Icon(Icons.calendar_today,color: Colors.white,),
-                                                                            Text('De: ${DateFormat('dd/MM/yyyy').format(dateInitGeneral)}',
-                                                                                style: TextStyle(
-                                                                                  color: Colors.black,
-                                                                                  fontSize: MediaQuery.of(context).size.height * 0.02,
-                                                                                )),
-                                                                          ],
-                                                                        )
-                                                                ]),
+                                                            child: date(
+                                                                dateInitGeneral,
+                                                                "De"),
                                                           ),
                                                           FlatButton(
                                                             onPressed: () {
@@ -2062,32 +1655,9 @@ class _MonitoringState extends State<Monitoring> {
                                                                       LocaleType
                                                                           .pt);
                                                             },
-                                                            child: Stack(
-                                                                children: <
-                                                                    Widget>[
-                                                                  dateEndGeneral ==
-                                                                          null
-                                                                      ? Row(
-                                                                          children: [
-                                                                            //  Icon(Icons.calendar_today,color: Colors.white,),
-                                                                            Text("Até: ${DateFormat('dd/MM/yyyy').format(DateTime.now())}",
-                                                                                style: TextStyle(
-                                                                                  color: Colors.black,
-                                                                                  fontSize: MediaQuery.of(context).size.height * 0.02,
-                                                                                )),
-                                                                          ],
-                                                                        )
-                                                                      : Row(
-                                                                          children: [
-                                                                            //  Icon(Icons.calendar_today,color: Colors.white,),
-                                                                            Text("Até: ${DateFormat('dd/MM/yyyy').format(dateEndGeneral)}",
-                                                                                style: TextStyle(
-                                                                                  color: Colors.black,
-                                                                                  fontSize: MediaQuery.of(context).size.height * 0.02,
-                                                                                )),
-                                                                          ],
-                                                                        )
-                                                                ]),
+                                                            child: date(
+                                                                dateEndGeneral,
+                                                                "Até"),
                                                           ),
                                                           GestureDetector(
                                                             onTap: () async {
@@ -2695,321 +2265,11 @@ class _MonitoringState extends State<Monitoring> {
                                                     m.daysInTransit,
                                                     GestureDetector(
                                                       onTap: () {
-                                                        showDialog<void>(
-                                                          context: context,
-                                                          barrierDismissible:
-                                                              false, // user must tap button!
-                                                          builder: (BuildContext
-                                                              context) {
-                                                            return GestureDetector(
-                                                              onTap: () {
-                                                                Navigator.of(
-                                                                        context)
-                                                                    .pop();
-                                                              },
-                                                              child:
-                                                                  AlertDialog(
-                                                                shape: RoundedRectangleBorder(
-                                                                    borderRadius:
-                                                                        BorderRadius.circular(
-                                                                            20.0)),
-                                                                backgroundColor:
-                                                                    Colors
-                                                                        .white,
-                                                                title:
-                                                                    SingleChildScrollView(
-                                                                  child: Column(
-                                                                    children: [
-                                                                      Row(
-                                                                        children: [
-                                                                          Expanded(
-                                                                            child:
-                                                                                Column(
-                                                                              children: [
-                                                                                Align(
-                                                                                  alignment: Alignment.topCenter,
-                                                                                  child: m.concierge == "N"
-                                                                                      ? Padding(
-                                                                                          padding: const EdgeInsets.all(8.0),
-                                                                                          child: Column(
-                                                                                            children: [
-                                                                                              Icon(
-                                                                                                MdiIcons.truckFastOutline,
-                                                                                                color: Colors.red[800],
-                                                                                              ),
-                                                                                              Text(
-                                                                                                "Auditoria P8",
-                                                                                                style: TextStyle(color: Colors.red[800], fontSize: 15),
-                                                                                              ),
-                                                                                            ],
-                                                                                          ),
-                                                                                        )
-                                                                                      : Padding(
-                                                                                          padding: const EdgeInsets.all(8.0),
-                                                                                          child: Column(
-                                                                                            children: [
-                                                                                              Icon(
-                                                                                                MdiIcons.truckCheckOutline,
-                                                                                                color: Colors.green[800],
-                                                                                              ),
-                                                                                              Text(
-                                                                                                "Auditoria P8",
-                                                                                                style: TextStyle(color: Colors.green[800], fontSize: 15),
-                                                                                              ),
-                                                                                            ],
-                                                                                          ),
-                                                                                        ),
-                                                                                ),
-                                                                                Column(
-                                                                                  children: [
-                                                                                    Align(
-                                                                                      alignment: Alignment.center,
-                                                                                      child: Container(
-                                                                                        color: m.concierge == "N" ? Colors.grey : Colors.green,
-                                                                                        width: MediaQuery.of(context).size.width,
-                                                                                        height: MediaQuery.of(context).size.height * 0.005,
-                                                                                      ),
-                                                                                    ),
-                                                                                    Align(
-                                                                                      alignment: Alignment.topCenter,
-                                                                                      child: Icon(
-                                                                                        Icons.arrow_drop_down,
-                                                                                        size: 40,
-                                                                                        color: m.concierge == "N" ? Colors.grey : Colors.green,
-                                                                                      ),
-                                                                                    ),
-                                                                                    Align(
-                                                                                      alignment: Alignment.topCenter,
-                                                                                      child: Text(
-                                                                                        "${m.conciergeDate}",
-                                                                                        style: TextStyle(
-                                                                                          fontSize: MediaQuery.of(context).size.height * 0.02,
-                                                                                          color: m.concierge == "N" ? Colors.grey : Colors.green,
-                                                                                        ),
-                                                                                      ),
-                                                                                    ),
-                                                                                    Align(
-                                                                                      alignment: Alignment.topCenter,
-                                                                                      child: Text(
-                                                                                        "${m.conciergeUser}",
-                                                                                        style: TextStyle(
-                                                                                          fontSize: MediaQuery.of(context).size.height * 0.02,
-                                                                                          color: m.concierge == "N" ? Colors.grey : Colors.green,
-                                                                                        ),
-                                                                                      ),
-                                                                                    ),
-                                                                                  ],
-                                                                                ),
-                                                                              ],
-                                                                            ),
-                                                                          ),
-                                                                          Expanded(
-                                                                            child:
-                                                                                Column(
-                                                                              children: [
-                                                                                Align(
-                                                                                  alignment: Alignment.topCenter,
-                                                                                  child: Padding(
-                                                                                    padding: const EdgeInsets.all(8.0),
-                                                                                    child: Column(
-                                                                                      children: [
-                                                                                        Icon(
-                                                                                          MdiIcons.textBoxCheckOutline,
-                                                                                          color: Colors.blueGrey[800],
-                                                                                        ),
-                                                                                        Text(
-                                                                                          "Conferência",
-                                                                                          style: TextStyle(color: Colors.blueGrey[800], fontSize: 15),
-                                                                                        ),
-                                                                                      ],
-                                                                                    ),
-                                                                                  ),
-                                                                                ),
-                                                                                Column(
-                                                                                  children: [
-                                                                                    Align(
-                                                                                      alignment: Alignment.center,
-                                                                                      child: Container(
-                                                                                        color: m.checked == "S" ? Colors.green : Colors.grey,
-                                                                                        width: MediaQuery.of(context).size.width,
-                                                                                        height: MediaQuery.of(context).size.height * 0.005,
-                                                                                      ),
-                                                                                    ),
-                                                                                    Align(
-                                                                                      alignment: Alignment.topCenter,
-                                                                                      child: Icon(
-                                                                                        Icons.arrow_drop_down,
-                                                                                        size: 40,
-                                                                                        color: m.checked == "S" ? Colors.green : Colors.grey,
-                                                                                      ),
-                                                                                    ),
-                                                                                    Align(
-                                                                                      alignment: Alignment.topCenter,
-                                                                                      child: Text(
-                                                                                        "",
-                                                                                        style: TextStyle(
-                                                                                          fontSize: MediaQuery.of(context).size.height * 0.02,
-                                                                                          color: m.concierge == "N" ? Colors.grey : Colors.green,
-                                                                                        ),
-                                                                                      ),
-                                                                                    ),
-                                                                                    Align(
-                                                                                      alignment: Alignment.topCenter,
-                                                                                      child: Text(
-                                                                                        "",
-                                                                                        style: TextStyle(
-                                                                                          fontSize: MediaQuery.of(context).size.height * 0.02,
-                                                                                          color: m.concierge == "N" ? Colors.grey : Colors.green,
-                                                                                        ),
-                                                                                      ),
-                                                                                    ),
-                                                                                  ],
-                                                                                ),
-                                                                              ],
-                                                                            ),
-                                                                          ),
-                                                                          Expanded(
-                                                                            child:
-                                                                                Column(
-                                                                              children: [
-                                                                                Align(
-                                                                                  alignment: Alignment.topCenter,
-                                                                                  child: Padding(
-                                                                                    padding: const EdgeInsets.all(8.0),
-                                                                                    child: Column(
-                                                                                      children: [
-                                                                                        Icon(
-                                                                                          MdiIcons.import,
-                                                                                          color: Colors.cyan[800],
-                                                                                        ),
-                                                                                        Text(
-                                                                                          "Entrada NF",
-                                                                                          style: TextStyle(color: Colors.cyan[800], fontSize: 15),
-                                                                                        ),
-                                                                                      ],
-                                                                                    ),
-                                                                                  ),
-                                                                                ),
-                                                                                Column(
-                                                                                  children: [
-                                                                                    Align(
-                                                                                      alignment: Alignment.center,
-                                                                                      child: Container(
-                                                                                        color: m.received == "S" ? Colors.green : Colors.grey,
-                                                                                        width: MediaQuery.of(context).size.width,
-                                                                                        height: MediaQuery.of(context).size.height * 0.005,
-                                                                                      ),
-                                                                                    ),
-                                                                                    Align(
-                                                                                      alignment: Alignment.topCenter,
-                                                                                      child: Icon(
-                                                                                        Icons.arrow_drop_down,
-                                                                                        size: 40,
-                                                                                        color: m.received == "S" ? Colors.green : Colors.grey,
-                                                                                      ),
-                                                                                    ),
-                                                                                    Align(
-                                                                                      alignment: Alignment.topCenter,
-                                                                                      child: Text(
-                                                                                        "",
-                                                                                        style: TextStyle(
-                                                                                          fontSize: MediaQuery.of(context).size.height * 0.02,
-                                                                                          color: m.concierge == "N" ? Colors.grey : Colors.green,
-                                                                                        ),
-                                                                                      ),
-                                                                                    ),
-                                                                                    Align(
-                                                                                      alignment: Alignment.topCenter,
-                                                                                      child: Text(
-                                                                                        "",
-                                                                                        style: TextStyle(
-                                                                                          fontSize: MediaQuery.of(context).size.height * 0.02,
-                                                                                          color: m.concierge == "N" ? Colors.grey : Colors.green,
-                                                                                        ),
-                                                                                      ),
-                                                                                    ),
-                                                                                  ],
-                                                                                ),
-                                                                              ],
-                                                                            ),
-                                                                          ),
-                                                                          Expanded(
-                                                                            child:
-                                                                                Column(
-                                                                              children: [
-                                                                                Align(
-                                                                                  alignment: Alignment.topCenter,
-                                                                                  child: Padding(
-                                                                                    padding: const EdgeInsets.all(8.0),
-                                                                                    child: Column(
-                                                                                      children: [
-                                                                                        Icon(
-                                                                                          MdiIcons.transfer,
-                                                                                          color: Colors.teal[800],
-                                                                                        ),
-                                                                                        Text(
-                                                                                          "Endereçamento",
-                                                                                          style: TextStyle(color: Colors.teal[800], fontSize: 15),
-                                                                                        ),
-                                                                                      ],
-                                                                                    ),
-                                                                                  ),
-                                                                                ),
-                                                                                Column(
-                                                                                  children: [
-                                                                                    Align(
-                                                                                      alignment: Alignment.center,
-                                                                                      child: Container(
-                                                                                        color: m.addressed == "S" ? Colors.grey : Colors.green,
-                                                                                        width: MediaQuery.of(context).size.width,
-                                                                                        height: MediaQuery.of(context).size.height * 0.005,
-                                                                                      ),
-                                                                                    ),
-                                                                                    Align(
-                                                                                      alignment: Alignment.topCenter,
-                                                                                      child: Icon(
-                                                                                        Icons.arrow_drop_down,
-                                                                                        size: 40,
-                                                                                        color: m.addressed == "S" ? Colors.grey : Colors.green,
-                                                                                      ),
-                                                                                    ),
-                                                                                    Align(
-                                                                                      alignment: Alignment.topCenter,
-                                                                                      child: Text(
-                                                                                        "",
-                                                                                        style: TextStyle(
-                                                                                          fontSize: MediaQuery.of(context).size.height * 0.02,
-                                                                                          color: m.concierge == "N" ? Colors.grey : Colors.green,
-                                                                                        ),
-                                                                                      ),
-                                                                                    ),
-                                                                                    Align(
-                                                                                      alignment: Alignment.topCenter,
-                                                                                      child: Text(
-                                                                                        "",
-                                                                                        style: TextStyle(
-                                                                                          fontSize: MediaQuery.of(context).size.height * 0.02,
-                                                                                          color: m.concierge == "N" ? Colors.grey : Colors.green,
-                                                                                        ),
-                                                                                      ),
-                                                                                    ),
-                                                                                  ],
-                                                                                ),
-                                                                              ],
-                                                                            ),
-                                                                          ),
-                                                                        ],
-                                                                      )
-                                                                    ],
-                                                                  ),
-                                                                ),
-                                                              ),
-                                                            );
-                                                          },
-                                                        );
+                                                        register(m);
                                                       },
                                                       child: Container(
-                                                        child: m.concierge == "N"
+                                                        child: m.concierge ==
+                                                                "N"
                                                             ? Padding(
                                                                 padding:
                                                                     const EdgeInsets
@@ -3091,18 +2351,6 @@ class _MonitoringState extends State<Monitoring> {
                                                         : Container(),
                                                     m.addressed == "S"
                                                         ? Container()
-                                                        /*GestureDetector(
-                                                      onTap:
-                                                      alertdetalhesstatus(),
-                                                      child: Padding(
-                                                        padding: const EdgeInsets
-                                                            .fromLTRB(3, 0, 3, 0),
-                                                        child: Icon(
-                                                          MdiIcons.transfer,
-                                                          color: Colors.teal[800],
-                                                        ),
-                                                      ),
-                                                    )*/
                                                         : Container(),
                                                   ),
                                                   lineSeparation(),
@@ -3117,420 +2365,6 @@ class _MonitoringState extends State<Monitoring> {
                     ],
                   ),
                 ),
-
-                /* emtranspad == Colors.green?Expanded(
-                  flex:4,
-                  child: Column(
-                    children: [
-                      Padding(
-                        padding: emtranspad == Colors.green?const EdgeInsets.only(left: 0, right: 8):const EdgeInsets.only(left: 4, right: 8),
-                        child: Container(
-                          decoration: BoxDecoration(
-                            border: Border.all(
-                              color: emtranspad[900],
-                              width: 1.0,
-                            ),
-                            borderRadius: BorderRadius.only(
-                                topLeft: const Radius.circular(5.0),
-                                topRight: const Radius.circular(5.0)),
-                            color: emtranspad[800],
-                          ),
-                          width: MediaQuery.of(context).size.width,
-                          height: 50,
-                          child: Row(
-                            children: [
-                              Expanded(
-                                flex: 1,
-                                child: Text(
-                                  "Portal",
-                                  textAlign: TextAlign.center,
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize:
-                                    emtranspad == Colors.green? MediaQuery.of(context).size.height * 0.018:MediaQuery.of(context).size.height * 0.022,
-                                  ),
-                                ),
-                              ),
-                              Expanded(
-                                flex: 1,
-                                child: Text(
-                                  "Origem",
-                                  textAlign: TextAlign.center,
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize:
-                                    emtranspad == Colors.green? MediaQuery.of(context).size.height * 0.018:MediaQuery.of(context).size.height * 0.022,
-                                  ),
-                                ),
-                              ),
-                              Expanded(
-                                flex: 1,
-                                child: Text(
-                                  "Destino",
-                                  textAlign: TextAlign.center,
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize:
-                                    emtranspad == Colors.green? MediaQuery.of(context).size.height * 0.018:MediaQuery.of(context).size.height * 0.022,
-                                  ),
-                                ),
-                              ),
-                              Expanded(
-                                flex: 2,
-                                child: Text(
-                                  "Emissão",
-                                  textAlign: TextAlign.center,
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize:
-                                    emtranspad == Colors.green? MediaQuery.of(context).size.height * 0.018:MediaQuery.of(context).size.height * 0.022,
-                                  ),
-                                ),
-                              ),
-                              Expanded(
-                                flex: 1,
-                                child: Text(
-                                  "Dias",
-                                  textAlign: TextAlign.center,
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize:
-                                    emtranspad == Colors.green? MediaQuery.of(context).size.height * 0.018:MediaQuery.of(context).size.height * 0.022,
-                                  ),
-                                ),
-                              ),
-                              Expanded(
-                                flex: 3,
-                                child: Text(
-                                  "Nota Fiscal",
-                                  textAlign: TextAlign.center,
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize:
-                                    emtranspad == Colors.green? MediaQuery.of(context).size.height * 0.018:MediaQuery.of(context).size.height * 0.022,
-                                  ),
-                                ),
-                              ),
-                              Expanded(
-                                flex: 1,
-                                child: Text(
-                                  "Serie",
-                                  textAlign: TextAlign.center,
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize:
-                                    emtranspad == Colors.green? MediaQuery.of(context).size.height * 0.018:MediaQuery.of(context).size.height * 0.022,
-                                  ),
-                                ),
-                              ),
-                              Expanded(
-                                flex: 2,
-                                child: Text(
-                                  "Entrada",
-                                  textAlign: TextAlign.center,
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize:
-                                    emtranspad == Colors.green? MediaQuery.of(context).size.height * 0.018:MediaQuery.of(context).size.height * 0.022,
-                                  ),
-                                ),
-                              ),
-
-                              Expanded(
-                                flex: 1,
-                                child: Text(
-                                  "Status",
-                                  textAlign: TextAlign.center,
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize:
-                                    emtranspad == Colors.green? MediaQuery.of(context).size.height * 0.018:MediaQuery.of(context).size.height * 0.022,
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                      Align(
-                        alignment: Alignment.topCenter,
-                        child: Padding(
-                          padding:
-                          emtranspad == Colors.green?const EdgeInsets.only(bottom: 8.0, left:  0, right: 8):const EdgeInsets.only(bottom: 8.0, left:  4, right: 8),
-                          child: Container(
-                            width: MediaQuery.of(context).size.width,
-                            height: 500,
-                            decoration: BoxDecoration(
-                              border: Border.all(
-                                color: emtranspad,
-                                width: 1.0,
-                              ),
-                              borderRadius: BorderRadius.only(
-                                  bottomLeft: const Radius.circular(5.0),
-                                  bottomRight: const Radius.circular(5.0)),
-                            ),
-                            child: Align(
-                              alignment: Alignment.topCenter,
-                              child: StreamBuilder(
-                                  stream: _streamController.stream,
-                                  builder:
-                                      (BuildContext context, AsyncSnapshot snapshot) {
-                                    if (!snapshot.hasData) {
-                                      return Center(
-                                        child: Image.asset(
-                                          'assets/gif1.gif',
-                                          color: emtranspad,
-                                          height: 70,
-                                        ),
-                                      );
-                                    }
-                                    List<Monitor> monitor = snapshot.data;
-                                    if (monitor.isEmpty) {
-                                      return Center(
-                                          child: Column(
-                                            mainAxisAlignment: MainAxisAlignment.center,
-                                            children: [
-                                              Icon(
-                                                MdiIcons.clipboardOutline,
-                                                color: emtranspad,
-                                                size:
-                                                MediaQuery.of(context).size.width * 0.05,
-                                              ),
-                                              SizedBox(
-                                                height: MediaQuery.of(context).size.width *
-                                                    0.01,
-                                              ),
-                                              Text(
-                                                "Não ha registros",
-                                                style: TextStyle(
-                                                    fontSize:
-                                                    MediaQuery.of(context).size.width *
-                                                        0.015,
-                                                    color: emtranspad),
-                                              ),
-                                            ],
-                                          ));
-                                    }
-                                    return Scrollbar(
-                                        child: ListView.builder(
-                                            padding: EdgeInsets.zero,
-                                            itemCount: monitor.length,
-                                            itemBuilder:
-                                                (BuildContext context, int index) {
-                                              Monitor m = monitor[index];
-                                              chaves.add(m.chaveNFE);
-
-                                              return Column(
-                                                children: [
-                                                  linhamonitorcheck(
-                                                    chaves.length,
-                                                    m.filialOrigem,
-                                                    m.filialDestino,
-                                                    m.notaFiscal,
-                                                    m.notaSerie,
-                                                    m.dataEntrada,
-                                                    m.dataEmissao,
-                                                    m.diasTransito,
-                                                    GestureDetector(
-                                                      onTap: () {
-                                                        showDialog<void>(
-                                                          context: context,
-                                                          barrierDismissible:
-                                                          false, // user must tap button!
-                                                          builder: (BuildContext
-                                                          context) {
-                                                            return GestureDetector(
-                                                              onTap: () {
-                                                                Navigator.of(
-                                                                    context)
-                                                                    .pop();
-                                                              },
-                                                              child: AlertDialog(
-                                                                shape: RoundedRectangleBorder(
-                                                                    borderRadius:
-                                                                    BorderRadius
-                                                                        .circular(
-                                                                        20.0)),
-                                                                backgroundColor:
-                                                                Colors.white,
-                                                                title:
-                                                                SingleChildScrollView(
-                                                                  child: Column(
-                                                                    children: [
-                                                                      Row(
-                                                                        children: [
-                                                                          Expanded(
-                                                                            child: Column(
-                                                                              children: [
-                                                                                Align(alignment: Alignment.topCenter,child:
-                                                                                m.portaria == "N"?Icon(
-                                                                                  MdiIcons
-                                                                                      .truckFastOutline,
-                                                                                  color: Colors
-                                                                                      .deepOrange[800],
-                                                                                ):Icon(
-                                                                                  MdiIcons
-                                                                                      .truckCheckOutline,
-                                                                                  color:
-                                                                                  Colors.green[800],
-                                                                                ),),
-                                                                                Align(alignment: Alignment.center,child:
-                                                                                Container(
-                                                                                  color:  m.portaria == "N"?Colors.grey:Colors.green,
-                                                                                  width:  MediaQuery.of(context).size.width,
-                                                                                  height: MediaQuery.of(context).size.height*0.005,
-                                                                                ),),
-                                                                              ],
-                                                                            ),
-                                                                          ),
-                                                                          Expanded(
-                                                                            child: Column(
-                                                                              children: [
-                                                                                Align(alignment: Alignment.topCenter,child:
-                                                                                Icon(
-                                                                                  MdiIcons
-                                                                                      .textBoxCheckOutline,
-                                                                                  color: Colors
-                                                                                      .blueGrey[800],
-                                                                                ),),
-                                                                                Align(alignment: Alignment.center,child:
-                                                                                Container(
-                                                                                  color:  m.conferido == "S"?Colors.grey:Colors.green,
-                                                                                  width:  MediaQuery.of(context).size.width,
-                                                                                  height: MediaQuery.of(context).size.height*0.005,
-                                                                                ),),
-                                                                              ],
-                                                                            ),
-                                                                          ),
-                                                                          Expanded(
-                                                                            child: Column(
-                                                                              children: [
-                                                                                Align(alignment: Alignment.topCenter,child:
-                                                                                Icon(
-                                                                                  MdiIcons.import,
-                                                                                  color: Colors.cyan[800],
-                                                                                ),),
-                                                                                Align(alignment: Alignment.center,child:
-                                                                                Container(
-                                                                                  color:  m.recebido == "S"?Colors.grey:Colors.green,
-                                                                                  width:  MediaQuery.of(context).size.width,
-                                                                                  height: MediaQuery.of(context).size.height*0.005,
-                                                                                ),),
-                                                                              ],
-                                                                            ),
-                                                                          ),
-                                                                          Expanded(
-                                                                            child: Column(
-                                                                              children: [
-                                                                                Align(alignment: Alignment.topCenter,child:
-                                                                                Icon(
-                                                                                  MdiIcons.transfer,
-                                                                                  color: Colors.teal[800],
-                                                                                ),),
-                                                                                Align(alignment: Alignment.center,child:
-                                                                                Container(
-                                                                                  color:  m.enderecado == "S"?Colors.grey:Colors.green,
-                                                                                  width:  MediaQuery.of(context).size.width,
-                                                                                  height: MediaQuery.of(context).size.height*0.005,
-                                                                                ),),
-                                                                              ],
-                                                                            ),
-                                                                          ),
-                                                                        ],
-                                                                      )
-                                                                    ],
-                                                                  ),
-                                                                ),
-                                                              ),
-                                                            );
-                                                          },
-                                                        );
-                                                      },
-                                                      child: Container(
-                                                        child: m.portaria == "N"
-                                                            ? Padding(
-                                                          padding: const EdgeInsets
-                                                              .fromLTRB(3, 0, 3, 0),
-                                                          child: Icon(
-                                                            MdiIcons
-                                                                .truckFastOutline,
-                                                            color: Colors
-                                                                .deepOrange[800],
-                                                          ),
-                                                        )
-                                                            : GestureDetector(
-                                                          onTap:
-                                                          alertdetalhesstatus(),
-                                                          child: Padding(
-                                                            padding: const EdgeInsets
-                                                                .fromLTRB(3, 0, 3, 0),
-                                                            child: Icon(
-                                                              MdiIcons
-                                                                  .truckCheckOutline,
-                                                              color:
-                                                              Colors.green[800],
-                                                            ),
-                                                          ),
-                                                        ),
-                                                      ),
-                                                    ),
-                                                    m.conferido == "S"
-                                                        ? GestureDetector(
-                                                      onTap:
-                                                      alertdetalhesstatus(),
-                                                      child: Padding(
-                                                        padding: const EdgeInsets
-                                                            .fromLTRB(3, 0, 3, 0),
-                                                        child: Icon(
-                                                          MdiIcons
-                                                              .textBoxCheckOutline,
-                                                          color: Colors
-                                                              .blueGrey[800],
-                                                        ),
-                                                      ),
-                                                    )
-                                                        : Container(),
-                                                    m.recebido == "S"
-                                                        ? GestureDetector(
-                                                      onTap:
-                                                      alertdetalhesstatus(),
-                                                      child: Padding(
-                                                        padding: const EdgeInsets
-                                                            .fromLTRB(3, 0, 3, 0),
-                                                        child: Icon(
-                                                          MdiIcons.import,
-                                                          color: Colors.cyan[800],
-                                                        ),
-                                                      ),
-                                                    )
-                                                        : Container(),
-                                                    m.enderecado == "S"
-                                                        ? GestureDetector(
-                                                      onTap:
-                                                      alertdetalhesstatus(),
-                                                      child: Padding(
-                                                        padding: const EdgeInsets
-                                                            .fromLTRB(3, 0, 3, 0),
-                                                        child: Icon(
-                                                          MdiIcons.transfer,
-                                                          color: Colors.teal[800],
-                                                        ),
-                                                      ),
-                                                    )
-                                                        : Container(),
-                                                  ),
-                                                  linhasep(),
-                                                ],
-                                              );
-                                            }));
-                                  }),
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ):Padding( padding: const EdgeInsets.only(left: 4,),)*/
               ],
             ),
           ],
@@ -3538,6 +2372,7 @@ class _MonitoringState extends State<Monitoring> {
       ),
     );
   }
+
   ///atualiza monitor p8
   _loadData() async {
     _streamController.add(null);
@@ -3553,6 +2388,7 @@ class _MonitoringState extends State<Monitoring> {
     totalCollections = monitor.length;
     _streamController.add(monitor);
   }
+
   ///atualiza monitor geral p8
   _loadDataGeneral() async {
     general0101 = [0, 0, 0, 0, 0];
@@ -3582,151 +2418,151 @@ class _MonitoringState extends State<Monitoring> {
           );
         });
 
-    monitorGeral = await MonitorGet.getMonitor(
+    monitorGeneral = await MonitorGet.getMonitor(
       branchCrjDestiny: "",
       dateInit: "$dataInitFormGeneral",
       dateEnd: "$dateEndFormGeneral",
     );
     //totalcol = monitorGeral.length;
-    for (int i = 0; i < monitorGeral.length; i++) {
+    for (int i = 0; i < monitorGeneral.length; i++) {
       totalGeneral++;
-      if (monitorGeral[i].branchDestiny == "0101") {
-        if (monitorGeral[i].concierge == "S") {
+      if (monitorGeneral[i].branchDestiny == "0101") {
+        if (monitorGeneral[i].concierge == "S") {
           general0101[0]++;
         }
-        if (monitorGeral[i].received == "S") {
+        if (monitorGeneral[i].received == "S") {
           general0101[1]++;
         }
-        if (monitorGeral[i].checked == "S") {
+        if (monitorGeneral[i].checked == "S") {
           //geral0101[2]++;
         }
-        if (monitorGeral[i].addressed == "S") {
+        if (monitorGeneral[i].addressed == "S") {
           //geral0101[3]++;
         }
         general0101[4]++;
-      } else if (monitorGeral[i].branchDestiny == "0103") {
-        if (monitorGeral[i].concierge == "S") {
+      } else if (monitorGeneral[i].branchDestiny == "0103") {
+        if (monitorGeneral[i].concierge == "S") {
           general0103[0]++;
         }
-        if (monitorGeral[i].received == "S") {
+        if (monitorGeneral[i].received == "S") {
           general0103[1]++;
         }
-        if (monitorGeral[i].checked == "S") {
+        if (monitorGeneral[i].checked == "S") {
           //geral0103[2]++;
         }
-        if (monitorGeral[i].addressed == "S") {
+        if (monitorGeneral[i].addressed == "S") {
           //geral0103[3]++;
         }
         general0103[4]++;
-      } else if (monitorGeral[i].branchDestiny == "0104") {
-        if (monitorGeral[i].concierge == "S") {
+      } else if (monitorGeneral[i].branchDestiny == "0104") {
+        if (monitorGeneral[i].concierge == "S") {
           general0104[0]++;
         }
-        if (monitorGeral[i].received == "S") {
+        if (monitorGeneral[i].received == "S") {
           general0104[1]++;
         }
-        if (monitorGeral[i].checked == "S") {
+        if (monitorGeneral[i].checked == "S") {
           //geral0104[2]++;
         }
-        if (monitorGeral[i].addressed == "S") {
+        if (monitorGeneral[i].addressed == "S") {
           //geral0104[3]++;
         }
         general0104[4]++;
-      } else if (monitorGeral[i].branchDestiny == "0105") {
-        if (monitorGeral[i].concierge == "S") {
+      } else if (monitorGeneral[i].branchDestiny == "0105") {
+        if (monitorGeneral[i].concierge == "S") {
           general0105[0]++;
         }
-        if (monitorGeral[i].received == "S") {
+        if (monitorGeneral[i].received == "S") {
           general0105[1]++;
         }
-        if (monitorGeral[i].checked == "S") {
+        if (monitorGeneral[i].checked == "S") {
           //geral0105[2]++;
         }
-        if (monitorGeral[i].addressed == "S") {
+        if (monitorGeneral[i].addressed == "S") {
           //geral0105[3]++;
         }
         general0105[4]++;
-      } else if (monitorGeral[i].branchDestiny == "0106") {
-        if (monitorGeral[i].concierge == "S") {
+      } else if (monitorGeneral[i].branchDestiny == "0106") {
+        if (monitorGeneral[i].concierge == "S") {
           general0106[0]++;
         }
-        if (monitorGeral[i].received == "S") {
+        if (monitorGeneral[i].received == "S") {
           general0106[1]++;
         }
-        if (monitorGeral[i].checked == "S") {
+        if (monitorGeneral[i].checked == "S") {
           //geral0106[2]++;
         }
-        if (monitorGeral[i].addressed == "S") {
+        if (monitorGeneral[i].addressed == "S") {
           //geral0106[3]++;
         }
         general0106[4]++;
-      } else if (monitorGeral[i].branchDestiny == "0107") {
-        if (monitorGeral[i].concierge == "S") {
+      } else if (monitorGeneral[i].branchDestiny == "0107") {
+        if (monitorGeneral[i].concierge == "S") {
           general0107[0]++;
         }
-        if (monitorGeral[i].received == "S") {
+        if (monitorGeneral[i].received == "S") {
           general0107[1]++;
         }
-        if (monitorGeral[i].checked == "S") {
+        if (monitorGeneral[i].checked == "S") {
           //geral0107[2]++;
         }
-        if (monitorGeral[i].addressed == "S") {
+        if (monitorGeneral[i].addressed == "S") {
           //geral0107[3]++;
         }
         general0107[4]++;
-      } else if (monitorGeral[i].branchDestiny == "0108") {
-        if (monitorGeral[i].concierge == "S") {
+      } else if (monitorGeneral[i].branchDestiny == "0108") {
+        if (monitorGeneral[i].concierge == "S") {
           general0108[0]++;
         }
-        if (monitorGeral[i].received == "S") {
+        if (monitorGeneral[i].received == "S") {
           general0108[1]++;
         }
-        if (monitorGeral[i].checked == "S") {
+        if (monitorGeneral[i].checked == "S") {
           //geral0108[2]++;
         }
-        if (monitorGeral[i].addressed == "S") {
+        if (monitorGeneral[i].addressed == "S") {
           //geral0108[3]++;
         }
         general0108[4]++;
-      } else if (monitorGeral[i].branchDestiny == "0109") {
-        if (monitorGeral[i].concierge == "S") {
+      } else if (monitorGeneral[i].branchDestiny == "0109") {
+        if (monitorGeneral[i].concierge == "S") {
           general0109[0]++;
         }
-        if (monitorGeral[i].received == "S") {
+        if (monitorGeneral[i].received == "S") {
           general0109[1]++;
         }
-        if (monitorGeral[i].checked == "S") {
+        if (monitorGeneral[i].checked == "S") {
           //geral0109[2]++;
         }
-        if (monitorGeral[i].addressed == "S") {
+        if (monitorGeneral[i].addressed == "S") {
           //geral0109[3]++;
         }
         general0109[4]++;
-      } else if (monitorGeral[i].branchDestiny == "0110") {
-        if (monitorGeral[i].concierge == "S") {
+      } else if (monitorGeneral[i].branchDestiny == "0110") {
+        if (monitorGeneral[i].concierge == "S") {
           general0110[0]++;
         }
-        if (monitorGeral[i].received == "S") {
+        if (monitorGeneral[i].received == "S") {
           general0110[1]++;
         }
-        if (monitorGeral[i].checked == "S") {
+        if (monitorGeneral[i].checked == "S") {
           //geral0110[2]++;
         }
-        if (monitorGeral[i].addressed == "S") {
+        if (monitorGeneral[i].addressed == "S") {
           //geral0110[3]++;
         }
         general0110[4]++;
-      } else if (monitorGeral[i].branchDestiny == "0113") {
-        if (monitorGeral[i].concierge == "S") {
+      } else if (monitorGeneral[i].branchDestiny == "0113") {
+        if (monitorGeneral[i].concierge == "S") {
           general0113[0]++;
         }
-        if (monitorGeral[i].received == "S") {
+        if (monitorGeneral[i].received == "S") {
           general0113[1]++;
         }
-        if (monitorGeral[i].checked == "S") {
+        if (monitorGeneral[i].checked == "S") {
           //geral0113[2]++;
         }
-        if (monitorGeral[i].addressed == "S") {
+        if (monitorGeneral[i].addressed == "S") {
           //geral0113[3]++;
         }
         general0113[4]++;
@@ -3734,8 +2570,9 @@ class _MonitoringState extends State<Monitoring> {
     }
 
     Navigator.of(context).pop();
-    _streamControllerGeneral.add(monitorGeral);
+    _streamControllerGeneral.add(monitorGeneral);
   }
+
   ///filtra monitor p8
   _loadDataFilter() async {
     _streamController.add(null);
@@ -3753,6 +2590,7 @@ class _MonitoringState extends State<Monitoring> {
 
     _streamController.add(monitor2);
   }
+
   ///alerta de detalhes
   alertDetailsStatus() {}
 
@@ -3951,7 +2789,10 @@ class _MonitoringState extends State<Monitoring> {
                                   ),
                                   color: colorApp[800]),
                               child: Text(
-                                "${general0101[2] + general0103[2] + general0104[2] + general0105[2] + general0106[2] + general0107[2] + general0108[2] + general0109[2] + general0110[2] + general0113[2]}",
+                                "${general0101[2] + general0103[2] + general0104[2]
+                                    + general0105[2] + general0106[2] + general0107[2]
+                                    + general0108[2] + general0109[2] + general0110[2]
+                                    + general0113[2]}",
                                 textAlign: TextAlign.center,
                                 style: TextStyle(
                                     color: Colors.white, fontSize: 17),
@@ -3967,7 +2808,10 @@ class _MonitoringState extends State<Monitoring> {
                                   ),
                                   color: colorApp[800]),
                               child: Text(
-                                "${general0101[1] + general0103[1] + general0104[1] + general0105[1] + general0106[1] + general0107[1] + general0108[1] + general0109[1] + general0110[1] + general0113[1]}",
+                                "${general0101[1] + general0103[1] + general0104[1]
+                                    + general0105[1] + general0106[1] + general0107[1]
+                                    + general0108[1] + general0109[1] + general0110[1]
+                                    + general0113[1]}",
                                 textAlign: TextAlign.center,
                                 style: TextStyle(
                                     color: Colors.white, fontSize: 17),
@@ -4029,20 +2873,20 @@ class _MonitoringState extends State<Monitoring> {
   }
 
   lineMonitor(
-      int cont,
-      String origem,
-      String destino,
+      int count,
+      String origin,
+      String destiny,
       String nf,
       String serie,
-      String observacao,
-      String pedido,
-      String entrada,
-      String emissao,
-      String dia,
-      dynamic emtrans,
-      dynamic check,
-      dynamic end,
-      dynamic conf) {
+      String operation,
+      String request,
+      String input,
+      String emission,
+      String day,
+      dynamic inTransit,
+      dynamic checkP8,
+      dynamic addressed,
+      dynamic checked) {
     return Padding(
       padding: const EdgeInsets.only(top: 16.0, bottom: 16),
       child: Row(
@@ -4051,7 +2895,7 @@ class _MonitoringState extends State<Monitoring> {
             flex: 1,
             child: GestureDetector(
                 onTap: () {
-                  launchURL(key[cont]);
+                  launchURL(key[count]);
                 },
                 child: Icon(
                   MdiIcons.magnify,
@@ -4061,21 +2905,21 @@ class _MonitoringState extends State<Monitoring> {
           Expanded(
               flex: 1,
               child: Text(
-                origem,
+                origin,
                 textAlign: TextAlign.center,
                 style: TextStyle(color: Colors.black),
               )),
           Expanded(
               flex: 1,
               child: Text(
-                destino,
+                destiny,
                 textAlign: TextAlign.center,
                 style: TextStyle(color: Colors.black),
               )),
           Expanded(
             flex: 2,
             child: Text(
-              emissao,
+              emission,
               textAlign: TextAlign.center,
               style: TextStyle(color: Colors.black),
             ),
@@ -4083,7 +2927,7 @@ class _MonitoringState extends State<Monitoring> {
           Expanded(
             flex: 1,
             child: Text(
-              dia,
+              day,
               textAlign: TextAlign.center,
               style: TextStyle(color: Colors.black),
             ),
@@ -4123,7 +2967,7 @@ class _MonitoringState extends State<Monitoring> {
           Expanded(
             flex: 2,
             child: Text(
-              entrada,
+              input,
               textAlign: TextAlign.center,
               style: TextStyle(color: Colors.black),
             ),
@@ -4131,7 +2975,7 @@ class _MonitoringState extends State<Monitoring> {
           Expanded(
             flex: 2,
             child: Text(
-              pedido,
+              request,
               textAlign: TextAlign.center,
               style: TextStyle(color: Colors.black),
             ),
@@ -4139,7 +2983,7 @@ class _MonitoringState extends State<Monitoring> {
           Expanded(
             flex: 3,
             child: Text(
-              observacao,
+              operation,
               textAlign: TextAlign.center,
               style: TextStyle(color: Colors.black),
             ),
@@ -4149,10 +2993,10 @@ class _MonitoringState extends State<Monitoring> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  emtrans,
-                  check,
-                  end,
-                  conf,
+                  inTransit,
+                  checkP8,
+                  addressed,
+                  checked,
                 ],
               )),
         ],
@@ -4161,18 +3005,18 @@ class _MonitoringState extends State<Monitoring> {
   }
 
   lineMonitorCheck(
-      int cont,
-      String origem,
-      String destino,
+      int count,
+      String origin,
+      String destiny,
       String nf,
       String serie,
-      String entrada,
-      String emissao,
-      String dia,
-      dynamic emtrans,
-      dynamic check,
-      dynamic end,
-      dynamic conf) {
+      String input,
+      String emission,
+      String day,
+      dynamic inTransit,
+      dynamic checkP8,
+      dynamic addressed,
+      dynamic checked) {
     return Padding(
       padding: const EdgeInsets.only(top: 16.0, bottom: 16),
       child: Row(
@@ -4181,7 +3025,7 @@ class _MonitoringState extends State<Monitoring> {
             flex: 1,
             child: GestureDetector(
                 onTap: () {
-                  launchURL(key[cont]);
+                  launchURL(key[count]);
                 },
                 child: Icon(
                   MdiIcons.magnify,
@@ -4191,21 +3035,21 @@ class _MonitoringState extends State<Monitoring> {
           Expanded(
               flex: 1,
               child: Text(
-                origem,
+                origin,
                 textAlign: TextAlign.center,
                 style: TextStyle(color: Colors.black),
               )),
           Expanded(
               flex: 1,
               child: Text(
-                destino,
+                destiny,
                 textAlign: TextAlign.center,
                 style: TextStyle(color: Colors.black),
               )),
           Expanded(
             flex: 2,
             child: Text(
-              emissao,
+              emission,
               textAlign: TextAlign.center,
               style: TextStyle(color: Colors.black),
             ),
@@ -4213,7 +3057,7 @@ class _MonitoringState extends State<Monitoring> {
           Expanded(
             flex: 1,
             child: Text(
-              dia,
+              day,
               textAlign: TextAlign.center,
               style: TextStyle(color: Colors.black),
             ),
@@ -4253,7 +3097,7 @@ class _MonitoringState extends State<Monitoring> {
           Expanded(
             flex: 2,
             child: Text(
-              entrada,
+              input,
               textAlign: TextAlign.center,
               style: TextStyle(color: Colors.black),
             ),
@@ -4263,7 +3107,7 @@ class _MonitoringState extends State<Monitoring> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  emtrans,
+                  inTransit,
                 ],
               )),
         ],
@@ -4271,13 +3115,403 @@ class _MonitoringState extends State<Monitoring> {
     );
   }
 
-  launchURL(String chave) async {
+  launchURL(String key) async {
     var url =
-        'http://www.nfe.fazenda.gov.br/portal/consultaRecaptcha.aspx?tipoConteudo=XbSeqxE8pl8=&tipoConsulta=completa&nfe=$chave&';
+        'http://www.nfe.fazenda.gov.br/portal/consultaRecaptcha.aspx?tipoConteudo=XbSeqxE8pl8=&tipoConsulta=completa&nfe=$key&';
     if (await canLaunch(url)) {
       await launch(url);
     } else {
       throw 'Could not launch $url';
     }
+  }
+
+  void register(Monitor m) {
+    showDialog<void>(
+      context: context,
+      barrierDismissible: false, // user must tap button!
+      builder: (BuildContext context) {
+        return GestureDetector(
+          onTap: () {
+            Navigator.of(context).pop();
+          },
+          child: AlertDialog(
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(20.0)),
+            backgroundColor: Colors.white,
+            title: SingleChildScrollView(
+              child: Column(
+                children: [
+                  Row(
+                    children: [
+                      Expanded(
+                        child: Column(
+                          children: [
+                            Align(
+                              alignment: Alignment.topCenter,
+                              child: m.concierge == "N"
+                                  ? Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Column(
+                                        children: [
+                                          Icon(
+                                            MdiIcons.truckFastOutline,
+                                            color: Colors.red[800],
+                                          ),
+                                          Text(
+                                            "Auditoria P8",
+                                            style: TextStyle(
+                                                color: Colors.red[800],
+                                                fontSize: 15),
+                                          ),
+                                        ],
+                                      ),
+                                    )
+                                  : Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Column(
+                                        children: [
+                                          Icon(
+                                            MdiIcons.truckCheckOutline,
+                                            color: Colors.green[800],
+                                          ),
+                                          Text(
+                                            "Auditoria P8",
+                                            style: TextStyle(
+                                                color: Colors.green[800],
+                                                fontSize: 15),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                            ),
+                            Column(
+                              children: [
+                                Align(
+                                  alignment: Alignment.center,
+                                  child: Container(
+                                    color: m.concierge == "N"
+                                        ? Colors.grey
+                                        : Colors.green,
+                                    width: MediaQuery.of(context).size.width,
+                                    height: MediaQuery.of(context).size.height *
+                                        0.005,
+                                  ),
+                                ),
+                                Align(
+                                  alignment: Alignment.topCenter,
+                                  child: Icon(
+                                    Icons.arrow_drop_down,
+                                    size: 40,
+                                    color: m.concierge == "N"
+                                        ? Colors.grey
+                                        : Colors.green,
+                                  ),
+                                ),
+                                Align(
+                                  alignment: Alignment.topCenter,
+                                  child: Text(
+                                    "${m.conciergeDate}",
+                                    style: TextStyle(
+                                      fontSize:
+                                          MediaQuery.of(context).size.height *
+                                              0.02,
+                                      color: m.concierge == "N"
+                                          ? Colors.grey
+                                          : Colors.green,
+                                    ),
+                                  ),
+                                ),
+                                Align(
+                                  alignment: Alignment.topCenter,
+                                  child: Text(
+                                    "${m.conciergeUser}",
+                                    style: TextStyle(
+                                      fontSize:
+                                          MediaQuery.of(context).size.height *
+                                              0.02,
+                                      color: m.concierge == "N"
+                                          ? Colors.grey
+                                          : Colors.green,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ),
+                      Expanded(
+                        child: Column(
+                          children: [
+                            Align(
+                              alignment: Alignment.topCenter,
+                              child: Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Column(
+                                  children: [
+                                    Icon(
+                                      MdiIcons.textBoxCheckOutline,
+                                      color: Colors.blueGrey[800],
+                                    ),
+                                    Text(
+                                      "Conferência",
+                                      style: TextStyle(
+                                          color: Colors.blueGrey[800],
+                                          fontSize: 15),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                            Column(
+                              children: [
+                                Align(
+                                  alignment: Alignment.center,
+                                  child: Container(
+                                    color: m.checked == "S"
+                                        ? Colors.green
+                                        : Colors.grey,
+                                    width: MediaQuery.of(context).size.width,
+                                    height: MediaQuery.of(context).size.height *
+                                        0.005,
+                                  ),
+                                ),
+                                Align(
+                                  alignment: Alignment.topCenter,
+                                  child: Icon(
+                                    Icons.arrow_drop_down,
+                                    size: 40,
+                                    color: m.checked == "S"
+                                        ? Colors.green
+                                        : Colors.grey,
+                                  ),
+                                ),
+                                Align(
+                                  alignment: Alignment.topCenter,
+                                  child: Text(
+                                    "",
+                                    style: TextStyle(
+                                      fontSize:
+                                          MediaQuery.of(context).size.height *
+                                              0.02,
+                                      color: m.concierge == "N"
+                                          ? Colors.grey
+                                          : Colors.green,
+                                    ),
+                                  ),
+                                ),
+                                Align(
+                                  alignment: Alignment.topCenter,
+                                  child: Text(
+                                    "",
+                                    style: TextStyle(
+                                      fontSize:
+                                          MediaQuery.of(context).size.height *
+                                              0.02,
+                                      color: m.concierge == "N"
+                                          ? Colors.grey
+                                          : Colors.green,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ),
+                      Expanded(
+                        child: Column(
+                          children: [
+                            Align(
+                              alignment: Alignment.topCenter,
+                              child: Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Column(
+                                  children: [
+                                    Icon(
+                                      MdiIcons.import,
+                                      color: Colors.cyan[800],
+                                    ),
+                                    Text(
+                                      "Entrada NF",
+                                      style: TextStyle(
+                                          color: Colors.cyan[800],
+                                          fontSize: 15),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                            Column(
+                              children: [
+                                Align(
+                                  alignment: Alignment.center,
+                                  child: Container(
+                                    color: m.received == "S"
+                                        ? Colors.green
+                                        : Colors.grey,
+                                    width: MediaQuery.of(context).size.width,
+                                    height: MediaQuery.of(context).size.height *
+                                        0.005,
+                                  ),
+                                ),
+                                Align(
+                                  alignment: Alignment.topCenter,
+                                  child: Icon(
+                                    Icons.arrow_drop_down,
+                                    size: 40,
+                                    color: m.received == "S"
+                                        ? Colors.green
+                                        : Colors.grey,
+                                  ),
+                                ),
+                                Align(
+                                  alignment: Alignment.topCenter,
+                                  child: Text(
+                                    "",
+                                    style: TextStyle(
+                                      fontSize:
+                                          MediaQuery.of(context).size.height *
+                                              0.02,
+                                      color: m.concierge == "N"
+                                          ? Colors.grey
+                                          : Colors.green,
+                                    ),
+                                  ),
+                                ),
+                                Align(
+                                  alignment: Alignment.topCenter,
+                                  child: Text(
+                                    "",
+                                    style: TextStyle(
+                                      fontSize:
+                                          MediaQuery.of(context).size.height *
+                                              0.02,
+                                      color: m.concierge == "N"
+                                          ? Colors.grey
+                                          : Colors.green,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ),
+                      Expanded(
+                        child: Column(
+                          children: [
+                            Align(
+                              alignment: Alignment.topCenter,
+                              child: Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Column(
+                                  children: [
+                                    Icon(
+                                      MdiIcons.transfer,
+                                      color: Colors.teal[800],
+                                    ),
+                                    Text(
+                                      "Endereçamento",
+                                      style: TextStyle(
+                                          color: Colors.teal[800],
+                                          fontSize: 15),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                            Column(
+                              children: [
+                                Align(
+                                  alignment: Alignment.center,
+                                  child: Container(
+                                    color: m.addressed == "S"
+                                        ? Colors.grey
+                                        : Colors.green,
+                                    width: MediaQuery.of(context).size.width,
+                                    height: MediaQuery.of(context).size.height *
+                                        0.005,
+                                  ),
+                                ),
+                                Align(
+                                  alignment: Alignment.topCenter,
+                                  child: Icon(
+                                    Icons.arrow_drop_down,
+                                    size: 40,
+                                    color: m.addressed == "S"
+                                        ? Colors.grey
+                                        : Colors.green,
+                                  ),
+                                ),
+                                Align(
+                                  alignment: Alignment.topCenter,
+                                  child: Text(
+                                    "",
+                                    style: TextStyle(
+                                      fontSize:
+                                          MediaQuery.of(context).size.height *
+                                              0.02,
+                                      color: m.concierge == "N"
+                                          ? Colors.grey
+                                          : Colors.green,
+                                    ),
+                                  ),
+                                ),
+                                Align(
+                                  alignment: Alignment.topCenter,
+                                  child: Text(
+                                    "",
+                                    style: TextStyle(
+                                      fontSize:
+                                          MediaQuery.of(context).size.height *
+                                              0.02,
+                                      color: m.concierge == "N"
+                                          ? Colors.grey
+                                          : Colors.green,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  )
+                ],
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  date(var date, text) {
+    Stack(children: <Widget>[
+      date == null
+          ? Row(
+              children: [
+                // Icon(Icons.calendar_today,color: Colors.white,),
+                Text(
+                    '$text: ${DateFormat('dd/MM/yyyy').format(DateTime.now())}',
+                    style: TextStyle(
+                      color: Colors.black,
+                      fontSize: MediaQuery.of(context).size.height * 0.02,
+                    )),
+              ],
+            )
+          : Row(
+              children: [
+                // Icon(Icons.calendar_today,color: Colors.white,),
+                Text('$text: ${DateFormat('dd/MM/yyyy').format(date)}',
+                    style: TextStyle(
+                      color: Colors.black,
+                      fontSize: MediaQuery.of(context).size.height * 0.02,
+                    )),
+              ],
+            )
+    ]);
   }
 }

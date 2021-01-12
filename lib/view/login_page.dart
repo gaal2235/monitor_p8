@@ -142,7 +142,7 @@ class _LoginPageState extends State<LoginPage> {
                                   onTap: () {
                                     Timer(
                                         Duration(seconds: 1),
-                                            () => _controller.jumpTo(_controller
+                                        () => _controller.jumpTo(_controller
                                             .position.maxScrollExtent));
                                   },
                                   decoration: InputDecoration(
@@ -159,14 +159,15 @@ class _LoginPageState extends State<LoginPage> {
                               onFocusChange: (login) {
                                 Timer(
                                     Duration(seconds: 1),
-                                        () => _controller.jumpTo(
+                                    () => _controller.jumpTo(
                                         _controller.position.maxScrollExtent));
                               },
                             ),
                             SizedBox(height: 10),
                             Theme(
                               data: ThemeData(
-                                  primaryColor: colorApp, cursorColor: colorApp),
+                                  primaryColor: colorApp,
+                                  cursorColor: colorApp),
                               child: TextFormField(
                                 controller: _tPwd,
                                 validator: _validatePassword,
@@ -180,11 +181,11 @@ class _LoginPageState extends State<LoginPage> {
                                 onTap: () {
                                   Timer(
                                       Duration(seconds: 1),
-                                          () => _controller.jumpTo(
-                                          _controller.position.maxScrollExtent));
+                                      () => _controller.jumpTo(_controller
+                                          .position.maxScrollExtent));
                                 },
                                 style:
-                                TextStyle(fontSize: 16, color: Colors.grey),
+                                    TextStyle(fontSize: 16, color: Colors.grey),
                                 decoration: InputDecoration(
                                   hintText: "Digite a senha",
                                   icon: Icon(
@@ -204,7 +205,7 @@ class _LoginPageState extends State<LoginPage> {
                               children: <Widget>[
                                 SizedBox(
                                   height:
-                                  MediaQuery.of(context).size.height * 0.01,
+                                      MediaQuery.of(context).size.height * 0.01,
                                 ),
                               ],
                             ),
@@ -229,6 +230,7 @@ class _LoginPageState extends State<LoginPage> {
           ])),
     );
   }
+
   ///quarda login do ultimo usuario logado
   _loginprefs() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -237,6 +239,7 @@ class _LoginPageState extends State<LoginPage> {
       _tPwd.text = prefs.getString('senha');
     });
   }
+
   void _onClickLogin() async {
     if (!_formKey.currentState.validate()) {
       return;
@@ -245,12 +248,9 @@ class _LoginPageState extends State<LoginPage> {
     String usr = _tUsr.text;
     String pwd = _tPwd.text;
 
-
-
     setState(() {
       _showProgress = true;
     });
-
 
     user = await LoginGet.login(usr, pwd);
 
@@ -262,7 +262,6 @@ class _LoginPageState extends State<LoginPage> {
       prefs.setString('senha', _tPwd.text);
 
       // push(context, Home());
-
 
     } else {
       showDialog(
@@ -307,6 +306,7 @@ class _LoginPageState extends State<LoginPage> {
       _showProgress = false;
     });
   }
+
   ///valida login
   String _validateLogin(String text) {
     if (text.isEmpty) {
@@ -315,6 +315,7 @@ class _LoginPageState extends State<LoginPage> {
 
     return null;
   }
+
   ///valida senha
   String _validatePassword(String text) {
     if (text.isEmpty) {
