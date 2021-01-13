@@ -69,7 +69,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
     Timer.periodic(duration, (timer) {
       setState(() {
-        print(timer.tick);
+
         currentSeconds = timer.tick;
         if (timer.tick >= timerMaxSeconds){ timer.cancel();  Navigator.pushReplacement(context, MaterialPageRoute(builder: (BuildContext context) => MyApp()));}
       });
