@@ -2827,7 +2827,10 @@ class _MonitoringState extends State<Monitoring> {
                                   ),
                                   color: colorApp[800]),
                               child: Text(
-                                "${general0101[3] + general0103[3] + general0104[3] + general0105[3] + general0106[3] + general0107[3] + general0108[3] + general0109[3] + general0110[3] + general0113[3]}",
+                                "${general0101[3] + general0103[3] + general0104[3]
+                                    + general0105[3] + general0106[3] + general0107[3]
+                                    + general0108[3] + general0109[3] + general0110[3]
+                                    + general0113[3]}",
                                 textAlign: TextAlign.center,
                                 style: TextStyle(
                                     color: Colors.white, fontSize: 17),
