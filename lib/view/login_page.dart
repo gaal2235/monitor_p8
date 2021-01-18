@@ -57,7 +57,7 @@ class _LoginPageState extends State<LoginPage> {
     // TODO: implement initState
     super.initState();
 
-    _loginprefs();
+    _loginPrefs();
   }
 
   @override
@@ -232,7 +232,7 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   ///quarda login do ultimo usuario logado
-  _loginprefs() async {
+  _loginPrefs() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     setState(() {
       _tUsr.text = prefs.getString('login');

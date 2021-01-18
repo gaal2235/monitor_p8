@@ -240,20 +240,20 @@ class _MonitoringState extends State<Monitoring> {
                   DatePicker.showDatePicker(context,
                       showTitleActions: true,
                       minTime: DateTime(1999),
-                      maxTime: DateTime(2050), onChanged: (datede) {
-                    dataInit = datede;
-                    dataInitForm = DateFormat('yyyyMMdd').format(dataInit);
-                  }, onConfirm: (datede) {
+                      maxTime: DateTime(2050), onChanged: (dateInitValidator) {
+                    dateInit = dateInitValidator;
+                    dataInitForm = DateFormat('yyyyMMdd').format(dateInit);
+                  }, onConfirm: (dateInitConfirm) {
                     setState(() {
                       _loadData();
-                      dataInit = datede;
+                      dateInit = dateInit;
 
-                      dataInitForm = DateFormat('yyyyMMdd').format(dataInit);
+                      dataInitForm = DateFormat('yyyyMMdd').format(dateInit);
                     });
-                  }, currentTime: dataInit, locale: LocaleType.pt);
+                  }, currentTime: dateInit, locale: LocaleType.pt);
                 },
                 child: Stack(children: <Widget>[
-                  dataInit == null
+                  dateInit == null
                       ? Row(
                           children: [
                             // Icon(Icons.calendar_today,color: Colors.white,),
@@ -270,7 +270,7 @@ class _MonitoringState extends State<Monitoring> {
                           children: [
                             // Icon(Icons.calendar_today,color: Colors.white,),
                             Text(
-                                'De: ${DateFormat('dd/MM/yyyy').format(dataInit)}',
+                                'De: ${DateFormat('dd/MM/yyyy').format(dateInit)}',
                                 style: TextStyle(
                                   color: Colors.white,
                                   fontSize:
@@ -285,13 +285,13 @@ class _MonitoringState extends State<Monitoring> {
                   DatePicker.showDatePicker(context,
                       showTitleActions: true,
                       minTime: DateTime(1999),
-                      maxTime: DateTime(2050), onChanged: (dateate) {
-                    dateEnd = dateate;
+                      maxTime: DateTime(2050), onChanged: (dateEndValidator) {
+                    dateEnd = dateEndValidator;
                     dateEndForm = DateFormat('yyyyMMdd').format(dateEnd);
-                  }, onConfirm: (dateate) {
+                  }, onConfirm: (dateEndConfirm) {
                     setState(() {
                       _loadData();
-                      dateEnd = dateate;
+                      dateEnd = dateEndConfirm;
                       dateEndForm = DateFormat('yyyyMMdd').format(dateEnd);
                     });
                   }, currentTime: dateEnd, locale: LocaleType.pt);
@@ -2257,7 +2257,7 @@ class _MonitoringState extends State<Monitoring> {
                                                     m.branchOrigin,
                                                     m.branchDestiny,
                                                     m.nf,
-                                                    m.nfSerie,
+                                                    m.nfSeries,
                                                     m.observation,
                                                     m.dateEmission,
                                                     m.dateEntry,

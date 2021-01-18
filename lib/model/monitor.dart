@@ -3,7 +3,7 @@ class Monitor {
   String branchOrigin;
   String branchDestiny;
   String nf;
-  String nfSerie;
+  String nfSeries;
   String dateEmission;
   String daysInTransit;
   String daysInTransitConcierge;
@@ -21,7 +21,7 @@ class Monitor {
       this.branchOrigin,
       this.branchDestiny,
       this.nf,
-      this.nfSerie,
+      this.nfSeries,
       this.dateEmission,
       this.daysInTransit,
       this.daysInTransitConcierge,
@@ -39,7 +39,7 @@ class Monitor {
     branchOrigin = json['filialOrigem'];
     branchDestiny = json['filialDestino'];
     nf = json['notaFiscal'];
-    nfSerie = json['notaSerie'];
+    nfSeries = json['notaSerie'];
     dateEmission = json['dataEmissao'];
     daysInTransit = json['diasTransito'];
     daysInTransitConcierge = json['diasTransitoPortaria'];
@@ -59,7 +59,7 @@ class Monitor {
     data['filialOrigem'] = this.branchOrigin;
     data['filialDestino'] = this.branchDestiny;
     data['notaFiscal'] = this.nf;
-    data['notaSerie'] = this.nfSerie;
+    data['notaSerie'] = this.nfSeries;
     data['dataEmissao'] = this.dateEmission;
     data['diasTransito'] = this.daysInTransit;
     data['diasTransitoPortaria'] = this.daysInTransitConcierge;

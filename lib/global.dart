@@ -16,7 +16,7 @@ int p8 = 0;
 int registry = 0;
 var dropdownValue = '0101';
 var colorApp = Colors.indigo;
-DateTime dataInit;
+DateTime dateInit;
 DateTime dateEnd;
 DateTime dateInitGeneral;
 DateTime dateEndGeneral;
