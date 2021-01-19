@@ -91,9 +91,9 @@ class OperatorWMS {
 }
 
 class SalesmanCode {
-  String branchCrj;
+  String branchCarajas;
   String uf;
-  String branchCrjName;
+  String branchCarajasName;
   String companyName;
   String companyGroup;
   String companyAddress;
@@ -108,9 +108,9 @@ class SalesmanCode {
   String officeName;
 
   SalesmanCode(
-      {this.branchCrj,
+      {this.branchCarajas,
       this.uf,
-      this.branchCrjName,
+      this.branchCarajasName,
       this.companyName,
       this.companyGroup,
       this.companyAddress,
@@ -125,9 +125,9 @@ class SalesmanCode {
       this.officeName});
 
   SalesmanCode.fromJson(Map<String, dynamic> json) {
-    branchCrj = json['filial'];
+    branchCarajas = json['filial'];
     uf = json['uf'];
-    branchCrjName = json['sigla'];
+    branchCarajasName = json['sigla'];
     companyName = json['nomeEmpresa'];
     companyGroup = json['grupoEmpresas'];
     companyAddress = json['enderecoEmpresa'];
@@ -144,9 +144,9 @@ class SalesmanCode {
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['filial'] = this.branchCrj;
+    data['filial'] = this.branchCarajas;
     data['uf'] = this.uf;
-    data['sigla'] = this.branchCrjName;
+    data['sigla'] = this.branchCarajasName;
     data['nomeEmpresa'] = this.companyName;
     data['grupoEmpresas'] = this.companyGroup;
     data['enderecoEmpresa'] = this.companyAddress;

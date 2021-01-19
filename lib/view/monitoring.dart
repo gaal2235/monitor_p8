@@ -1583,19 +1583,19 @@ class _MonitoringState extends State<Monitoring> {
                                                                       DateTime(
                                                                           2050),
                                                                   onChanged:
-                                                                      (datedegeral) {
-                                                                datedegeral =
-                                                                    datedegeral;
+                                                                      (dateInitGeneralController) {
+                                                                dateInitGeneralController =
+                                                                    dateInitGeneralController;
                                                                 dataInitFormGeneral =
                                                                     DateFormat(
                                                                             'yyyyMMdd')
                                                                         .format(
                                                                             dateInitGeneral);
                                                               }, onConfirm:
-                                                                      (datedegeral) {
+                                                                      (dateInitGeneralController) {
                                                                 setState(() {
                                                                   dateInitGeneral =
-                                                                      datedegeral;
+                                                                      dateInitGeneralController;
 
                                                                   dataInitFormGeneral =
                                                                       DateFormat(
@@ -1628,19 +1628,19 @@ class _MonitoringState extends State<Monitoring> {
                                                                       DateTime(
                                                                           2050),
                                                                   onChanged:
-                                                                      (dateategeral) {
+                                                                      (dateEndGeneralController) {
                                                                 dateEndGeneral =
-                                                                    dateategeral;
+                                                                    dateEndGeneralController;
                                                                 dateEndFormGeneral =
                                                                     DateFormat(
                                                                             'yyyyMMdd')
                                                                         .format(
-                                                                            dateategeral);
+                                                                            dateEndGeneralController);
                                                               }, onConfirm:
-                                                                      (dateategeral) {
+                                                                      (dateEndGeneralController) {
                                                                 setState(() {
                                                                   dateEndGeneral =
-                                                                      dateategeral;
+                                                                      dateEndGeneralController;
                                                                   dateEndFormGeneral =
                                                                       DateFormat(
                                                                               'yyyyMMdd')
@@ -2378,7 +2378,7 @@ class _MonitoringState extends State<Monitoring> {
     _streamController.add(null);
 
     List<Monitor> monitor = await MonitorGet.getMonitor(
-      branchCrjDestiny: dropdownValue,
+      branchCarajasDestiny: dropdownValue,
       dateInit: "$dataInitForm",
       dateEnd: "$dateEndForm",
       plate: plate.toUpperCase(),
@@ -2419,7 +2419,7 @@ class _MonitoringState extends State<Monitoring> {
         });
 
     monitorGeneral = await MonitorGet.getMonitor(
-      branchCrjDestiny: "",
+      branchCarajasDestiny: "",
       dateInit: "$dataInitFormGeneral",
       dateEnd: "$dateEndFormGeneral",
     );
@@ -2594,7 +2594,7 @@ class _MonitoringState extends State<Monitoring> {
   ///alerta de detalhes
   alertDetailsStatus() {}
 
-  line(index, text, geral) {
+  line(index, text, general) {
     return StreamBuilder(
         stream: _streamControllerGeneral.stream,
         builder: (BuildContext context, AsyncSnapshot snapshot) {
@@ -2641,7 +2641,7 @@ class _MonitoringState extends State<Monitoring> {
                                   ),
                                   color: Colors.white),
                               child: Text(
-                                "${geral[0]}",
+                                "${general[0]}",
                                 textAlign: TextAlign.center,
                                 style: TextStyle(
                                     color: Colors.black, fontSize: 17),
@@ -2657,7 +2657,7 @@ class _MonitoringState extends State<Monitoring> {
                                   ),
                                   color: Colors.white),
                               child: Text(
-                                "${geral[2]}",
+                                "${general[2]}",
                                 textAlign: TextAlign.center,
                                 style: TextStyle(
                                     color: Colors.black, fontSize: 17),
@@ -2673,7 +2673,7 @@ class _MonitoringState extends State<Monitoring> {
                                   ),
                                   color: Colors.white),
                               child: Text(
-                                '${geral[1]}',
+                                '${general[1]}',
                                 textAlign: TextAlign.center,
                                 style: TextStyle(
                                     color: Colors.black, fontSize: 17),
@@ -2689,7 +2689,7 @@ class _MonitoringState extends State<Monitoring> {
                                   ),
                                   color: Colors.white),
                               child: Text(
-                                "${geral[3]}",
+                                "${general[3]}",
                                 textAlign: TextAlign.center,
                                 style: TextStyle(
                                     color: Colors.black, fontSize: 17),
@@ -2705,7 +2705,7 @@ class _MonitoringState extends State<Monitoring> {
                                   ),
                                   color: colorApp[800]),
                               child: Text(
-                                "${geral[4]}",
+                                "${general[4]}",
                                 textAlign: TextAlign.center,
                                 style: TextStyle(
                                     color: Colors.white, fontSize: 17),
@@ -2880,7 +2880,7 @@ class _MonitoringState extends State<Monitoring> {
       String origin,
       String destiny,
       String nf,
-      String serie,
+      String series,
       String operation,
       String request,
       String input,
@@ -2962,7 +2962,7 @@ class _MonitoringState extends State<Monitoring> {
           Expanded(
             flex: 1,
             child: Text(
-              serie,
+              series,
               textAlign: TextAlign.center,
               style: TextStyle(color: Colors.black),
             ),
@@ -3012,7 +3012,7 @@ class _MonitoringState extends State<Monitoring> {
       String origin,
       String destiny,
       String nf,
-      String serie,
+      String series,
       String input,
       String emission,
       String day,
@@ -3092,7 +3092,7 @@ class _MonitoringState extends State<Monitoring> {
           Expanded(
             flex: 1,
             child: Text(
-              serie,
+              series,
               textAlign: TextAlign.center,
               style: TextStyle(color: Colors.black),
             ),

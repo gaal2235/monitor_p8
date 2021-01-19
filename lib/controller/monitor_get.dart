@@ -10,9 +10,9 @@ class MonitorGet {
       String dateEnd = "",
       String gfe = "",
       String plate = "",
-      String branchCrjDestiny = ""}) async {
+      String branchCarajasDestiny = ""}) async {
     var url = 'http://172.40.1.7:7903/rest/AUDITORIAS/MONITOR?DATADE=$dateInit&'
-        'DATAATE=$dateEnd&FILIALDESTINO=$branchCrjDestiny&ROMANEIO=$gfe&'
+        'DATAATE=$dateEnd&FILIALDESTINO=$branchCarajasDestiny&ROMANEIO=$gfe&'
         'PLACAVEICULO=$plate';
 
     var response = await http.get(url);
