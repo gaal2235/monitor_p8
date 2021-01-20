@@ -6,7 +6,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
-import 'package:monitor_geral/controller/monitor_filter_get.dart';
 import 'package:monitor_geral/controller/monitor_get.dart';
 import 'package:monitor_geral/global.dart';
 import 'package:monitor_geral/model/monitor.dart';
@@ -2267,86 +2266,34 @@ class _MonitoringState extends State<Monitoring> {
                                                       onTap: () {
                                                         register(m);
                                                       },
-                                                      child: Container(
-                                                        child: m.concierge ==
-                                                                "N"
-                                                            ? Padding(
-                                                                padding:
-                                                                    const EdgeInsets
-                                                                            .fromLTRB(
-                                                                        3,
-                                                                        0,
-                                                                        3,
-                                                                        0),
-                                                                child: Icon(
-                                                                  MdiIcons
-                                                                      .truckFastOutline,
-                                                                  color: Colors
-                                                                      .red[800],
-                                                                ),
-                                                              )
-                                                            : GestureDetector(
-                                                                onTap:
-                                                                    alertDetailsStatus(),
-                                                                child: Padding(
-                                                                  padding:
-                                                                      const EdgeInsets
-                                                                              .fromLTRB(
-                                                                          3,
-                                                                          0,
-                                                                          3,
-                                                                          0),
-                                                                  child: Icon(
-                                                                    MdiIcons
-                                                                        .truckCheckOutline,
-                                                                    color: Colors
-                                                                            .green[
-                                                                        800],
-                                                                  ),
-                                                                ),
-                                                              ),
-                                                      ),
+                                                      child: m.concierge == "N"
+                                                          ? iconStatus(
+                                                              alertDetailsStatus(),
+                                                              Colors.red[800],
+                                                              MdiIcons
+                                                                  .truckFastOutline,
+                                                            )
+                                                          : iconStatus(
+                                                              alertDetailsStatus(),
+                                                              Colors.green[800],
+                                                              MdiIcons
+                                                                  .truckCheckOutline,
+                                                            ),
                                                     ),
                                                     m.checked == "S"
-                                                        ? GestureDetector(
-                                                            onTap:
-                                                                alertDetailsStatus(),
-                                                            child: Padding(
-                                                              padding:
-                                                                  const EdgeInsets
-                                                                          .fromLTRB(
-                                                                      3,
-                                                                      0,
-                                                                      3,
-                                                                      0),
-                                                              child: Icon(
-                                                                MdiIcons
-                                                                    .textBoxCheckOutline,
-                                                                color: Colors
-                                                                        .blueGrey[
-                                                                    800],
-                                                              ),
-                                                            ),
+                                                        ? iconStatus(
+                                                            alertDetailsStatus(),
+                                                            Colors
+                                                                .blueGrey[800],
+                                                            MdiIcons
+                                                                .textBoxCheckOutline,
                                                           )
                                                         : Container(),
                                                     m.received == "S"
-                                                        ? GestureDetector(
-                                                            onTap:
-                                                                alertDetailsStatus(),
-                                                            child: Padding(
-                                                              padding:
-                                                                  const EdgeInsets
-                                                                          .fromLTRB(
-                                                                      3,
-                                                                      0,
-                                                                      3,
-                                                                      0),
-                                                              child: Icon(
-                                                                MdiIcons.import,
-                                                                color: Colors
-                                                                    .cyan[800],
-                                                              ),
-                                                            ),
+                                                        ? iconStatus(
+                                                            alertDetailsStatus(),
+                                                            Colors.cyan[800],
+                                                            MdiIcons.import,
                                                           )
                                                         : Container(),
                                                     m.addressed == "S"
@@ -2378,11 +2325,15 @@ class _MonitoringState extends State<Monitoring> {
     _streamController.add(null);
 
     List<Monitor> monitor = await MonitorGet.getMonitor(
-      branchCarajasDestiny: dropdownValue,
+      received: "",
+      checked: "",
+      addressed: "",
+      concierge: "",
       dateInit: "$dataInitForm",
       dateEnd: "$dateEndForm",
       plate: plate.toUpperCase(),
       gfe: gfe,
+
     );
 
     totalCollections = monitor.length;
@@ -2419,7 +2370,7 @@ class _MonitoringState extends State<Monitoring> {
         });
 
     monitorGeneral = await MonitorGet.getMonitor(
-      branchCarajasDestiny: "",
+
       dateInit: "$dataInitFormGeneral",
       dateEnd: "$dateEndFormGeneral",
     );
@@ -2577,7 +2528,7 @@ class _MonitoringState extends State<Monitoring> {
   _loadDataFilter() async {
     _streamController.add(null);
 
-    List<Monitor> monitor2 = await MonitorFilterGet.getMonitorFilter(
+    List<Monitor> monitor = await MonitorGet.getMonitor(
       received: "$received",
       checked: "$checked",
       addressed: "$addressed",
@@ -2588,7 +2539,7 @@ class _MonitoringState extends State<Monitoring> {
       gfe: gfe,
     );
 
-    _streamController.add(monitor2);
+    _streamController.add(monitor);
   }
 
   ///alerta de detalhes
@@ -2772,12 +2723,7 @@ class _MonitoringState extends State<Monitoring> {
                                     width: 0.5,
                                   ),
                                   color: colorApp[800]),
-                              child: Text(
-                                "${general0101[0] + general0103[0] + general0104[0] + general0105[0] + general0106[0] + general0107[0] + general0108[0] + general0109[0] + general0110[0] + general0113[0]}",
-                                textAlign: TextAlign.center,
-                                style: TextStyle(
-                                    color: Colors.white, fontSize: 17),
-                              ),
+                              child: valueBranch(0),
                             ),
                           ),
                           Expanded(
@@ -2788,15 +2734,7 @@ class _MonitoringState extends State<Monitoring> {
                                     width: 0.5,
                                   ),
                                   color: colorApp[800]),
-                              child: Text(
-                                "${general0101[2] + general0103[2] + general0104[2]
-                                    + general0105[2] + general0106[2] + general0107[2]
-                                    + general0108[2] + general0109[2] + general0110[2]
-                                    + general0113[2]}",
-                                textAlign: TextAlign.center,
-                                style: TextStyle(
-                                    color: Colors.white, fontSize: 17),
-                              ),
+                              child: valueBranch(2),
                             ),
                           ),
                           Expanded(
@@ -2807,15 +2745,7 @@ class _MonitoringState extends State<Monitoring> {
                                     width: 0.5,
                                   ),
                                   color: colorApp[800]),
-                              child: Text(
-                                "${general0101[1] + general0103[1] + general0104[1]
-                                    + general0105[1] + general0106[1] + general0107[1]
-                                    + general0108[1] + general0109[1] + general0110[1]
-                                    + general0113[1]}",
-                                textAlign: TextAlign.center,
-                                style: TextStyle(
-                                    color: Colors.white, fontSize: 17),
-                              ),
+                              child: valueBranch(1),
                             ),
                           ),
                           Expanded(
@@ -2826,15 +2756,7 @@ class _MonitoringState extends State<Monitoring> {
                                     width: 0.5,
                                   ),
                                   color: colorApp[800]),
-                              child: Text(
-                                "${general0101[3] + general0103[3] + general0104[3]
-                                    + general0105[3] + general0106[3] + general0107[3]
-                                    + general0108[3] + general0109[3] + general0110[3]
-                                    + general0113[3]}",
-                                textAlign: TextAlign.center,
-                                style: TextStyle(
-                                    color: Colors.white, fontSize: 17),
-                              ),
+                              child: valueBranch(3),
                             ),
                           ),
                           Expanded(
@@ -3120,7 +3042,8 @@ class _MonitoringState extends State<Monitoring> {
 
   launchURL(String key) async {
     var url =
-        'http://www.nfe.fazenda.gov.br/portal/consultaRecaptcha.aspx?tipoConteudo=XbSeqxE8pl8=&tipoConsulta=completa&nfe=$key&';
+        'http://www.nfe.fazenda.gov.br/portal/consultaRecaptcha.aspx?tipoConteudo'
+        '=XbSeqxE8pl8=&tipoConsulta=completa&nfe=$key&';
     if (await canLaunch(url)) {
       await launch(url);
     } else {
@@ -3492,6 +3415,7 @@ class _MonitoringState extends State<Monitoring> {
   }
 
   date(var date, text) {
+    return
     Stack(children: <Widget>[
       date == null
           ? Row(
@@ -3517,4 +3441,31 @@ class _MonitoringState extends State<Monitoring> {
             )
     ]);
   }
+}
+
+valueBranch(index) {
+  return
+  Text(
+    "${general0101[index] + general0103[index] + general0104[index]
+        + general0105[index] + general0106[index] + general0107[index]
+        + general0108[index] + general0109[index] + general0110[index]
+        + general0113[index]}",
+    textAlign: TextAlign.center,
+    style: TextStyle(
+        color: Colors.white, fontSize: 17),
+  );
+}
+
+iconStatus(onTap, color, icon) {
+  return
+  GestureDetector(
+    onTap: onTap,
+    child: Padding(
+      padding: const EdgeInsets.fromLTRB(3, 0, 3, 0),
+      child: Icon(
+        icon,
+        color: color,
+      ),
+    ),
+  );
 }
