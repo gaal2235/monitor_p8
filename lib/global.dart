@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:monitor_geral/model/branch_carajas.dart';
 import 'package:monitor_geral/model/monitor.dart';
 import 'package:monitor_geral/model/user.dart';
 
@@ -42,3 +43,4 @@ List general0110 = [0, 0, 0, 0, 0];
 List general0113 = [0, 0, 0, 0, 0];
 List<Monitor> monitorGeneral;
 int totalGeneral = 0;
+List<BranchCarajas> branch;

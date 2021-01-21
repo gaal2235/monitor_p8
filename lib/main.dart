@@ -55,26 +55,6 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   int _counter = 0;
 
-/* final interval = const Duration(seconds: 1);
-
-  final int timerMaxSeconds = 300;
-
-  int currentSeconds = 0;
-
-  String get timerText =>
-      '${((timerMaxSeconds - currentSeconds) ~/ 60).toString().padLeft(2, '0')}: ${((timerMaxSeconds - currentSeconds) % 60).toString().padLeft(2, '0')}';
-
-  startTimeout([int milliseconds]) {
-    var duration = interval;
-
-    Timer.periodic(duration, (timer) {
-      setState(() {
-
-        currentSeconds = timer.tick;
-        if (timer.tick >= timerMaxSeconds){ timer.cancel();  Navigator.pushReplacement(context, MaterialPageRoute(builder: (BuildContext context) => MyApp()));}
-      });
-    });
-  }*/
 
   @override
   void initState() {

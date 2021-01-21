@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:monitor_geral/controller/admin_branch.dart';
 import 'package:monitor_geral/controller/login_get.dart';
 import 'package:monitor_geral/global.dart';
 import 'package:monitor_geral/view/monitoring.dart';
@@ -12,28 +13,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 class LoginPage extends StatefulWidget {
   @override
   _LoginPageState createState() => _LoginPageState();
-}
-
-class Company {
-  dynamic res = 0;
-  int id;
-  String name;
-  Company(this.id, this.name);
-
-  static List<Company> getCompanies() {
-    return <Company>[
-      Company(1, '0101 - MCZ'),
-      Company(2, '0103 - ARA'),
-      Company(3, '0104 - JPA'),
-      Company(4, '0105 - CD'),
-      Company(5, '0106 - CGE'),
-      Company(6, '0107 - NAT'),
-      Company(7, '0108 - CBD'),
-      Company(8, '0109 - FOR'),
-      Company(9, '0110 - JUA'),
-      Company(10, '0201 - DV'),
-    ];
-  }
 }
 
 class _LoginPageState extends State<LoginPage> {
@@ -71,14 +50,16 @@ class _LoginPageState extends State<LoginPage> {
               width: MediaQuery.of(context).size.width,
               padding: EdgeInsets.all(16),
               decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                      begin: Alignment.topRight,
-                      end: Alignment.bottomLeft,
-                      colors: [colorApp, colorApp.shade900])),
+                gradient: LinearGradient(
+                  begin: Alignment.topRight,
+                  end: Alignment.bottomLeft,
+                  colors: [colorApp, colorApp.shade900],
+                ),
+              ),
             ),
             Column(
               children: <Widget>[
-                SizedBox(height: MediaQuery.of(context).size.width * 0.1),
+                SizedBox(height: MediaQuery.of(context).size.width * 0.1,),
                 Align(
                   alignment: Alignment.topCenter,
                   child: Image.asset(
@@ -137,13 +118,14 @@ class _LoginPageState extends State<LoginPage> {
                                   focusNode: _loginFocus,
                                   onFieldSubmitted: (term) {
                                     _fieldFocusChange(
-                                        context, _loginFocus, _focusPassword);
+                                        context, _loginFocus, _focusPassword,);
                                   },
                                   onTap: () {
                                     Timer(
-                                        Duration(seconds: 1),
-                                        () => _controller.jumpTo(_controller
-                                            .position.maxScrollExtent));
+                                      Duration(seconds: 1),
+                                      () => _controller.jumpTo(
+                                          _controller.position.maxScrollExtent),
+                                    );
                                   },
                                   decoration: InputDecoration(
                                     hintText: 'Digite o login',
@@ -158,9 +140,10 @@ class _LoginPageState extends State<LoginPage> {
                               ),
                               onFocusChange: (login) {
                                 Timer(
-                                    Duration(seconds: 1),
-                                    () => _controller.jumpTo(
-                                        _controller.position.maxScrollExtent));
+                                  Duration(seconds: 1),
+                                  () => _controller.jumpTo(
+                                      _controller.position.maxScrollExtent),
+                                );
                               },
                             ),
                             SizedBox(height: 10),
@@ -180,12 +163,13 @@ class _LoginPageState extends State<LoginPage> {
                                 },
                                 onTap: () {
                                   Timer(
-                                      Duration(seconds: 1),
-                                      () => _controller.jumpTo(_controller
-                                          .position.maxScrollExtent));
+                                    Duration(seconds: 1),
+                                    () => _controller.jumpTo(
+                                        _controller.position.maxScrollExtent),
+                                  );
                                 },
                                 style:
-                                    TextStyle(fontSize: 16, color: Colors.grey),
+                                    TextStyle(fontSize: 16, color: Colors.grey,),
                                 decoration: InputDecoration(
                                   hintText: "Digite a senha",
                                   icon: Icon(
@@ -251,12 +235,17 @@ class _LoginPageState extends State<LoginPage> {
     setState(() {
       _showProgress = true;
     });
-
+    branch = await AdminBranch.branchCarajas();
+    dropdownValue = "${branch[0].code} - ${branch[0].initials}";
     user = await LoginGet.login(usr, pwd);
 
     if (user != null) {
-      Navigator.pushReplacement(context,
-          MaterialPageRoute(builder: (BuildContext context) => Monitoring()));
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (BuildContext context) => Monitoring(),
+        ),
+      );
       SharedPreferences prefs = await SharedPreferences.getInstance();
       prefs.setString('login', _tUsr.text);
       prefs.setString('senha', _tPwd.text);
@@ -270,7 +259,8 @@ class _LoginPageState extends State<LoginPage> {
           // return object of type Dialog
           return AlertDialog(
             shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(20.0)),
+              borderRadius: BorderRadius.circular(20.0),
+            ),
             title: Column(
               children: [
                 Icon(
