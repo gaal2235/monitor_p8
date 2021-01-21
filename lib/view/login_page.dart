@@ -59,7 +59,9 @@ class _LoginPageState extends State<LoginPage> {
             ),
             Column(
               children: <Widget>[
-                SizedBox(height: MediaQuery.of(context).size.width * 0.1,),
+                SizedBox(
+                  height: MediaQuery.of(context).size.width * 0.1,
+                ),
                 Align(
                   alignment: Alignment.topCenter,
                   child: Image.asset(
@@ -93,7 +95,10 @@ class _LoginPageState extends State<LoginPage> {
                         child: Column(
                           children: <Widget>[
                             SizedBox(
-                              height: MediaQuery.of(context).size.height * 0.01,
+                              height: MediaQuery.of(
+                                    context,
+                                  ).size.height *
+                                  0.01,
                             ),
                             /*Center(child:Text("Selecione a filial:"), ),
                     DropdownButton(
@@ -118,13 +123,17 @@ class _LoginPageState extends State<LoginPage> {
                                   focusNode: _loginFocus,
                                   onFieldSubmitted: (term) {
                                     _fieldFocusChange(
-                                        context, _loginFocus, _focusPassword,);
+                                      context,
+                                      _loginFocus,
+                                      _focusPassword,
+                                    );
                                   },
                                   onTap: () {
                                     Timer(
                                       Duration(seconds: 1),
                                       () => _controller.jumpTo(
-                                          _controller.position.maxScrollExtent),
+                                        _controller.position.maxScrollExtent,
+                                      ),
                                     );
                                   },
                                   decoration: InputDecoration(
@@ -142,7 +151,8 @@ class _LoginPageState extends State<LoginPage> {
                                 Timer(
                                   Duration(seconds: 1),
                                   () => _controller.jumpTo(
-                                      _controller.position.maxScrollExtent),
+                                    _controller.position.maxScrollExtent,
+                                  ),
                                 );
                               },
                             ),
@@ -168,8 +178,10 @@ class _LoginPageState extends State<LoginPage> {
                                         _controller.position.maxScrollExtent),
                                   );
                                 },
-                                style:
-                                    TextStyle(fontSize: 16, color: Colors.grey,),
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  color: Colors.grey,
+                                ),
                                 decoration: InputDecoration(
                                   hintText: "Digite a senha",
                                   icon: Icon(
@@ -181,15 +193,20 @@ class _LoginPageState extends State<LoginPage> {
                               ),
                             ),
                             SizedBox(
-                              height: MediaQuery.of(context).size.height * 0.01,
+                              height: MediaQuery.of(
+                                    context,
+                                  ).size.height *
+                                  0.01,
                             ),
                             Column(
                               crossAxisAlignment: CrossAxisAlignment.center,
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: <Widget>[
                                 SizedBox(
-                                  height:
-                                      MediaQuery.of(context).size.height * 0.01,
+                                  height: MediaQuery.of(
+                                        context,
+                                      ).size.height *
+                                      0.01,
                                 ),
                               ],
                             ),

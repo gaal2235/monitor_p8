@@ -3669,7 +3669,10 @@ class _MonitoringState extends State<Monitoring> {
 
 valueBranch(index) {
   return Text(
-    "${general0101[index] + general0103[index] + general0104[index] + general0105[index] + general0106[index] + general0107[index] + general0108[index] + general0109[index] + general0110[index] + general0113[index]}",
+    "${general0101[index] + general0103[index] + general0104[index]
+        + general0105[index] + general0106[index] + general0107[index]
+        + general0108[index] + general0109[index] + general0110[index]
+        + general0113[index]}",
     textAlign: TextAlign.center,
     style: TextStyle(color: Colors.white, fontSize: 17),
   );
