@@ -54,7 +54,7 @@ class Monitor {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
+    final Map<String, dynamic> data =  Map<String, dynamic>();
     data['chaveNFE'] = this.keyNfe;
     data['filialOrigem'] = this.branchOrigin;
     data['filialDestino'] = this.branchDestiny;

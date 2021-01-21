@@ -33,21 +33,21 @@ class User {
     email = json['email'];
     token = json['token'];
     if (json['operadorWMS'] != null) {
-      operatorWms = new List<OperatorWMS>();
+      operatorWms =  List<OperatorWMS>();
       json['operadorWMS'].forEach((v) {
-        operatorWms.add(new OperatorWMS.fromJson(v));
+        operatorWms.add( OperatorWMS.fromJson(v));
       });
     }
     if (json['codVend'] != null) {
-      salesmanCode = new List<SalesmanCode>();
+      salesmanCode =  List<SalesmanCode>();
       json['codVend'].forEach((v) {
-        salesmanCode.add(new SalesmanCode.fromJson(v));
+        salesmanCode.add( SalesmanCode.fromJson(v));
       });
     }
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
+    final Map<String, dynamic> data =  Map<String, dynamic>();
     data['codUser'] = this.userCode;
     data['user'] = this.user;
     data['nome'] = this.name;

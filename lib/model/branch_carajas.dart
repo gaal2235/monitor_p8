@@ -11,7 +11,7 @@ class BranchCarajas {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
+    final Map<String, dynamic> data =  Map<String, dynamic>();
     data['codigo'] = this.code;
     data['sigla'] = this.initials;
     return data;

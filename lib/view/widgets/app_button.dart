@@ -17,19 +17,19 @@ class AppButton extends StatelessWidget {
         alignment: Alignment.center,
         width: 500,
         height: 50,
-        decoration: new BoxDecoration(
+        decoration:  BoxDecoration(
           borderRadius: BorderRadius.all(
               Radius.circular(30.0) //                 <--- border radius here
               ),
-          gradient: new LinearGradient(
+          gradient:  LinearGradient(
             colors: [colorApp, colorApp.shade900],
             begin: FractionalOffset.centerLeft,
             end: FractionalOffset.centerRight,
           ),
         ),
         child: ButtonTheme(
-          shape: new RoundedRectangleBorder(
-            borderRadius: new BorderRadius.circular(30.0),
+          shape:  RoundedRectangleBorder(
+            borderRadius:  BorderRadius.circular(30.0),
           ),
           minWidth: 500.0,
           height: 500.0,

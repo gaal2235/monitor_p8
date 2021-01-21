@@ -76,8 +76,8 @@ class _LoginPageState extends State<LoginPage> {
             Form(
               key: _formKey,
               child: Card(
-                shape: new RoundedRectangleBorder(
-                  borderRadius: new BorderRadius.circular(30),
+                shape:  RoundedRectangleBorder(
+                  borderRadius:  BorderRadius.circular(30),
                 ),
                 color: Colors.white,
                 elevation: 9.0,
@@ -293,7 +293,7 @@ class _LoginPageState extends State<LoginPage> {
             ),
             actions: <Widget>[
               FlatButton(
-                child: new Text(
+                child:  Text(
                   "OK",
                   style: TextStyle(color: Colors.grey),
                 ),

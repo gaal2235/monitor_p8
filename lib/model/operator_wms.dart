@@ -18,7 +18,7 @@ class OperatorWMS {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
+    final Map<String, dynamic> data =  Map<String, dynamic>();
     data['filialOperador'] = this.branchOperator;
     data['siglaFilialOperador'] = this.branchOperatorName;
     data['statusOperador'] = this.statusOperator;
