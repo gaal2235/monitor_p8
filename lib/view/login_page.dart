@@ -254,7 +254,7 @@ class _LoginPageState extends State<LoginPage> {
     });
     branch = await AdminBranch.branchCarajas();
     dropdownValue = "${branch[0].code} - ${branch[0].initials}";
-    user = await LoginGet.login(usr, pwd);
+    user = await Login.login(usr, pwd);
 
     if (user != null) {
       Navigator.pushReplacement(

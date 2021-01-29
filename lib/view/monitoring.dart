@@ -246,11 +246,13 @@ class _MonitoringState extends State<Monitoring> {
                             color: Colors.white70,
                           ),
                           onPressed: () {
-                            this.setState(() {
-                              _searchPlate.clear();
+                            this.setState(
+                              () {
+                                _searchPlate.clear();
 
-                              plate = "";
-                            });
+                                plate = "";
+                              },
+                            );
 
                             _loadData();
                           },
@@ -339,27 +341,28 @@ class _MonitoringState extends State<Monitoring> {
                     });
                   }, currentTime: dateEnd, locale: LocaleType.pt);
                 },
-                child: Stack(children: <Widget>[
-                  dateEnd == null
-                      ? Row(
-                          children: [
-                            //  Icon(Icons.calendar_today,color: Colors.white,),
-                            Text(
-                                "Até: ${DateFormat('dd/MM/yyyy').format(
-                                  DateTime.now(),
-                                )}",
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: MediaQuery.of(
-                                        context,
-                                      ).size.height *
-                                      0.02,
-                                )),
-                          ],
-                        )
-                      : Row(
-                          children: [
-                            Text(
+                child: Stack(
+                  children: <Widget>[
+                    dateEnd == null
+                        ? Row(
+                            children: [
+                              //  Icon(Icons.calendar_today,color: Colors.white,),
+                              Text(
+                                  "Até: ${DateFormat('dd/MM/yyyy').format(
+                                    DateTime.now(),
+                                  )}",
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: MediaQuery.of(
+                                          context,
+                                        ).size.height *
+                                        0.02,
+                                  )),
+                            ],
+                          )
+                        : Row(
+                            children: [
+                              Text(
                                 "Até: "
                                 "${DateFormat('dd/MM/yyyy').format(
                                   dateEnd,
@@ -370,10 +373,12 @@ class _MonitoringState extends State<Monitoring> {
                                         context,
                                       ).size.height *
                                       0.02,
-                                )),
-                          ],
-                        )
-                ]),
+                                ),
+                              ),
+                            ],
+                          )
+                  ],
+                ),
               ),
               Icon(Icons.timer),
               SizedBox(
@@ -998,17 +1003,18 @@ class _MonitoringState extends State<Monitoring> {
                                         Padding(
                                           padding: EdgeInsets.only(top: 4.0),
                                           child: Align(
-                                              alignment: Alignment.topLeft,
-                                              child: Text(
-                                                "Total",
-                                                style: TextStyle(
-                                                  fontSize: MediaQuery.of(
-                                                        context,
-                                                      ).size.height *
-                                                      0.022,
-                                                  color: Colors.white,
-                                                ),
-                                              )),
+                                            alignment: Alignment.topLeft,
+                                            child: Text(
+                                              "Total",
+                                              style: TextStyle(
+                                                fontSize: MediaQuery.of(
+                                                      context,
+                                                    ).size.height *
+                                                    0.022,
+                                                color: Colors.white,
+                                              ),
+                                            ),
+                                          ),
                                         ),
                                       ],
                                     ),
@@ -1061,7 +1067,11 @@ class _MonitoringState extends State<Monitoring> {
                   children: [
                     Expanded(
                       child: Padding(
-                        padding: EdgeInsets.only(top: 8.0, bottom: 8, left: 8),
+                        padding: EdgeInsets.only(
+                          top: 8.0,
+                          bottom: 8,
+                          left: 8,
+                        ),
                         child: GestureDetector(
                           onTap: () {
                             setState(
@@ -1150,26 +1160,26 @@ class _MonitoringState extends State<Monitoring> {
                                           Text(
                                             "Quantidade",
                                             style: TextStyle(
-                                              fontSize: MediaQuery.of(context)
-                                                      .size
-                                                      .height *
+                                              fontSize: MediaQuery.of(
+                                                    context,
+                                                  ).size.height *
                                                   0.018,
                                               color: Colors.white,
                                             ),
                                           ),
                                           Align(
-                                              alignment: Alignment.topRight,
-                                              child: Text(
-                                                "$p8",
-                                                style: TextStyle(
-                                                  fontSize:
-                                                      MediaQuery.of(context)
-                                                              .size
-                                                              .height *
-                                                          0.025,
-                                                  color: Colors.white,
-                                                ),
-                                              )),
+                                            alignment: Alignment.topRight,
+                                            child: Text(
+                                              "$p8",
+                                              style: TextStyle(
+                                                fontSize: MediaQuery.of(
+                                                      context,
+                                                    ).size.height *
+                                                    0.025,
+                                                color: Colors.white,
+                                              ),
+                                            ),
+                                          ),
                                         ],
                                       )
                                     ],
@@ -1570,7 +1580,12 @@ class _MonitoringState extends State<Monitoring> {
                     ),
                     Expanded(
                       child: Padding(
-                        padding: EdgeInsets.fromLTRB(0, 8, 8, 8.0),
+                        padding: EdgeInsets.fromLTRB(
+                          0,
+                          8,
+                          8,
+                          8.0,
+                        ),
                         child: GestureDetector(
                           onTap: () async {
                             setState(() {
@@ -1584,475 +1599,39 @@ class _MonitoringState extends State<Monitoring> {
                               _loadData();
                             });
                             showDialog<void>(
-                                context: context,
-                                barrierDismissible:
-                                    false, // user must tap button!
-                                builder: (BuildContext context) {
-                                  return Container(
-                                    height: MediaQuery.of(
-                                          context,
-                                        ).size.height *
-                                        0.03,
-                                    width: MediaQuery.of(
-                                          context,
-                                        ).size.width *
-                                        0.015,
-                                    child: Center(
-                                      child: CircularProgressIndicator(
-                                        valueColor:
-                                            AlwaysStoppedAnimation<Color>(
-                                          Colors.white,
-                                        ),
-                                      ),
-                                    ),
-                                  );
-                                });
-                            await _loadDataGeneral();
-
-                            Navigator.of(context).pop();
-
-                            showDialog<void>(
                               context: context,
                               barrierDismissible:
                                   false, // user must tap button!
                               builder: (BuildContext context) {
-                                return GestureDetector(
-                                  onTap: () {
-                                    // Navigator.of(context).pop();
-                                  },
-                                  child: StatefulBuilder(
-                                    builder: (context, setState) {
-                                      return AlertDialog(
-                                        shape: RoundedRectangleBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(20.0),
-                                        ),
-                                        backgroundColor: Colors.white,
-                                        title: SingleChildScrollView(
-                                          child: Column(
-                                            children: [
-                                              Stack(
-                                                children: [
-                                                  Padding(
-                                                    padding: EdgeInsets.all(
-                                                      8.0,
-                                                    ),
-                                                    child: Row(
-                                                      mainAxisAlignment:
-                                                          MainAxisAlignment
-                                                              .start,
-                                                      children: [
-                                                        GestureDetector(
-                                                          onTap: () {
-                                                            Navigator.of(
-                                                              context,
-                                                            ).pop();
-                                                            dateEndForm =
-                                                                "${DateFormat(
-                                                              'yyyyMMdd',
-                                                            ).format(
-                                                              DateTime.now(),
-                                                            )}";
-                                                            dataInitForm =
-                                                                "${DateFormat(
-                                                              'yyyyMMdd',
-                                                            ).format(
-                                                              DateTime.now(),
-                                                            )}";
-                                                            dateEndFormGeneral =
-                                                                "${DateFormat(
-                                                              'yyyyMMdd',
-                                                            ).format(
-                                                              DateTime.now(),
-                                                            )}";
-                                                            dataInitFormGeneral =
-                                                                "${DateFormat(
-                                                              'yyyyMMdd',
-                                                            ).format(
-                                                              DateTime.now(),
-                                                            )}";
-                                                          },
-                                                          child: Row(
-                                                            children: [
-                                                              Icon(Icons.clear),
-                                                              SizedBox(
-                                                                width: 3,
-                                                              ),
-                                                              Text(
-                                                                "Fechar",
-                                                                style:
-                                                                    TextStyle(
-                                                                  fontSize: 15,
-                                                                ),
-                                                              ),
-
-                                                              SizedBox(
-                                                                width: 10,
-                                                              ),
-                                                              //Text(timerText),
-                                                            ],
-                                                          ),
-                                                        ),
-                                                      ],
-                                                    ),
-                                                  ),
-                                                  Row(
-                                                    mainAxisAlignment:
-                                                        MainAxisAlignment.end,
-                                                    children: [
-                                                      FlatButton(
-                                                        onPressed: () {
-                                                          DatePicker.showDatePicker(
-                                                              context,
-                                                              showTitleActions:
-                                                                  true,
-                                                              minTime: DateTime(
-                                                                1999,
-                                                              ),
-                                                              maxTime: DateTime(
-                                                                2050,
-                                                              ), onChanged: (
-                                                            dateInitGeneralController,
-                                                          ) {
-                                                            dateInitGeneralController =
-                                                                dateInitGeneralController;
-                                                            dataInitFormGeneral =
-                                                                DateFormat(
-                                                              'yyyyMMdd',
-                                                            ).format(
-                                                              dateInitGeneral,
-                                                            );
-                                                          }, onConfirm: (
-                                                            dateInitGeneralController,
-                                                          ) {
-                                                            setState(() {
-                                                              dateInitGeneral =
-                                                                  dateInitGeneralController;
-
-                                                              dataInitFormGeneral =
-                                                                  DateFormat(
-                                                                'yyyyMMdd',
-                                                              ).format(
-                                                                dateInitGeneral,
-                                                              );
-                                                              _loadDataGeneral();
-                                                            });
-                                                          },
-                                                              currentTime:
-                                                                  dateInitGeneral,
-                                                              locale: LocaleType
-                                                                  .pt);
-                                                        },
-                                                        child: date(
-                                                            dateInitGeneral,
-                                                            "De"),
-                                                      ),
-                                                      FlatButton(
-                                                        onPressed: () {
-                                                          DatePicker.showDatePicker(
-                                                              context,
-                                                              showTitleActions:
-                                                                  true,
-                                                              minTime: DateTime(
-                                                                1999,
-                                                              ),
-                                                              maxTime: DateTime(
-                                                                2050,
-                                                              ), onChanged: (
-                                                            dateEndGeneralController,
-                                                          ) {
-                                                            dateEndGeneral =
-                                                                dateEndGeneralController;
-                                                            dateEndFormGeneral =
-                                                                DateFormat(
-                                                              'yyyyMMdd',
-                                                            ).format(
-                                                              dateEndGeneralController,
-                                                            );
-                                                          }, onConfirm: (
-                                                            dateEndGeneralController,
-                                                          ) {
-                                                            setState(
-                                                              () {
-                                                                dateEndGeneral =
-                                                                    dateEndGeneralController;
-                                                                dateEndFormGeneral =
-                                                                    DateFormat(
-                                                                  'yyyyMMdd',
-                                                                ).format(
-                                                                  dateEndGeneral,
-                                                                );
-                                                                _loadDataGeneral();
-                                                              },
-                                                            );
-                                                          },
-                                                              currentTime:
-                                                                  dateEndGeneral,
-                                                              locale: LocaleType
-                                                                  .pt);
-                                                        },
-                                                        child: date(
-                                                            dateEndGeneral,
-                                                            "Até"),
-                                                      ),
-                                                      GestureDetector(
-                                                        onTap: () async {
-                                                          await _loadDataGeneral();
-                                                        },
-                                                        child: Padding(
-                                                          padding:
-                                                              EdgeInsets.all(
-                                                            8.0,
-                                                          ),
-                                                          child: Row(
-                                                            children: [
-                                                              SizedBox(
-                                                                height: 20,
-                                                              ),
-
-                                                              Icon(
-                                                                Icons.refresh,
-                                                              ),
-                                                              SizedBox(
-                                                                width: 3,
-                                                              ),
-                                                              Text(
-                                                                "Atualizar",
-                                                                style:
-                                                                    TextStyle(
-                                                                  fontSize: 15,
-                                                                ),
-                                                              ),
-
-                                                              //Text(timerText),
-                                                            ],
-                                                          ),
-                                                        ),
-                                                      ),
-                                                    ],
-                                                  ),
-                                                ],
-                                              ),
-                                              Padding(
-                                                padding: EdgeInsets.only(
-                                                  left: 8,
-                                                  right: 8,
-                                                ),
-                                                child: Container(
-                                                  decoration: BoxDecoration(
-                                                    border: Border.all(
-                                                      color: Colors.indigo,
-                                                      width: 1.0,
-                                                    ),
-                                                    borderRadius:
-                                                        BorderRadius.only(
-                                                      topLeft:
-                                                          Radius.circular(5.0),
-                                                      topRight:
-                                                          Radius.circular(5.0),
-                                                    ),
-                                                    color: Colors.indigo[400],
-                                                  ),
-                                                  width: MediaQuery.of(context)
-                                                      .size
-                                                      .width,
-                                                  height: 50,
-                                                  child: Row(
-                                                    children: [
-                                                      Expanded(
-                                                        child: Container(
-                                                          height: MediaQuery.of(
-                                                                  context)
-                                                              .size
-                                                              .height,
-                                                          color: colorApp,
-                                                          child: Center(
-                                                            child: Text(
-                                                              "FILIAL",
-                                                              textAlign:
-                                                                  TextAlign
-                                                                      .center,
-                                                              style: TextStyle(
-                                                                color: Colors
-                                                                    .white,
-                                                                fontSize: 17,
-                                                              ),
-                                                            ),
-                                                          ),
-                                                        ),
-                                                      ),
-                                                      Container(
-                                                        width: 1.5,
-                                                        height: MediaQuery.of(
-                                                                context)
-                                                            .size
-                                                            .height,
-                                                        color: colorApp,
-                                                      ),
-                                                      Expanded(
-                                                        child: Text(
-                                                          "Auditoria P8",
-                                                          textAlign:
-                                                              TextAlign.center,
-                                                          style: TextStyle(
-                                                            color: Colors.white,
-                                                            fontSize: 17,
-                                                          ),
-                                                        ),
-                                                      ),
-                                                      Container(
-                                                        width: 1.5,
-                                                        height: MediaQuery.of(
-                                                                context)
-                                                            .size
-                                                            .height,
-                                                        color: colorApp,
-                                                      ),
-                                                      Expanded(
-                                                        child: Text(
-                                                          "CONFERÊNCIA",
-                                                          textAlign:
-                                                              TextAlign.center,
-                                                          style: TextStyle(
-                                                            color: Colors.white,
-                                                            fontSize: 17,
-                                                          ),
-                                                        ),
-                                                      ),
-                                                      Container(
-                                                        width: 1.5,
-                                                        height: MediaQuery.of(
-                                                                context)
-                                                            .size
-                                                            .height,
-                                                        color: colorApp,
-                                                      ),
-                                                      Expanded(
-                                                        child: Text(
-                                                          "ENTRADA NF",
-                                                          textAlign:
-                                                              TextAlign.center,
-                                                          style: TextStyle(
-                                                            color: Colors.white,
-                                                            fontSize: 17,
-                                                          ),
-                                                        ),
-                                                      ),
-                                                      Container(
-                                                        width: 1.5,
-                                                        height: MediaQuery.of(
-                                                                context)
-                                                            .size
-                                                            .height,
-                                                        color: colorApp,
-                                                      ),
-                                                      Expanded(
-                                                        child: Text(
-                                                          "ENDEREÇAMENTO",
-                                                          textAlign:
-                                                              TextAlign.center,
-                                                          style: TextStyle(
-                                                            color: Colors.white,
-                                                            fontSize: 17,
-                                                          ),
-                                                        ),
-                                                      ),
-                                                      Container(
-                                                        width: 1.5,
-                                                        height: MediaQuery.of(
-                                                                context)
-                                                            .size
-                                                            .height,
-                                                        color: colorApp,
-                                                      ),
-                                                      Expanded(
-                                                        child: Container(
-                                                          height: MediaQuery.of(
-                                                                  context)
-                                                              .size
-                                                              .height,
-                                                          color: colorApp[800],
-                                                          child: Center(
-                                                            child: Text(
-                                                              "TOTAL",
-                                                              textAlign:
-                                                                  TextAlign
-                                                                      .center,
-                                                              style: TextStyle(
-                                                                color: Colors
-                                                                    .white,
-                                                                fontSize: 17,
-                                                              ),
-                                                            ),
-                                                          ),
-                                                        ),
-                                                      ),
-                                                    ],
-                                                  ),
-                                                ),
-                                              ),
-                                              line(
-                                                0,
-                                                "MCZ - 0101",
-                                                general0101,
-                                              ),
-                                              line(
-                                                1,
-                                                "ARA - 0103",
-                                                general0103,
-                                              ),
-                                              line(
-                                                2,
-                                                "JPA - 0104",
-                                                general0104,
-                                              ),
-                                              line(
-                                                3,
-                                                "CD - 0105",
-                                                general0105,
-                                              ),
-                                              line(
-                                                4,
-                                                "CGD - 0106",
-                                                general0106,
-                                              ),
-                                              line(
-                                                5,
-                                                "NAT - 0107",
-                                                general0107,
-                                              ),
-                                              line(
-                                                6,
-                                                "CBD - 0108",
-                                                general0108,
-                                              ),
-                                              line(
-                                                7,
-                                                "FOR - 0109",
-                                                general0109,
-                                              ),
-                                              line(
-                                                8,
-                                                "JUA - 0110",
-                                                general0110,
-                                              ),
-                                              line(
-                                                9,
-                                                "DVM - 0113",
-                                                general0113,
-                                              ),
-                                              lineTotal(
-                                                10,
-                                                "TOTAL",
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                      );
-                                    },
+                                return Container(
+                                  height: MediaQuery.of(
+                                        context,
+                                      ).size.height *
+                                      0.03,
+                                  width: MediaQuery.of(
+                                        context,
+                                      ).size.width *
+                                      0.015,
+                                  child: Center(
+                                    child: CircularProgressIndicator(
+                                      valueColor: AlwaysStoppedAnimation<Color>(
+                                        Colors.white,
+                                      ),
+                                    ),
                                   ),
                                 );
                               },
+                            );
+                            await _loadDataGeneral();
+
+                            Navigator.of(context).pop();
+
+                            alertGeneral(
+                              _loadDataGeneral,
+                              context,
+                              date,
+                              line,
+                              lineTotal,
                             );
                           },
                           child: Container(
@@ -2061,11 +1640,15 @@ class _MonitoringState extends State<Monitoring> {
                                 color: Colors.blueGrey,
                                 width: 1.0,
                               ),
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(5.0)),
+                              borderRadius: BorderRadius.all(
+                                Radius.circular(5.0),
+                              ),
                               color: Colors.indigo[800],
                             ),
-                            height: MediaQuery.of(context).size.height * 0.15,
+                            height: MediaQuery.of(
+                                  context,
+                                ).size.height *
+                                0.15,
                             child: Column(
                               children: [
                                 Padding(
@@ -2084,9 +1667,9 @@ class _MonitoringState extends State<Monitoring> {
                                           Text(
                                             "Quantidade",
                                             style: TextStyle(
-                                              fontSize: MediaQuery.of(context)
-                                                      .size
-                                                      .height *
+                                              fontSize: MediaQuery.of(
+                                                    context,
+                                                  ).size.height *
                                                   0.018,
                                               color: Colors.white,
                                             ),
@@ -2475,8 +2058,10 @@ class _MonitoringState extends State<Monitoring> {
                                     child: ListView.builder(
                                       padding: EdgeInsets.zero,
                                       itemCount: monitor.length,
-                                      itemBuilder:
-                                          (BuildContext context, int index) {
+                                      itemBuilder: (
+                                        BuildContext context,
+                                        int index,
+                                      ) {
                                         Monitor m = monitor[index];
                                         key.add(m.keyNfe);
 
@@ -2557,7 +2142,7 @@ class _MonitoringState extends State<Monitoring> {
   _loadData() async {
     _streamController.add(null);
 
-    List<Monitor> monitor = await MonitorGet.getMonitor(
+    List<Monitor> monitor = await MonitorManagement.getMonitor(
       received: "",
       checked: "",
       addressed: "",
@@ -2601,7 +2186,7 @@ class _MonitoringState extends State<Monitoring> {
           );
         });
 
-    monitorGeneral = await MonitorGet.getMonitor(
+    monitorGeneral = await MonitorManagement.getMonitor(
       dateInit: "$dataInitFormGeneral",
       dateEnd: "$dateEndFormGeneral",
     );
@@ -2719,7 +2304,7 @@ class _MonitoringState extends State<Monitoring> {
   _loadDataFilter() async {
     _streamController.add(null);
 
-    List<Monitor> monitor = await MonitorGet.getMonitor(
+    List<Monitor> monitor = await MonitorManagement.getMonitor(
       received: "$received",
       checked: "$checked",
       addressed: "$addressed",
@@ -2739,7 +2324,10 @@ class _MonitoringState extends State<Monitoring> {
   line(index, text, general) {
     return StreamBuilder(
       stream: _streamControllerGeneral.stream,
-      builder: (BuildContext context, AsyncSnapshot snapshot) {
+      builder: (
+        BuildContext context,
+        AsyncSnapshot snapshot,
+      ) {
         return Align(
           alignment: Alignment.topCenter,
           child: Padding(
@@ -2888,7 +2476,10 @@ class _MonitoringState extends State<Monitoring> {
   lineTotal(index, text) {
     return StreamBuilder(
       stream: _streamControllerGeneral.stream,
-      builder: (BuildContext context, AsyncSnapshot snapshot) {
+      builder: (
+        BuildContext context,
+        AsyncSnapshot snapshot,
+      ) {
         return Align(
           alignment: Alignment.topCenter,
           child: Padding(
@@ -2911,14 +2502,15 @@ class _MonitoringState extends State<Monitoring> {
                         Expanded(
                           child: Container(
                             decoration: BoxDecoration(
-                                border: Border.all(
-                                  color: colorApp,
-                                  width: 0.5,
-                                ),
-                                borderRadius: BorderRadius.only(
-                                  bottomLeft: Radius.circular(5.0),
-                                ),
-                                color: colorApp[800]),
+                              border: Border.all(
+                                color: colorApp,
+                                width: 0.5,
+                              ),
+                              borderRadius: BorderRadius.only(
+                                bottomLeft: Radius.circular(5.0),
+                              ),
+                              color: colorApp[800],
+                            ),
                             child: Text(
                               text,
                               textAlign: TextAlign.center,
@@ -2980,14 +2572,15 @@ class _MonitoringState extends State<Monitoring> {
                         Expanded(
                           child: Container(
                             decoration: BoxDecoration(
-                                border: Border.all(
-                                  color: colorApp,
-                                  width: 0.5,
-                                ),
-                                borderRadius: BorderRadius.only(
-                                  bottomRight: Radius.circular(5.0),
-                                ),
-                                color: colorApp[800]),
+                              border: Border.all(
+                                color: colorApp,
+                                width: 0.5,
+                              ),
+                              borderRadius: BorderRadius.only(
+                                bottomRight: Radius.circular(5.0),
+                              ),
+                              color: colorApp[800],
+                            ),
                             child: Text(
                               "$totalGeneral",
                               textAlign: TextAlign.center,
@@ -3326,8 +2919,9 @@ class _MonitoringState extends State<Monitoring> {
                                           Text(
                                             "Auditoria P8",
                                             style: TextStyle(
-                                                color: Colors.green[800],
-                                                fontSize: 15),
+                                              color: Colors.green[800],
+                                              fontSize: 15,
+                                            ),
                                           ),
                                         ],
                                       ),
@@ -3341,8 +2935,12 @@ class _MonitoringState extends State<Monitoring> {
                                     color: m.concierge == "N"
                                         ? Colors.grey
                                         : Colors.green,
-                                    width: MediaQuery.of(context).size.width,
-                                    height: MediaQuery.of(context).size.height *
+                                    width: MediaQuery.of(
+                                      context,
+                                    ).size.width,
+                                    height: MediaQuery.of(
+                                          context,
+                                        ).size.height *
                                         0.005,
                                   ),
                                 ),
@@ -3361,9 +2959,10 @@ class _MonitoringState extends State<Monitoring> {
                                   child: Text(
                                     "${m.conciergeDate}",
                                     style: TextStyle(
-                                      fontSize:
-                                          MediaQuery.of(context).size.height *
-                                              0.02,
+                                      fontSize: MediaQuery.of(
+                                            context,
+                                          ).size.height *
+                                          0.02,
                                       color: m.concierge == "N"
                                           ? Colors.grey
                                           : Colors.green,
@@ -3375,9 +2974,10 @@ class _MonitoringState extends State<Monitoring> {
                                   child: Text(
                                     "${m.conciergeUser}",
                                     style: TextStyle(
-                                      fontSize:
-                                          MediaQuery.of(context).size.height *
-                                              0.02,
+                                      fontSize: MediaQuery.of(
+                                            context,
+                                          ).size.height *
+                                          0.02,
                                       color: m.concierge == "N"
                                           ? Colors.grey
                                           : Colors.green,
@@ -3420,8 +3020,12 @@ class _MonitoringState extends State<Monitoring> {
                                     color: m.checked == "S"
                                         ? Colors.green
                                         : Colors.grey,
-                                    width: MediaQuery.of(context).size.width,
-                                    height: MediaQuery.of(context).size.height *
+                                    width: MediaQuery.of(
+                                      context,
+                                    ).size.width,
+                                    height: MediaQuery.of(
+                                          context,
+                                        ).size.height *
                                         0.005,
                                   ),
                                 ),
@@ -3440,9 +3044,10 @@ class _MonitoringState extends State<Monitoring> {
                                   child: Text(
                                     "",
                                     style: TextStyle(
-                                      fontSize:
-                                          MediaQuery.of(context).size.height *
-                                              0.02,
+                                      fontSize: MediaQuery.of(
+                                            context,
+                                          ).size.height *
+                                          0.02,
                                       color: m.concierge == "N"
                                           ? Colors.grey
                                           : Colors.green,
@@ -3454,9 +3059,10 @@ class _MonitoringState extends State<Monitoring> {
                                   child: Text(
                                     "",
                                     style: TextStyle(
-                                      fontSize:
-                                          MediaQuery.of(context).size.height *
-                                              0.02,
+                                      fontSize: MediaQuery.of(
+                                            context,
+                                          ).size.height *
+                                          0.02,
                                       color: m.concierge == "N"
                                           ? Colors.grey
                                           : Colors.green,
@@ -3499,8 +3105,12 @@ class _MonitoringState extends State<Monitoring> {
                                     color: m.received == "S"
                                         ? Colors.green
                                         : Colors.grey,
-                                    width: MediaQuery.of(context).size.width,
-                                    height: MediaQuery.of(context).size.height *
+                                    width: MediaQuery.of(
+                                      context,
+                                    ).size.width,
+                                    height: MediaQuery.of(
+                                          context,
+                                        ).size.height *
                                         0.005,
                                   ),
                                 ),
@@ -3519,9 +3129,10 @@ class _MonitoringState extends State<Monitoring> {
                                   child: Text(
                                     "",
                                     style: TextStyle(
-                                      fontSize:
-                                          MediaQuery.of(context).size.height *
-                                              0.02,
+                                      fontSize: MediaQuery.of(
+                                            context,
+                                          ).size.height *
+                                          0.02,
                                       color: m.concierge == "N"
                                           ? Colors.grey
                                           : Colors.green,
@@ -3533,9 +3144,10 @@ class _MonitoringState extends State<Monitoring> {
                                   child: Text(
                                     "",
                                     style: TextStyle(
-                                      fontSize:
-                                          MediaQuery.of(context).size.height *
-                                              0.02,
+                                      fontSize: MediaQuery.of(
+                                            context,
+                                          ).size.height *
+                                          0.02,
                                       color: m.concierge == "N"
                                           ? Colors.grey
                                           : Colors.green,
@@ -3563,8 +3175,9 @@ class _MonitoringState extends State<Monitoring> {
                                     Text(
                                       "Endereçamento",
                                       style: TextStyle(
-                                          color: Colors.teal[800],
-                                          fontSize: 15),
+                                        color: Colors.teal[800],
+                                        fontSize: 15,
+                                      ),
                                     ),
                                   ],
                                 ),
@@ -3578,8 +3191,12 @@ class _MonitoringState extends State<Monitoring> {
                                     color: m.addressed == "S"
                                         ? Colors.grey
                                         : Colors.green,
-                                    width: MediaQuery.of(context).size.width,
-                                    height: MediaQuery.of(context).size.height *
+                                    width: MediaQuery.of(
+                                      context,
+                                    ).size.width,
+                                    height: MediaQuery.of(
+                                          context,
+                                        ).size.height *
                                         0.005,
                                   ),
                                 ),
@@ -3598,9 +3215,10 @@ class _MonitoringState extends State<Monitoring> {
                                   child: Text(
                                     "",
                                     style: TextStyle(
-                                      fontSize:
-                                          MediaQuery.of(context).size.height *
-                                              0.02,
+                                      fontSize: MediaQuery.of(
+                                            context,
+                                          ).size.height *
+                                          0.02,
                                       color: m.concierge == "N"
                                           ? Colors.grey
                                           : Colors.green,
@@ -3612,9 +3230,10 @@ class _MonitoringState extends State<Monitoring> {
                                   child: Text(
                                     "",
                                     style: TextStyle(
-                                      fontSize:
-                                          MediaQuery.of(context).size.height *
-                                              0.02,
+                                      fontSize: MediaQuery.of(
+                                            context,
+                                          ).size.height *
+                                          0.02,
                                       color: m.concierge == "N"
                                           ? Colors.grey
                                           : Colors.green,
@@ -3645,7 +3264,9 @@ class _MonitoringState extends State<Monitoring> {
                 children: [
                   // Icon(Icons.calendar_today,color: Colors.white,),
                   Text(
-                      '$text: ${DateFormat('dd/MM/yyyy').format(DateTime.now())}',
+                      '$text: ${DateFormat(
+                        'dd/MM/yyyy',
+                      ).format(DateTime.now())}',
                       style: TextStyle(
                         color: Colors.black,
                         fontSize: MediaQuery.of(context).size.height * 0.02,
@@ -3667,11 +3288,409 @@ class _MonitoringState extends State<Monitoring> {
   }
 }
 
+alertGeneral(_loadDataGeneral(), context, date, line, lineTotal) {
+  return showDialog<void>(
+    context: context,
+    barrierDismissible: false, // user must tap button!
+    builder: (BuildContext context) {
+      return GestureDetector(
+        onTap: () {
+          // Navigator.of(context).pop();
+        },
+        child: StatefulBuilder(
+          builder: (context, setState) {
+            return AlertDialog(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(20.0),
+              ),
+              backgroundColor: Colors.white,
+              title: SingleChildScrollView(
+                child: Column(
+                  children: [
+                    Stack(
+                      children: [
+                        Padding(
+                          padding: EdgeInsets.all(
+                            8.0,
+                          ),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                              GestureDetector(
+                                onTap: () {
+                                  Navigator.of(
+                                    context,
+                                  ).pop();
+                                  dateEndForm = "${DateFormat(
+                                    'yyyyMMdd',
+                                  ).format(
+                                    DateTime.now(),
+                                  )}";
+                                  dataInitForm = "${DateFormat(
+                                    'yyyyMMdd',
+                                  ).format(
+                                    DateTime.now(),
+                                  )}";
+                                  dateEndFormGeneral = "${DateFormat(
+                                    'yyyyMMdd',
+                                  ).format(
+                                    DateTime.now(),
+                                  )}";
+                                  dataInitFormGeneral = "${DateFormat(
+                                    'yyyyMMdd',
+                                  ).format(
+                                    DateTime.now(),
+                                  )}";
+                                },
+                                child: Row(
+                                  children: [
+                                    Icon(Icons.clear),
+                                    SizedBox(
+                                      width: 3,
+                                    ),
+                                    Text(
+                                      "Fechar",
+                                      style: TextStyle(
+                                        fontSize: 15,
+                                      ),
+                                    ),
+
+                                    SizedBox(
+                                      width: 10,
+                                    ),
+                                    //Text(timerText),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            FlatButton(
+                              onPressed: () {
+                                DatePicker.showDatePicker(context,
+                                    showTitleActions: true,
+                                    minTime: DateTime(
+                                      1999,
+                                    ),
+                                    maxTime: DateTime(
+                                      2050,
+                                    ), onChanged: (
+                                  dateInitGeneralController,
+                                ) {
+                                  dateInitGeneralController =
+                                      dateInitGeneralController;
+                                  dataInitFormGeneral = DateFormat(
+                                    'yyyyMMdd',
+                                  ).format(
+                                    dateInitGeneral,
+                                  );
+                                }, onConfirm: (
+                                  dateInitGeneralController,
+                                ) {
+                                  setState(
+                                    () {
+                                      dateInitGeneral =
+                                          dateInitGeneralController;
+
+                                      dataInitFormGeneral = DateFormat(
+                                        'yyyyMMdd',
+                                      ).format(
+                                        dateInitGeneral,
+                                      );
+                                      _loadDataGeneral();
+                                    },
+                                  );
+                                },
+                                    currentTime: dateInitGeneral,
+                                    locale: LocaleType.pt);
+                              },
+                              child: date(dateInitGeneral, "De"),
+                            ),
+                            FlatButton(
+                              onPressed: () {
+                                DatePicker.showDatePicker(context,
+                                    showTitleActions: true,
+                                    minTime: DateTime(
+                                      1999,
+                                    ),
+                                    maxTime: DateTime(
+                                      2050,
+                                    ), onChanged: (
+                                  dateEndGeneralController,
+                                ) {
+                                  dateEndGeneral = dateEndGeneralController;
+                                  dateEndFormGeneral = DateFormat(
+                                    'yyyyMMdd',
+                                  ).format(
+                                    dateEndGeneralController,
+                                  );
+                                }, onConfirm: (
+                                  dateEndGeneralController,
+                                ) {
+                                  setState(
+                                    () {
+                                      dateEndGeneral = dateEndGeneralController;
+                                      dateEndFormGeneral = DateFormat(
+                                        'yyyyMMdd',
+                                      ).format(
+                                        dateEndGeneral,
+                                      );
+                                      _loadDataGeneral();
+                                    },
+                                  );
+                                },
+                                    currentTime: dateEndGeneral,
+                                    locale: LocaleType.pt);
+                              },
+                              child: date(dateEndGeneral, "Até"),
+                            ),
+                            GestureDetector(
+                              onTap: () async {
+                                await _loadDataGeneral();
+                              },
+                              child: Padding(
+                                padding: EdgeInsets.all(
+                                  8.0,
+                                ),
+                                child: Row(
+                                  children: [
+                                    SizedBox(
+                                      height: 20,
+                                    ),
+
+                                    Icon(
+                                      Icons.refresh,
+                                    ),
+                                    SizedBox(
+                                      width: 3,
+                                    ),
+                                    Text(
+                                      "Atualizar",
+                                      style: TextStyle(
+                                        fontSize: 15,
+                                      ),
+                                    ),
+
+                                    //Text(timerText),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                    Padding(
+                      padding: EdgeInsets.only(
+                        left: 8,
+                        right: 8,
+                      ),
+                      child: Container(
+                        decoration: BoxDecoration(
+                          border: Border.all(
+                            color: Colors.indigo,
+                            width: 1.0,
+                          ),
+                          borderRadius: BorderRadius.only(
+                            topLeft: Radius.circular(5.0),
+                            topRight: Radius.circular(5.0),
+                          ),
+                          color: Colors.indigo[400],
+                        ),
+                        width: MediaQuery.of(
+                          context,
+                        ).size.width,
+                        height: 50,
+                        child: Row(
+                          children: [
+                            Expanded(
+                              child: Container(
+                                height: MediaQuery.of(context).size.height,
+                                color: colorApp,
+                                child: Center(
+                                  child: Text(
+                                    "FILIAL",
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 17,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                            Container(
+                              width: 1.5,
+                              height: MediaQuery.of(
+                                context,
+                              ).size.height,
+                              color: colorApp,
+                            ),
+                            Expanded(
+                              child: Text(
+                                "Auditoria P8",
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 17,
+                                ),
+                              ),
+                            ),
+                            Container(
+                              width: 1.5,
+                              height: MediaQuery.of(context).size.height,
+                              color: colorApp,
+                            ),
+                            Expanded(
+                              child: Text(
+                                "CONFERÊNCIA",
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 17,
+                                ),
+                              ),
+                            ),
+                            Container(
+                              width: 1.5,
+                              height: MediaQuery.of(context).size.height,
+                              color: colorApp,
+                            ),
+                            Expanded(
+                              child: Text(
+                                "ENTRADA NF",
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 17,
+                                ),
+                              ),
+                            ),
+                            Container(
+                              width: 1.5,
+                              height: MediaQuery.of(
+                                context,
+                              ).size.height,
+                              color: colorApp,
+                            ),
+                            Expanded(
+                              child: Text(
+                                "ENDEREÇAMENTO",
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 17,
+                                ),
+                              ),
+                            ),
+                            Container(
+                              width: 1.5,
+                              height: MediaQuery.of(
+                                context,
+                              ).size.height,
+                              color: colorApp,
+                            ),
+                            Expanded(
+                              child: Container(
+                                height: MediaQuery.of(
+                                  context,
+                                ).size.height,
+                                color: colorApp[800],
+                                child: Center(
+                                  child: Text(
+                                    "TOTAL",
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 17,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                    line(
+                      0,
+                      "MCZ - 0101",
+                      general0101,
+                    ),
+                    line(
+                      1,
+                      "ARA - 0103",
+                      general0103,
+                    ),
+                    line(
+                      2,
+                      "JPA - 0104",
+                      general0104,
+                    ),
+                    line(
+                      3,
+                      "CD - 0105",
+                      general0105,
+                    ),
+                    line(
+                      4,
+                      "CGD - 0106",
+                      general0106,
+                    ),
+                    line(
+                      5,
+                      "NAT - 0107",
+                      general0107,
+                    ),
+                    line(
+                      6,
+                      "CBD - 0108",
+                      general0108,
+                    ),
+                    line(
+                      7,
+                      "FOR - 0109",
+                      general0109,
+                    ),
+                    line(
+                      8,
+                      "JUA - 0110",
+                      general0110,
+                    ),
+                    line(
+                      9,
+                      "DVM - 0113",
+                      general0113,
+                    ),
+                    lineTotal(
+                      10,
+                      "TOTAL",
+                    ),
+                  ],
+                ),
+              ),
+            );
+          },
+        ),
+      );
+    },
+  );
+}
+
 valueBranch(index) {
   return Text(
-    "${general0101[index] + general0103[index] + general0104[index]
-        + general0105[index] + general0106[index] + general0107[index]
-        + general0108[index] + general0109[index] + general0110[index]
+    "${general0101[index]
+        + general0103[index]
+        + general0104[index]
+        + general0105[index]
+        + general0106[index]
+        + general0107[index]
+        + general0108[index]
+        + general0109[index]
+        + general0110[index]
         + general0113[index]}",
     textAlign: TextAlign.center,
     style: TextStyle(color: Colors.white, fontSize: 17),

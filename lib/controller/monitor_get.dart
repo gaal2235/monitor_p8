@@ -5,7 +5,7 @@ import 'package:monitor_geral/global.dart';
 import 'package:monitor_geral/model/monitor.dart';
 
 ///chamada responsavel buscar coletas p8
-class MonitorGet {
+class MonitorManagement {
   static Future<List<Monitor>> getMonitor(
       {String received = "",
         String checked = "",
@@ -15,8 +15,10 @@ class MonitorGet {
         String dateEnd = "",
         String gfe = "",
         String plate = ""}) async {
-    var url = 'http://172.40.1.7:7903/rest/AUDITORIAS/MONITOR?DATADE=$dateInit&'
-        'DATAATE=$dateEnd&FILIALDESTINO=$dropdownValue&RECEBIDO=$received&'
+    var url = 'http://172.40.1.7:7903/rest/AUDITORIAS/MONITOR?'
+        'DATADE=$dateInit&'
+        'DATAATE=$dateEnd&FILIALDESTINO=${dropdownValue.substring(0,4)}&'
+        'RECEBIDO=$received&'
         'CONFERIDO=$checked&ENDERECADO=$addressed&PORTARIA=$concierge&'
         'ROMANEIO=$gfe&PLACAVEICULO=$plate';
 

@@ -5,7 +5,7 @@ import 'package:monitor_geral/global.dart';
 import 'package:monitor_geral/model/user.dart';
 
 ///chamada responsavel por validar login e senha e possibilitar login
-class LoginGet {
+class Login {
   static Future<User> login(String usr, String pwd) async {
     var url;
 
