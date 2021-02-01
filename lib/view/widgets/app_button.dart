@@ -13,7 +13,7 @@ class AppButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       child: Container(
-        margin: EdgeInsets.all(20),
+
         alignment: Alignment.center,
         width: 500,
         height: 50,

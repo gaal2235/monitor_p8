@@ -32,7 +32,7 @@ dependencies:
   datetime_picker_formfield: ^1.0.0
   shared_preferences: ^0.5.6+3
   expandable: ^4.1.4
-
+  just_audio: ^0.5.6
   flutter:
 
     sdk: flutter

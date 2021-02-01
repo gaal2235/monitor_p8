@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
-import 'package:monitor_geral/controller/monitor_get.dart';
+import 'package:monitor_geral/controller/monitor.dart';
 import 'package:monitor_geral/global.dart';
 import 'package:monitor_geral/model/monitor.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -2072,11 +2072,11 @@ class _MonitoringState extends State<Monitoring> {
                                               m.branchOrigin,
                                               m.branchDestiny,
                                               m.nf,
-                                              m.nfSeries,
+                                              m.series,
                                               m.observation,
-                                              m.dateEmission,
-                                              m.dateEntry,
-                                              m.dateEmission,
+                                              m.emissionDate,
+                                              m.entryDate,
+                                              m.emissionDate,
                                               m.daysInTransit,
                                               GestureDetector(
                                                 onTap: () {
