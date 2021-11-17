@@ -3,13 +3,15 @@ import 'dart:convert' as convert;
 import 'package:http/http.dart' as http;
 import 'package:monitor_geral/model/branch_carajas.dart';
 
+import '../model/branch_carajas.dart';
+
 
 ///chamada responsavel por validar login e senha e possibilitar login
 class AdminBranch {
   static Future<List<BranchCarajas>> branchCarajas() async {
     var url;
 
-    url = "http://172.40.1.7:9198/rest/ADMIN/FILIAIS?APP=auditor";
+    url = "http://172.40.1.7:9198/rest/ADMIN/FILIAIS";
     var response = await http.get(url);
 
     String json = response.body;

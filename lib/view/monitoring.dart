@@ -118,6 +118,8 @@ class _MonitoringState extends State<Monitoring> {
                     branchCrj(10),
                     branchCrj(11),
                     branchCrj(12),
+                    branchCrj(13),
+                    branchCrj(15),
                   ].map<DropdownMenuItem<String>>((
                     String value,
                   ) {
@@ -3698,7 +3700,7 @@ valueBranch(index) {
 }
 
 branchCrj(index) {
-  return "${branch[index].code} - ${branch[index].initials}";
+  return "${branch[index].code} ${branch[index].initials=="S/CLASS"?"":"- ${branch[index].initials}"} - ${branch[index].cidadeEmpresa}";
 }
 
 iconStatus(onTap, color, icon) {

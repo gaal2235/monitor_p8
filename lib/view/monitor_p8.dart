@@ -20,6 +20,7 @@ final _searchGfe = TextEditingController();
 final _searchPlate = TextEditingController();
 final _nfCode = TextEditingController();
 bool nfValidator = true;
+bool progress = false;
 bool plateValidator = true;
 
 class _MonitorP8State extends State<MonitorP8> {
@@ -111,6 +112,8 @@ class _MonitorP8State extends State<MonitorP8> {
                     branchCrj(10),
                     branchCrj(11),
                     branchCrj(12),
+                    branchCrj(13),
+                    branchCrj(15),
                   ].map<DropdownMenuItem<String>>((
                     String value,
                   ) {
@@ -708,15 +711,44 @@ class _MonitorP8State extends State<MonitorP8> {
                                           ),
                                           Align(
                                             alignment: Alignment.topRight,
-                                            child: Text(
-                                              "$p8Pending",
-                                              style: TextStyle(
-                                                fontSize: MediaQuery.of(
+                                            child: Row(
+                                              children: [
+                                                Text(
+                                                  "$p8Pending",
+                                                  style: TextStyle(
+                                                    fontSize: MediaQuery.of(
+                                                          context,
+                                                        ).size.height *
+                                                        0.03,
+                                                    color: Colors.white,
+                                                  ),
+                                                ),
+                                                !progress?
+                                                Padding(
+                                                  padding: EdgeInsets.all(8.0),
+                                                  child: Container(
+                                                    height: MediaQuery.of(
                                                       context,
                                                     ).size.height *
-                                                    0.03,
-                                                color: Colors.white,
-                                              ),
+                                                        0.03,
+                                                    width: MediaQuery.of(
+                                                      context,
+                                                    ).size.width *
+                                                        0.015,
+                                                    child: Center(
+                                                      child:
+                                                      CircularProgressIndicator(
+                                                        valueColor:
+                                                        AlwaysStoppedAnimation<
+                                                            Color>(
+                                                          Colors.white,
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ),
+                                                )
+                                                    :Container()
+                                              ],
                                             ),
                                           ),
                                         ],
@@ -1511,13 +1543,26 @@ class _MonitorP8State extends State<MonitorP8> {
     currentSeconds = 0;
 
     _streamController.add(null);
+    List<Monitor> monitor = [];
+    for (int u = 0; u<100000;u++) {
+      progress = false;
+      List<Monitor> monitorTemp =await MonitorConciergeP8.getMonitorP8(
+        plate: _searchPlate.text.toUpperCase(),
+        gfe: _searchGfe.text,
+        off: u == 0?0:u == 1?1000:monitor.length,
+        limit: u == 0?1000:2000
+      );
 
-    List<Monitor> monitor = await MonitorConciergeP8.getMonitorP8(
-      plate: _searchPlate.text.toUpperCase(),
-      gfe: _searchGfe.text,
-    );
+      monitor += monitorTemp;
 
-    _streamController.add(monitor);
+      _streamController.add(monitor);
+      if(u!=0&&monitorTemp.length<2000){
+        progress = true;
+        _streamController.add(monitor);
+        break;
+      }
+    }
+
     startTimeout();
   }
 
@@ -2299,7 +2344,8 @@ class _MonitorP8State extends State<MonitorP8> {
   }
 
   branchCrj(index) {
-    return "${branch[index].code} - ${branch[index].initials}";
+    return   "${branch[index].code} ${branch[index].initials=="S/CLASS"?"":"- ${branch[index].initials}"} - ${branch[index].cidadeEmpresa}";
+
   }
 
   iconStatus(onTap, icon, color) {
