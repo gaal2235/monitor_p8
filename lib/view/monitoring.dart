@@ -9,6 +9,7 @@ import 'package:material_design_icons_flutter/material_design_icons_flutter.dart
 import 'package:monitor_geral/controller/monitor.dart';
 import 'package:monitor_geral/global.dart';
 import 'package:monitor_geral/model/monitor.dart';
+import 'package:monitor_geral/view/widgets/monitor_excel.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class Monitoring extends StatefulWidget {
@@ -24,11 +25,15 @@ class _MonitoringState extends State<Monitoring> {
   var gfe = "";
   var pl = FocusNode();
   final _streamController = StreamController<List<Monitor>>.broadcast();
+  StreamController _streamLoad = StreamController.broadcast();
+  StreamController _streamLoadOut = StreamController.broadcast();
+  bool load = false;
   final _streamControllerGeneral = StreamController<List<Monitor>>.broadcast();
   Timer timer;
   final interval = Duration(seconds: 1);
   final int timerMaxSeconds = 300;
   int currentSeconds = 0;
+  List<Monitor> monitorData;
   String get timerText =>
       '${((timerMaxSeconds - currentSeconds) ~/ 60).toString().padLeft(
             2,
@@ -382,12 +387,44 @@ class _MonitoringState extends State<Monitoring> {
                   ],
                 ),
               ),
+
+              GestureDetector(
+                  onTap: () async {
+                    if(!load){
+                    load = true;
+                    _streamLoadOut.add(85);
+                    await toExcelMonitor(monitorData);
+
+                    load = false;
+                    _streamLoadOut.add(85);
+                    }
+                  },
+                  child: StreamBuilder(
+                      stream: _streamLoadOut.stream,
+                      builder: (context, snapshot) {
+                        return !load
+                            ? Icon(MdiIcons.microsoftExcel)
+                            : Container(
+                          width: 20,
+                              height: 20,
+                              child: Center(
+                                  child: CircularProgressIndicator(
+                                  valueColor:
+                                      AlwaysStoppedAnimation<Color>(Colors.white),
+                                )),
+                            );
+                      })),
+
+              SizedBox(
+                width: 8,
+              ),
               Icon(Icons.timer),
               SizedBox(
                 width: 5,
               ),
               //Text("Tempo desde a ultima atualização: "),
               Text(timerText),
+
               SizedBox(
                 width: 20,
               ),
@@ -1628,13 +1665,8 @@ class _MonitoringState extends State<Monitoring> {
 
                             Navigator.of(context).pop();
 
-                            alertGeneral(
-                              _loadDataGeneral,
-                              context,
-                              date,
-                              line,
-                              lineTotal,
-                            );
+                            alertGeneral(_loadDataGeneral, context, date, line,
+                                lineTotal, monitorData, _streamLoad, load);
                           },
                           child: Container(
                             decoration: BoxDecoration(
@@ -1738,401 +1770,393 @@ class _MonitoringState extends State<Monitoring> {
                 );
               },
             ),
-            Row(
-              children: [
-                Expanded(
-                  child: Column(
-                    children: [
-                      Padding(
+            Expanded(
+              child: Column(
+                children: [
+                  Padding(
+                    padding: colorApp == Colors.green
+                        ? EdgeInsets.only(left: 8, right: 8)
+                        : EdgeInsets.only(left: 8, right: 8),
+                    child: Container(
+                      decoration: BoxDecoration(
+                        border: Border.all(
+                          color: colorApp[900],
+                          width: 1.0,
+                        ),
+                        borderRadius: BorderRadius.only(
+                          topLeft: Radius.circular(5.0),
+                          topRight: Radius.circular(5.0),
+                        ),
+                        color: colorApp[800],
+                      ),
+                      width: MediaQuery.of(context).size.width,
+                      height: 50,
+                      child: Row(
+                        children: [
+                          Expanded(
+                            flex: 1,
+                            child: Text(
+                              "Portal",
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: colorApp == Colors.green
+                                    ? MediaQuery.of(
+                                          context,
+                                        ).size.height *
+                                        0.018
+                                    : MediaQuery.of(
+                                          context,
+                                        ).size.height *
+                                        0.022,
+                              ),
+                            ),
+                          ),
+                          Expanded(
+                            flex: 1,
+                            child: Text(
+                              "Origem",
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: colorApp == Colors.green
+                                    ? MediaQuery.of(
+                                          context,
+                                        ).size.height *
+                                        0.018
+                                    : MediaQuery.of(
+                                          context,
+                                        ).size.height *
+                                        0.022,
+                              ),
+                            ),
+                          ),
+                          Expanded(
+                            flex: 1,
+                            child: Text(
+                              "Destino",
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: colorApp == Colors.green
+                                    ? MediaQuery.of(
+                                          context,
+                                        ).size.height *
+                                        0.018
+                                    : MediaQuery.of(
+                                          context,
+                                        ).size.height *
+                                        0.022,
+                              ),
+                            ),
+                          ),
+                          Expanded(
+                            flex: 2,
+                            child: Text(
+                              "Emissão",
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: colorApp == Colors.green
+                                    ? MediaQuery.of(
+                                          context,
+                                        ).size.height *
+                                        0.018
+                                    : MediaQuery.of(
+                                          context,
+                                        ).size.height *
+                                        0.022,
+                              ),
+                            ),
+                          ),
+                          Expanded(
+                            flex: 1,
+                            child: Text(
+                              "Dias",
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: colorApp == Colors.green
+                                    ? MediaQuery.of(
+                                          context,
+                                        ).size.height *
+                                        0.018
+                                    : MediaQuery.of(
+                                          context,
+                                        ).size.height *
+                                        0.022,
+                              ),
+                            ),
+                          ),
+                          Expanded(
+                            flex: 3,
+                            child: Text(
+                              "Nota Fiscal",
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: colorApp == Colors.green
+                                    ? MediaQuery.of(
+                                          context,
+                                        ).size.height *
+                                        0.018
+                                    : MediaQuery.of(
+                                          context,
+                                        ).size.height *
+                                        0.022,
+                              ),
+                            ),
+                          ),
+                          Expanded(
+                            flex: 1,
+                            child: Text(
+                              "Serie",
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: colorApp == Colors.green
+                                    ? MediaQuery.of(
+                                          context,
+                                        ).size.height *
+                                        0.018
+                                    : MediaQuery.of(
+                                          context,
+                                        ).size.height *
+                                        0.022,
+                              ),
+                            ),
+                          ),
+                          Expanded(
+                            flex: 2,
+                            child: Text(
+                              "Entrada",
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: colorApp == Colors.green
+                                    ? MediaQuery.of(
+                                          context,
+                                        ).size.height *
+                                        0.018
+                                    : MediaQuery.of(
+                                          context,
+                                        ).size.height *
+                                        0.022,
+                              ),
+                            ),
+                          ),
+                          Expanded(
+                            flex: 2,
+                            child: Text(
+                              "Pedido",
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: colorApp == Colors.green
+                                    ? MediaQuery.of(
+                                          context,
+                                        ).size.height *
+                                        0.018
+                                    : MediaQuery.of(
+                                          context,
+                                        ).size.height *
+                                        0.022,
+                              ),
+                            ),
+                          ),
+                          Expanded(
+                            flex: 3,
+                            child: Text(
+                              "Descrição",
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: colorApp == Colors.green
+                                    ? MediaQuery.of(
+                                          context,
+                                        ).size.height *
+                                        0.018
+                                    : MediaQuery.of(
+                                          context,
+                                        ).size.height *
+                                        0.022,
+                              ),
+                            ),
+                          ),
+                          Expanded(
+                            flex: 2,
+                            child: Text(
+                              "Status",
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: colorApp == Colors.green
+                                    ? MediaQuery.of(
+                                          context,
+                                        ).size.height *
+                                        0.018
+                                    : MediaQuery.of(
+                                          context,
+                                        ).size.height *
+                                        0.022,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  Expanded(
+                    child: Align(
+                      alignment: Alignment.topCenter,
+                      child: Padding(
                         padding: colorApp == Colors.green
-                            ? EdgeInsets.only(left: 8, right: 8)
-                            : EdgeInsets.only(left: 8, right: 8),
+                            ? EdgeInsets.only(
+                                bottom: 8.0,
+                                left: 8,
+                                right: 8,
+                              )
+                            : EdgeInsets.only(
+                                bottom: 8.0,
+                                left: 8,
+                                right: 8,
+                              ),
                         child: Container(
+                          width: MediaQuery.of(
+                            context,
+                          ).size.width,
                           decoration: BoxDecoration(
                             border: Border.all(
-                              color: colorApp[900],
+                              color: colorApp,
                               width: 1.0,
                             ),
                             borderRadius: BorderRadius.only(
-                              topLeft: Radius.circular(5.0),
-                              topRight: Radius.circular(5.0),
+                              bottomLeft: Radius.circular(5.0),
+                              bottomRight: Radius.circular(5.0),
                             ),
-                            color: colorApp[800],
                           ),
-                          width: MediaQuery.of(context).size.width,
-                          height: 50,
-                          child: Row(
-                            children: [
-                              Expanded(
-                                flex: 1,
-                                child: Text(
-                                  "Portal",
-                                  textAlign: TextAlign.center,
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: colorApp == Colors.green
-                                        ? MediaQuery.of(
-                                              context,
-                                            ).size.height *
-                                            0.018
-                                        : MediaQuery.of(
-                                              context,
-                                            ).size.height *
-                                            0.022,
-                                  ),
-                                ),
-                              ),
-                              Expanded(
-                                flex: 1,
-                                child: Text(
-                                  "Origem",
-                                  textAlign: TextAlign.center,
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: colorApp == Colors.green
-                                        ? MediaQuery.of(
-                                              context,
-                                            ).size.height *
-                                            0.018
-                                        : MediaQuery.of(
-                                              context,
-                                            ).size.height *
-                                            0.022,
-                                  ),
-                                ),
-                              ),
-                              Expanded(
-                                flex: 1,
-                                child: Text(
-                                  "Destino",
-                                  textAlign: TextAlign.center,
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: colorApp == Colors.green
-                                        ? MediaQuery.of(
-                                              context,
-                                            ).size.height *
-                                            0.018
-                                        : MediaQuery.of(
-                                              context,
-                                            ).size.height *
-                                            0.022,
-                                  ),
-                                ),
-                              ),
-                              Expanded(
-                                flex: 2,
-                                child: Text(
-                                  "Emissão",
-                                  textAlign: TextAlign.center,
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: colorApp == Colors.green
-                                        ? MediaQuery.of(
-                                              context,
-                                            ).size.height *
-                                            0.018
-                                        : MediaQuery.of(
-                                              context,
-                                            ).size.height *
-                                            0.022,
-                                  ),
-                                ),
-                              ),
-                              Expanded(
-                                flex: 1,
-                                child: Text(
-                                  "Dias",
-                                  textAlign: TextAlign.center,
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: colorApp == Colors.green
-                                        ? MediaQuery.of(
-                                              context,
-                                            ).size.height *
-                                            0.018
-                                        : MediaQuery.of(
-                                              context,
-                                            ).size.height *
-                                            0.022,
-                                  ),
-                                ),
-                              ),
-                              Expanded(
-                                flex: 3,
-                                child: Text(
-                                  "Nota Fiscal",
-                                  textAlign: TextAlign.center,
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: colorApp == Colors.green
-                                        ? MediaQuery.of(
-                                              context,
-                                            ).size.height *
-                                            0.018
-                                        : MediaQuery.of(
-                                              context,
-                                            ).size.height *
-                                            0.022,
-                                  ),
-                                ),
-                              ),
-                              Expanded(
-                                flex: 1,
-                                child: Text(
-                                  "Serie",
-                                  textAlign: TextAlign.center,
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: colorApp == Colors.green
-                                        ? MediaQuery.of(
-                                              context,
-                                            ).size.height *
-                                            0.018
-                                        : MediaQuery.of(
-                                              context,
-                                            ).size.height *
-                                            0.022,
-                                  ),
-                                ),
-                              ),
-                              Expanded(
-                                flex: 2,
-                                child: Text(
-                                  "Entrada",
-                                  textAlign: TextAlign.center,
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: colorApp == Colors.green
-                                        ? MediaQuery.of(
-                                              context,
-                                            ).size.height *
-                                            0.018
-                                        : MediaQuery.of(
-                                              context,
-                                            ).size.height *
-                                            0.022,
-                                  ),
-                                ),
-                              ),
-                              Expanded(
-                                flex: 2,
-                                child: Text(
-                                  "Pedido",
-                                  textAlign: TextAlign.center,
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: colorApp == Colors.green
-                                        ? MediaQuery.of(
-                                              context,
-                                            ).size.height *
-                                            0.018
-                                        : MediaQuery.of(
-                                              context,
-                                            ).size.height *
-                                            0.022,
-                                  ),
-                                ),
-                              ),
-                              Expanded(
-                                flex: 3,
-                                child: Text(
-                                  "Descrição",
-                                  textAlign: TextAlign.center,
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: colorApp == Colors.green
-                                        ? MediaQuery.of(
-                                              context,
-                                            ).size.height *
-                                            0.018
-                                        : MediaQuery.of(
-                                              context,
-                                            ).size.height *
-                                            0.022,
-                                  ),
-                                ),
-                              ),
-                              Expanded(
-                                flex: 2,
-                                child: Text(
-                                  "Status",
-                                  textAlign: TextAlign.center,
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: colorApp == Colors.green
-                                        ? MediaQuery.of(
-                                              context,
-                                            ).size.height *
-                                            0.018
-                                        : MediaQuery.of(
-                                              context,
-                                            ).size.height *
-                                            0.022,
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                      Align(
-                        alignment: Alignment.topCenter,
-                        child: Padding(
-                          padding: colorApp == Colors.green
-                              ? EdgeInsets.only(
-                                  bottom: 8.0,
-                                  left: 8,
-                                  right: 8,
-                                )
-                              : EdgeInsets.only(
-                                  bottom: 8.0,
-                                  left: 8,
-                                  right: 8,
-                                ),
-                          child: Container(
-                            width: MediaQuery.of(
-                              context,
-                            ).size.width,
-                            height: MediaQuery.of(
-                                  context,
-                                ).size.height *
-                                0.65,
-                            decoration: BoxDecoration(
-                              border: Border.all(
-                                color: colorApp,
-                                width: 1.0,
-                              ),
-                              borderRadius: BorderRadius.only(
-                                bottomLeft: Radius.circular(5.0),
-                                bottomRight: Radius.circular(5.0),
-                              ),
-                            ),
-                            child: Align(
-                              alignment: Alignment.topCenter,
-                              child: StreamBuilder(
-                                stream: _streamController.stream,
-                                builder: (BuildContext context,
-                                    AsyncSnapshot snapshot) {
-                                  if (!snapshot.hasData) {
-                                    return Center(
-                                      child: Image.asset(
-                                        'assets/gif1.gif',
-                                        color: colorApp,
-                                        height: 70,
-                                      ),
-                                    );
-                                  }
-                                  List<Monitor> monitor = snapshot.data;
-                                  if (monitor.isEmpty) {
-                                    return Center(
-                                        child: Column(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      children: [
-                                        Icon(
-                                          MdiIcons.clipboardOutline,
-                                          color: colorApp,
-                                          size: MediaQuery.of(
-                                                context,
-                                              ).size.width *
-                                              0.05,
-                                        ),
-                                        SizedBox(
-                                          height: MediaQuery.of(
-                                                context,
-                                              ).size.width *
-                                              0.01,
-                                        ),
-                                        Text(
-                                          "Não ha registros",
-                                          style: TextStyle(
-                                              fontSize: MediaQuery.of(
-                                                    context,
-                                                  ).size.width *
-                                                  0.015,
-                                              color: colorApp),
-                                        ),
-                                      ],
-                                    ));
-                                  }
-                                  return Scrollbar(
-                                    child: ListView.builder(
-                                      padding: EdgeInsets.zero,
-                                      itemCount: monitor.length,
-                                      itemBuilder: (
-                                        BuildContext context,
-                                        int index,
-                                      ) {
-                                        Monitor m = monitor[index];
-                                        key.add(m.keyNfe);
-
-                                        return Column(
-                                          children: [
-                                            lineMonitor(
-                                              key.length,
-                                              m.branchOrigin,
-                                              m.branchDestiny,
-                                              m.nf,
-                                              m.series,
-                                              m.observation,
-                                              m.emissionDate,
-                                              m.entryDate,
-                                              m.emissionDate,
-                                              m.daysInTransit,
-                                              GestureDetector(
-                                                onTap: () {
-                                                  register(m);
-                                                },
-                                                child: m.concierge == "N"
-                                                    ? iconStatus(
-                                                        alertDetailsStatus(),
-                                                        Colors.red[800],
-                                                        MdiIcons
-                                                            .truckFastOutline,
-                                                      )
-                                                    : iconStatus(
-                                                        alertDetailsStatus(),
-                                                        Colors.green[800],
-                                                        MdiIcons
-                                                            .truckCheckOutline,
-                                                      ),
-                                              ),
-                                              m.checked == "S"
-                                                  ? iconStatus(
-                                                      alertDetailsStatus(),
-                                                      Colors.blueGrey[800],
-                                                      MdiIcons
-                                                          .textBoxCheckOutline,
-                                                    )
-                                                  : Container(),
-                                              m.received == "S"
-                                                  ? iconStatus(
-                                                      alertDetailsStatus(),
-                                                      Colors.cyan[800],
-                                                      MdiIcons.import,
-                                                    )
-                                                  : Container(),
-                                              m.addressed == "S"
-                                                  ? Container()
-                                                  : Container(),
-                                            ),
-                                            lineSeparation(),
-                                          ],
-                                        );
-                                      },
+                          child: Align(
+                            alignment: Alignment.topCenter,
+                            child: StreamBuilder(
+                              stream: _streamController.stream,
+                              builder: (BuildContext context,
+                                  AsyncSnapshot snapshot) {
+                                if (!snapshot.hasData) {
+                                  return Center(
+                                    child: Image.asset(
+                                      'assets/gif1.gif',
+                                      color: colorApp,
+                                      height: 70,
                                     ),
                                   );
-                                },
-                              ),
+                                }
+                                monitorData = snapshot.data;
+                                if (monitorData.isEmpty) {
+                                  return Center(
+                                      child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Icon(
+                                        MdiIcons.clipboardOutline,
+                                        color: colorApp,
+                                        size: MediaQuery.of(
+                                              context,
+                                            ).size.width *
+                                            0.05,
+                                      ),
+                                      SizedBox(
+                                        height: MediaQuery.of(
+                                              context,
+                                            ).size.width *
+                                            0.01,
+                                      ),
+                                      Text(
+                                        "Não ha registros",
+                                        style: TextStyle(
+                                            fontSize: MediaQuery.of(
+                                                  context,
+                                                ).size.width *
+                                                0.015,
+                                            color: colorApp),
+                                      ),
+                                    ],
+                                  ));
+                                }
+                                return Scrollbar(
+                                  child: ListView.builder(
+                                    padding: EdgeInsets.zero,
+                                    itemCount: monitorData.length,
+                                    itemBuilder: (
+                                      BuildContext context,
+                                      int index,
+                                    ) {
+                                      Monitor m = monitorData[index];
+                                      key.add(m.keyNfe);
+
+                                      return Column(
+                                        children: [
+                                          lineMonitor(
+                                            key.length,
+                                            m.branchOrigin,
+                                            m.branchDestiny,
+                                            m.nf,
+                                            m.series,
+                                            m.observation,
+                                            m.emissionDate,
+                                            m.entryDate,
+                                            m.emissionDate,
+                                            m.daysInTransit,
+                                            GestureDetector(
+                                              onTap: () {
+                                                register(m);
+                                              },
+                                              child: m.concierge == "N"
+                                                  ? iconStatus(
+                                                      alertDetailsStatus(),
+                                                      Colors.red[800],
+                                                      MdiIcons.truckFastOutline,
+                                                    )
+                                                  : iconStatus(
+                                                      alertDetailsStatus(),
+                                                      Colors.green[800],
+                                                      MdiIcons
+                                                          .truckCheckOutline,
+                                                    ),
+                                            ),
+                                            m.checked == "S"
+                                                ? iconStatus(
+                                                    alertDetailsStatus(),
+                                                    Colors.blueGrey[800],
+                                                    MdiIcons
+                                                        .textBoxCheckOutline,
+                                                  )
+                                                : Container(),
+                                            m.received == "S"
+                                                ? iconStatus(
+                                                    alertDetailsStatus(),
+                                                    Colors.cyan[800],
+                                                    MdiIcons.import,
+                                                  )
+                                                : Container(),
+                                            m.addressed == "S"
+                                                ? Container()
+                                                : Container(),
+                                          ),
+                                          lineSeparation(),
+                                        ],
+                                      );
+                                    },
+                                  ),
+                                );
+                              },
                             ),
                           ),
                         ),
                       ),
-                    ],
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ],
         ),
@@ -3290,7 +3314,8 @@ class _MonitoringState extends State<Monitoring> {
   }
 }
 
-alertGeneral(_loadDataGeneral(), context, date, line, lineTotal) {
+alertGeneral(_loadDataGeneral(), context, date, line, lineTotal, monitorData,
+    _streamLoad, load) {
   return showDialog<void>(
     context: context,
     barrierDismissible: false, // user must tap button!
@@ -3475,7 +3500,42 @@ alertGeneral(_loadDataGeneral(), context, date, line, lineTotal) {
                                         fontSize: 15,
                                       ),
                                     ),
-
+                                    SizedBox(
+                                      width: 3,
+                                    ),
+                                    StreamBuilder(
+                                        stream: _streamLoad.stream,
+                                        builder: (context, snapshot) {
+                                          return GestureDetector(
+                                            onTap: () async {
+                                              if(!load){
+                                              load = true;
+                                              _streamLoad.add(123);
+                                              await toExcelMonitor(
+                                                  monitorGeneral.isNotEmpty
+                                                      ? monitorGeneral
+                                                      : monitorData);
+                                              load = false;
+                                              _streamLoad.add(123);
+                                              }
+                                            },
+                                            child: !load
+                                                ? Icon(MdiIcons.microsoftExcel)
+                                                : Container(
+                                              width: 20,
+                                              height: 20,
+                                                  child: Center(
+                                                      child:
+                                                          CircularProgressIndicator(
+                                                        valueColor:
+                                                            AlwaysStoppedAnimation<
+                                                                    Color>(
+                                                                Colors.white),
+                                                      ),
+                                                    ),
+                                                ),
+                                          );
+                                        }),
                                     //Text(timerText),
                                   ],
                                 ),
@@ -3684,23 +3744,14 @@ alertGeneral(_loadDataGeneral(), context, date, line, lineTotal) {
 
 valueBranch(index) {
   return Text(
-    "${general0101[index]
-        + general0103[index]
-        + general0104[index]
-        + general0105[index]
-        + general0106[index]
-        + general0107[index]
-        + general0108[index]
-        + general0109[index]
-        + general0110[index]
-        + general0113[index]}",
+    "${general0101[index] + general0103[index] + general0104[index] + general0105[index] + general0106[index] + general0107[index] + general0108[index] + general0109[index] + general0110[index] + general0113[index]}",
     textAlign: TextAlign.center,
     style: TextStyle(color: Colors.white, fontSize: 17),
   );
 }
 
 branchCrj(index) {
-  return "${branch[index].code} ${branch[index].initials=="S/CLASS"?"":"- ${branch[index].initials}"} - ${branch[index].cidadeEmpresa}";
+  return "${branch[index].code} ${branch[index].initials == "S/CLASS" ? "" : "- ${branch[index].initials}"} - ${branch[index].cidadeEmpresa}";
 }
 
 iconStatus(onTap, color, icon) {

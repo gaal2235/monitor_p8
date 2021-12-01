@@ -34,7 +34,7 @@ class _LoginPageState extends State<LoginPage> {
 
   bool _showProgress = false;
 
-  bool status = true;
+  bool status = false;
 
   void initState() {
     // TODO: implement initState
@@ -89,7 +89,7 @@ class _LoginPageState extends State<LoginPage> {
                                     0.01,
                               ),
 
-                             /* Row(children: [
+                              Row(children: [
                                 Expanded(
 
                                   child: StreamBuilder<bool>(
@@ -260,7 +260,7 @@ class _LoginPageState extends State<LoginPage> {
                                     },
                                   ),
                                 ),
-                              ],),*/
+                              ],),
 
                               SizedBox(
                                 height: MediaQuery.of(context).size.height * 0.01,

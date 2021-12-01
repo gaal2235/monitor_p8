@@ -1544,9 +1544,10 @@ class _MonitorP8State extends State<MonitorP8> {
 
     _streamController.add(null);
     List<Monitor> monitor = [];
+    List<Monitor> monitorTemp= [];
     for (int u = 0; u<100000;u++) {
       progress = false;
-      List<Monitor> monitorTemp =await MonitorConciergeP8.getMonitorP8(
+       monitorTemp =await MonitorConciergeP8.getMonitorP8(
         plate: _searchPlate.text.toUpperCase(),
         gfe: _searchGfe.text,
         off: u == 0?0:u == 1?1000:monitor.length,
