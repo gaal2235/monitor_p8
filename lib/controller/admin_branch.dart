@@ -11,7 +11,7 @@ class AdminBranch {
   static Future<List<BranchCarajas>> branchCarajas() async {
     var url;
 
-    url = "http://172.40.1.7:9198/rest/ADMIN/FILIAIS";
+    url = "http://api.carajaslabs.com.br:9198/rest/ADMIN/FILIAIS";
     var response = await http.get(url);
 
     String json = response.body;

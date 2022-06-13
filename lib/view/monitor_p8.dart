@@ -2,13 +2,14 @@ import 'dart:async';
 
 import 'package:clippy/browser.dart' as clippy;
 import 'package:flutter/material.dart';
-import 'package:just_audio/just_audio.dart';
+import 'package:intl/intl.dart';
 import 'package:monitor_geral/controller/concierge.dart';
 import 'package:monitor_geral/controller/monitor_p8.dart';
 import 'package:monitor_geral/model/monitor.dart';
 import 'package:monitor_geral/global.dart';
-import 'package:flutter/cupertino.dart';
+
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
+import 'package:monitor_geral/view/widgets/date.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class MonitorP8 extends StatefulWidget {
@@ -21,16 +22,22 @@ final _searchPlate = TextEditingController();
 final _nfCode = TextEditingController();
 bool nfValidator = true;
 bool progress = false;
+bool loadAta = false;
 bool plateValidator = true;
-
+List<Monitor> monitor = [];
+bool fst = true;
+int audited = 0;
 class _MonitorP8State extends State<MonitorP8> {
   final _streamController = StreamController<List<Monitor>>.broadcast();
+  final _streamController2 = StreamController<List<Monitor>>.broadcast();
+  final _streamController3 = StreamController<List<Monitor>>.broadcast();
+  final _streamController4 = StreamController<List<Monitor>>.broadcast();
   Timer timer;
   final interval = Duration(seconds: 1);
   var pl = FocusNode();
   var nf = FocusNode();
-  final int timerMaxSeconds = 300;
-  var newMessageSound = AudioPlayer();
+  final int timerMaxSeconds = 1200;
+
   int currentSeconds = 0;
 
   String get timerText =>
@@ -41,23 +48,37 @@ class _MonitorP8State extends State<MonitorP8> {
     var duration = interval;
 
     timer = Timer.periodic(duration, (timer) {
+
+      if (!loadAta) {
       if (mounted) {
         setState(() {
           currentSeconds = timer.tick;
           if (timer.tick >= timerMaxSeconds) {
+            currentSeconds = 0;
             _loadData();
             timer.cancel();
           }
         });
+      }
+      }else{
+        if (mounted) {
+          setState(() {
+            currentSeconds = timer.tick;
+            if (timer.tick >= timerMaxSeconds) {
+              timer.cancel();
+              startTimeout();
+            }
+          });
+        }
       }
     });
   }
 
   @override
   Future<void> initState() {
-    _loadData();
-    newMessageSound.setUrl("assets/teste5.mp3");
 
+
+    _loadData();
     super.initState();
   }
 
@@ -113,7 +134,9 @@ class _MonitorP8State extends State<MonitorP8> {
                     branchCrj(11),
                     branchCrj(12),
                     branchCrj(13),
+                    branchCrj(14),
                     branchCrj(15),
+                    branchCrj(16),
                   ].map<DropdownMenuItem<String>>((
                     String value,
                   ) {
@@ -127,7 +150,7 @@ class _MonitorP8State extends State<MonitorP8> {
               Padding(
                 padding: EdgeInsets.only(bottom: 5.0),
                 child: Container(
-                  width: MediaQuery.of(context).size.width * 0.1,
+                  width: MediaQuery.of(context).size.width * 0.06,
                   child: Theme(
                     data: ThemeData(
                       primaryColor: Colors.white,
@@ -171,7 +194,7 @@ class _MonitorP8State extends State<MonitorP8> {
               Padding(
                 padding: EdgeInsets.only(left: 10, bottom: 5.0),
                 child: Container(
-                  width: MediaQuery.of(context).size.width * 0.1,
+                  width: MediaQuery.of(context).size.width * 0.053,
                   child: Theme(
                     data: ThemeData(
                       primaryColor: Colors.white,
@@ -214,7 +237,7 @@ class _MonitorP8State extends State<MonitorP8> {
               Padding(
                 padding: EdgeInsets.only(left: 10, bottom: 5.0),
                 child: Container(
-                  width: MediaQuery.of(context).size.width * 0.3,
+                  width: MediaQuery.of(context).size.width * 0.25,
                   child: Theme(
                     data: ThemeData(
                       primaryColor: Colors.white,
@@ -239,14 +262,7 @@ class _MonitorP8State extends State<MonitorP8> {
                               _nfCode.text = "";
                               var post = await Concierge.postConcierge();
 
-                              if (post[0]['success'] == true) {
-                                await newMessageSound.seek(Duration.zero,
-                                    index: 0);
-                                await newMessageSound.pause();
-                                setState(() {
-                                  newMessageSound.play();
-                                });
-                              }
+
                               if (post[0]['success'] == false) {
                                 showDialog(
                                   context: context,
@@ -336,6 +352,115 @@ class _MonitorP8State extends State<MonitorP8> {
                   ),
                 ),
               ),
+              FlatButton(
+                onPressed: () async {
+                  if(dateInit==null){dateInit= DateTime.parse(DateFormat('yyyyMMdd').format(
+                    DateTime.now().subtract(Duration(days: 30)),
+
+                  ));}
+                  dateInit = await getDate(context, dateInit);
+                  dataInitForm = DateFormat('yyyyMMdd').format(
+                    dateInit,
+                  );
+
+                  setState(() {
+                    _loadData();
+                    dataInitForm = DateFormat('yyyyMMdd').format(
+                      dateInit,
+                    );
+                  });
+
+                },
+                child: Stack(children: <Widget>[
+                  dateInit == null
+                      ? Row(
+                    children: [
+                      Text(
+                          'De: ${DateFormat('dd/MM/yyyy').format(
+                            DateTime.now(),
+                          )}',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: MediaQuery.of(
+                              context,
+                            ).size.height *
+                                0.02,
+                          )),
+                    ],
+                  )
+                      : Row(
+                    children: [
+                      Text(
+                          'De: ${DateFormat('dd/MM/yyyy').format(
+                            dateInit,
+                          )}',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: MediaQuery.of(
+                              context,
+                            ).size.height *
+                                0.02,
+                          )),
+                    ],
+                  )
+                ]),
+              ),
+              FlatButton(
+                onPressed: () async {
+                  if(dateEnd==null){dateEnd= DateTime.parse(DateFormat('yyyyMMdd').format(
+                    DateTime.now(),
+                  ));}
+                  dateEnd = await getDate(context, dateEnd);
+                  dateEndForm = DateFormat('yyyyMMdd').format(
+                    dateEnd,
+                  );
+                  setState(() {
+                    _loadData();
+                    dateEndForm = DateFormat('yyyyMMdd').format(
+                      dateEnd,
+                    );
+                  });
+
+                },
+                child: Stack(
+                  children: <Widget>[
+                    dateEnd == null
+                        ? Row(
+                      children: [
+
+                        Text(
+                            "Até: ${DateFormat('dd/MM/yyyy').format(
+                              DateTime.now(),
+                            )}",
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: MediaQuery.of(
+                                context,
+                              ).size.height *
+                                  0.02,
+                            )),
+                      ],
+                    )
+                        : Row(
+                      children: [
+                        Text(
+                          "Até: "
+                              "${DateFormat('dd/MM/yyyy').format(
+                            dateEnd,
+                          )}",
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: MediaQuery.of(
+                              context,
+                            ).size.height *
+                                0.02,
+                          ),
+                        ),
+                      ],
+                    )
+                  ],
+                ),
+              ),
               Icon(Icons.timer),
               SizedBox(
                 width: 5,
@@ -367,354 +492,632 @@ class _MonitorP8State extends State<MonitorP8> {
               },
               child: Row(
                 children: [
-                  Text(
-                    'Monitor P8',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 20,
-                    ),
+                  Image.asset(
+                    colorApp==Colors.green?
+                    'assets/P8O.png':'assets/P8.png',
+                    width: MediaQuery.of(context).size.width * 0.060,
+
+                    alignment: Alignment.center,
                   ),
-                  Padding(
-                    padding: EdgeInsets.all(8.0),
-                    child: Icon(
-                      MdiIcons.truckCheckOutline,
-                      size: 30,
-                    ),
-                  ),
+
                 ],
               ),
             ),
           ],
         ),
       ),
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: EdgeInsets.only(left: 8.0, right: 8),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              StreamBuilder(
-                stream: _streamController.stream,
-                builder: (
-                  BuildContext context,
-                  AsyncSnapshot snapshot,
-                ) {
-                  if (!snapshot.hasData) {
-                    return Row(
-                      children: [
-                        Expanded(
-                          child: Padding(
-                            padding: EdgeInsets.only(
-                              top: 8.0,
-                              bottom: 8,
-                              left: 8,
-                            ),
-                            child: Container(
-                              decoration: BoxDecoration(
-                                border: Border.all(
-                                  color: Colors.grey[900],
-                                  width: 1.0,
+      body: StreamBuilder(
+        stream: _streamController2.stream,
+        builder: (context, snapshot) {
+          return SingleChildScrollView(
+            child: Padding(
+              padding: EdgeInsets.only(left: 8.0, right: 8),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  StreamBuilder(
+                    stream: _streamController.stream,
+                    builder: (
+                      BuildContext context,
+                      AsyncSnapshot snapshot,
+                    ) {
+                      if (!snapshot.hasData) {
+                        return Row(
+                          children: [
+                            Expanded(
+                              child: Padding(
+                                padding: EdgeInsets.only(
+                                  top: 8.0,
+                                  bottom: 8,
+                                  left: 8,
                                 ),
-                                borderRadius: BorderRadius.all(
-                                  Radius.circular(5.0),
-                                ),
-                                color: Colors.grey[800],
-                              ),
-                              height: MediaQuery.of(
-                                    context,
-                                  ).size.height *
-                                  0.17,
-                              child: Column(
-                                children: [
-                                  Padding(
-                                    padding: EdgeInsets.all(8.0),
-                                    child: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        Icon(
-                                          MdiIcons.truckFastOutline,
-                                          color: Colors.white,
-                                          size: 40,
-                                        ),
-                                        Column(
-                                          children: [
-                                            Text(
-                                              "Quantidade",
-                                              style: TextStyle(
-                                                fontSize: MediaQuery.of(
-                                                      context,
-                                                    ).size.height *
-                                                    0.018,
-                                                color: Colors.white,
-                                              ),
-                                            ),
-                                            Padding(
-                                              padding: EdgeInsets.all(2.0),
-                                              child: Container(
-                                                height: MediaQuery.of(
-                                                      context,
-                                                    ).size.height *
-                                                    0.03,
-                                                width: MediaQuery.of(
-                                                      context,
-                                                    ).size.width *
-                                                    0.015,
-                                                child: Center(
-                                                  child:
-                                                      CircularProgressIndicator(
-                                                    valueColor:
-                                                        AlwaysStoppedAnimation<
-                                                            Color>(
-                                                      Colors.white,
-                                                    ),
-                                                  ),
-                                                ),
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      ],
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                    border: Border.all(
+                                      color: Colors.grey[900],
+                                      width: 1.0,
                                     ),
+                                    borderRadius: BorderRadius.all(
+                                      Radius.circular(5.0),
+                                    ),
+                                    color: Colors.grey[800],
                                   ),
-                                  Padding(
-                                    padding: EdgeInsets.all(8.0),
-                                    child: Column(
-                                      mainAxisAlignment: MainAxisAlignment.end,
-                                      children: [
-                                        Container(
-                                          color: Colors.white,
-                                          width:
-                                              MediaQuery.of(context).size.width,
-                                          height: MediaQuery.of(context)
-                                                  .size
-                                                  .height *
-                                              0.001,
-                                        ),
-                                        Padding(
-                                          padding: EdgeInsets.only(top: 4.0),
-                                          child: Align(
-                                            alignment: Alignment.topLeft,
-                                            child: Text(
-                                              "Pendente Auditoria P8",
-                                              style: TextStyle(
-                                                fontSize: MediaQuery.of(
-                                                      context,
-                                                    ).size.height *
-                                                    0.025,
-                                                color: Colors.white,
-                                              ),
-                                            ),
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                        ),
-                        Expanded(
-                          child: Padding(
-                            padding: EdgeInsets.all(8.0),
-                            child: Container(
-                              decoration: BoxDecoration(
-                                border: Border.all(
-                                  color: Colors.green[900],
-                                  width: 1.0,
-                                ),
-                                borderRadius: BorderRadius.all(
-                                  Radius.circular(5.0),
-                                ),
-                                color: Colors.green[800],
-                              ),
-                              height: MediaQuery.of(
-                                    context,
-                                  ).size.height *
-                                  0.17,
-                              child: Column(
-                                children: [
-                                  Padding(
-                                    padding: EdgeInsets.all(8.0),
-                                    child: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        Icon(
-                                          MdiIcons.truckCheckOutline,
-                                          color: Colors.white,
-                                          size: 40,
-                                        ),
-                                        Column(
-                                          children: [
-                                            Text(
-                                              "Quantidade",
-                                              style: TextStyle(
-                                                fontSize: MediaQuery.of(
-                                                      context,
-                                                    ).size.height *
-                                                    0.018,
-                                                color: Colors.white,
-                                              ),
-                                            ),
-                                            Padding(
-                                              padding: EdgeInsets.all(2.0),
-                                              child: Container(
-                                                height: MediaQuery.of(
-                                                      context,
-                                                    ).size.height *
-                                                    0.03,
-                                                width: MediaQuery.of(
-                                                      context,
-                                                    ).size.width *
-                                                    0.015,
-                                                child: Center(
-                                                  child:
-                                                      CircularProgressIndicator(
-                                                    valueColor:
-                                                        AlwaysStoppedAnimation<
-                                                            Color>(
-                                                      Colors.white,
-                                                    ),
-                                                  ),
-                                                ),
-                                              ),
-                                            )
-                                          ],
-                                        )
-                                      ],
-                                    ),
-                                  ),
-                                  Padding(
-                                    padding: EdgeInsets.all(8.0),
-                                    child: Column(
-                                      mainAxisAlignment: MainAxisAlignment.end,
-                                      children: [
-                                        Container(
-                                          color: Colors.white,
-                                          width:
-                                              MediaQuery.of(context).size.width,
-                                          height: MediaQuery.of(
-                                                context,
-                                              ).size.height *
-                                              0.001,
-                                        ),
-                                        Padding(
-                                          padding: EdgeInsets.only(top: 4.0),
-                                          child: Align(
-                                            alignment: Alignment.topLeft,
-                                            child: Text(
-                                              "Auditados hoje",
-                                              style: TextStyle(
-                                                fontSize: MediaQuery.of(
-                                                      context,
-                                                    ).size.height *
-                                                    0.025,
-                                                color: Colors.white,
-                                              ),
-                                            ),
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  )
-                                ],
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
-                    );
-                  }
-                  oneDay = 0;
-                  conference = 0;
-                  pending = 0;
-                  supply = 0;
-                  total = 0;
-                  p8Pending = 0;
-                  p8Checked = 0;
-                  List<Monitor> monitor = snapshot.data;
-
-                  registry = monitor.length;
-                  for (int t = 0; t < monitor.length; t++) {
-                    if (monitor[t].checked == "N") {
-                      conference++;
-                    }
-                    if (monitor[t].addressed == "N") {
-                      pending++;
-                    }
-                    if (monitor[t].observation == "SEM PRE-NOTA") {
-                      supply++;
-                    }
-                    if (monitor[t].concierge == "N") {
-                      p8Pending++;
-                    }
-                    if (monitor[t].concierge == "S") {
-                      p8Checked++;
-                    }
-                    if (monitor[t].daysInTransit != " DD" &&
-                        monitor[t].daysInTransit != "0 DD" &&
-                        monitor[t].daysInTransit != "1 DD") {
-                      oneDay++;
-                    }
-                  }
-                  total = monitor.length;
-                  return Row(
-                    children: [
-                      Expanded(
-                        child: Padding(
-                          padding: EdgeInsets.only(
-                            top: 8.0,
-                            bottom: 8,
-                            left: 8,
-                          ),
-                          child: Container(
-                            decoration: BoxDecoration(
-                              border: Border.all(
-                                color: Colors.grey[900],
-                                width: 1.0,
-                              ),
-                              borderRadius: BorderRadius.all(
-                                Radius.circular(5.0),
-                              ),
-                              color: Colors.grey[800],
-                            ),
-                            height: MediaQuery.of(
-                                  context,
-                                ).size.height *
-                                0.17,
-                            child: Column(
-                              children: [
-                                Padding(
-                                  padding: EdgeInsets.all(8.0),
-                                  child: Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
+                                  height: MediaQuery.of(
+                                        context,
+                                      ).size.height *
+                                      0.17,
+                                  child: Column(
                                     children: [
-                                      Icon(
-                                        MdiIcons.truckFastOutline,
-                                        color: Colors.white,
-                                        size: 40,
-                                      ),
-                                      Column(
-                                        children: [
-                                          Text(
-                                            "Quantidade",
-                                            style: TextStyle(
-                                              fontSize: MediaQuery.of(
-                                                    context,
-                                                  ).size.height *
-                                                  0.018,
+                                      Padding(
+                                        padding: EdgeInsets.all(8.0),
+                                        child: Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            Icon(
+                                              MdiIcons.truckFastOutline,
                                               color: Colors.white,
+                                              size: 40,
                                             ),
-                                          ),
-                                          Align(
-                                            alignment: Alignment.topRight,
-                                            child: Row(
+                                            Column(
                                               children: [
                                                 Text(
-                                                  "$p8Pending",
+                                                  "Quantidade",
+                                                  style: TextStyle(
+                                                    fontSize: MediaQuery.of(
+                                                          context,
+                                                        ).size.height *
+                                                        0.018,
+                                                    color: Colors.white,
+                                                  ),
+                                                ),
+                                                Padding(
+                                                  padding: EdgeInsets.all(2.0),
+                                                  child: Container(
+                                                    height: MediaQuery.of(
+                                                          context,
+                                                        ).size.height *
+                                                        0.03,
+                                                    width: MediaQuery.of(
+                                                          context,
+                                                        ).size.width *
+                                                        0.015,
+                                                    child: Center(
+                                                      child:
+                                                          CircularProgressIndicator(
+                                                        valueColor:
+                                                            AlwaysStoppedAnimation<
+                                                                Color>(
+                                                          Colors.white,
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                      Padding(
+                                        padding: EdgeInsets.all(8.0),
+                                        child: Column(
+                                          mainAxisAlignment: MainAxisAlignment.end,
+                                          children: [
+                                            Container(
+                                              color: Colors.white,
+                                              width:
+                                                  MediaQuery.of(context).size.width,
+                                              height: MediaQuery.of(context)
+                                                      .size
+                                                      .height *
+                                                  0.001,
+                                            ),
+                                            Padding(
+                                              padding: EdgeInsets.only(top: 4.0),
+                                              child: Align(
+                                                alignment: Alignment.topLeft,
+                                                child: Text(
+                                                  "Pendente Auditoria P8",
+                                                  style: TextStyle(
+                                                    fontSize: MediaQuery.of(
+                                                          context,
+                                                        ).size.height *
+                                                        0.025,
+                                                    color: Colors.white,
+                                                  ),
+                                                ),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ),
+                            Expanded(
+                              child: Padding(
+                                padding: EdgeInsets.all(8.0),
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                    border: Border.all(
+                                      color: Colors.green[900],
+                                      width: 1.0,
+                                    ),
+                                    borderRadius: BorderRadius.all(
+                                      Radius.circular(5.0),
+                                    ),
+                                    color: Colors.green[800],
+                                  ),
+                                  height: MediaQuery.of(
+                                        context,
+                                      ).size.height *
+                                      0.17,
+                                  child: Column(
+                                    children: [
+                                      Padding(
+                                        padding: EdgeInsets.all(8.0),
+                                        child: Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            Icon(
+                                              MdiIcons.truckCheckOutline,
+                                              color: Colors.white,
+                                              size: 40,
+                                            ),
+                                            Column(
+                                              children: [
+                                                Text(
+                                                  "Quantidade",
+                                                  style: TextStyle(
+                                                    fontSize: MediaQuery.of(
+                                                          context,
+                                                        ).size.height *
+                                                        0.018,
+                                                    color: Colors.white,
+                                                  ),
+                                                ),
+                                                Padding(
+                                                  padding: EdgeInsets.all(2.0),
+                                                  child: Container(
+                                                    height: MediaQuery.of(
+                                                          context,
+                                                        ).size.height *
+                                                        0.03,
+                                                    width: MediaQuery.of(
+                                                          context,
+                                                        ).size.width *
+                                                        0.015,
+                                                    child: Center(
+                                                      child:
+                                                          CircularProgressIndicator(
+                                                        valueColor:
+                                                            AlwaysStoppedAnimation<
+                                                                Color>(
+                                                          Colors.white,
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ),
+                                                )
+                                              ],
+                                            )
+                                          ],
+                                        ),
+                                      ),
+                                      Padding(
+                                        padding: EdgeInsets.all(8.0),
+                                        child: Column(
+                                          mainAxisAlignment: MainAxisAlignment.end,
+                                          children: [
+                                            Container(
+                                              color: Colors.white,
+                                              width:
+                                                  MediaQuery.of(context).size.width,
+                                              height: MediaQuery.of(
+                                                    context,
+                                                  ).size.height *
+                                                  0.001,
+                                            ),
+                                            Padding(
+                                              padding: EdgeInsets.only(top: 4.0),
+                                              child: Align(
+                                                alignment: Alignment.topLeft,
+                                                child: Text(
+                                                  "Auditados hoje",
+                                                  style: TextStyle(
+                                                    fontSize: MediaQuery.of(
+                                                          context,
+                                                        ).size.height *
+                                                        0.025,
+                                                    color: Colors.white,
+                                                  ),
+                                                ),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      )
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
+                        );
+                      }
+                      oneDay = 0;
+                      conference = 0;
+                      pending = 0;
+                      supply = 0;
+                      total = 0;
+                      p8Pending = 0;
+                      p8Checked = 0;
+                      List<Monitor> monitor = snapshot.data;
+
+                      registry = monitor.length;
+                      for (int t = 0; t < monitor.length; t++) {
+                        if (monitor[t].checked == "N") {
+                          conference++;
+                        }
+                        if (monitor[t].addressed == "N") {
+                          pending++;
+                        }
+                        if (monitor[t].observation == "SEM PRE-NOTA") {
+                          supply++;
+                        }
+                        if (monitor[t].concierge == "N") {
+                          p8Pending++;
+                        }
+                        if (monitor[t].concierge == "S") {
+                          p8Checked++;
+                        }
+                        if (monitor[t].daysInTransit != " DD" &&
+                            monitor[t].daysInTransit != "0 DD" &&
+                            monitor[t].daysInTransit != "1 DD") {
+                          oneDay++;
+                        }
+                      }
+                      total = monitor.length;
+                      return Row(
+                        children: [
+                          Expanded(
+                            child: Padding(
+                              padding: EdgeInsets.only(
+                                top: 8.0,
+                                bottom: 8,
+                                left: 8,
+                              ),
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  border: Border.all(
+                                    color: Colors.grey[900],
+                                    width: 1.0,
+                                  ),
+                                  borderRadius: BorderRadius.all(
+                                    Radius.circular(5.0),
+                                  ),
+                                  color: Colors.grey[800],
+                                ),
+                                height: MediaQuery.of(
+                                      context,
+                                    ).size.height *
+                                    0.17,
+                                child: Column(
+                                  children: [
+                                    Padding(
+                                      padding: EdgeInsets.all(8.0),
+                                      child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          Icon(
+                                            MdiIcons.truckFastOutline,
+                                            color: Colors.white,
+                                            size: 40,
+                                          ),
+                                          Column(
+                                            children: [
+                                              Text(
+                                                "Quantidade",
+                                                style: TextStyle(
+                                                  fontSize: MediaQuery.of(
+                                                        context,
+                                                      ).size.height *
+                                                      0.018,
+                                                  color: Colors.white,
+                                                ),
+                                              ),
+                                              Align(
+                                                alignment: Alignment.topRight,
+                                                child: Row(
+                                                  children: [
+                                                    Text(
+                                                      "$p8Pending",
+                                                      style: TextStyle(
+                                                        fontSize: MediaQuery.of(
+                                                              context,
+                                                            ).size.height *
+                                                            0.03,
+                                                        color: Colors.white,
+                                                      ),
+                                                    ),
+                                                    !progress?
+                                                    Padding(
+                                                      padding: EdgeInsets.all(8.0),
+                                                      child: Container(
+                                                        height: MediaQuery.of(
+                                                          context,
+                                                        ).size.height *
+                                                            0.03,
+                                                        width: MediaQuery.of(
+                                                          context,
+                                                        ).size.width *
+                                                            0.015,
+                                                        child: Center(
+                                                          child:
+                                                          CircularProgressIndicator(
+                                                            valueColor:
+                                                            AlwaysStoppedAnimation<
+                                                                Color>(
+                                                              Colors.white,
+                                                            ),
+                                                          ),
+                                                        ),
+                                                      ),
+                                                    )
+                                                        :Container()
+                                                  ],
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                    Padding(
+                                      padding: EdgeInsets.all(8.0),
+                                      child: Column(
+                                        mainAxisAlignment: MainAxisAlignment.end,
+                                        children: [
+                                          Container(
+                                            color: Colors.white,
+                                            width: MediaQuery.of(
+                                              context,
+                                            ).size.width,
+                                            height: MediaQuery.of(
+                                                  context,
+                                                ).size.height *
+                                                0.001,
+                                          ),
+                                          Row(
+                                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                            children: [
+                                              Padding(
+                                                padding: EdgeInsets.only(top: 4.0),
+                                                child: Align(
+                                                  alignment: Alignment.topLeft,
+                                                  child: Text(
+                                                    "Pendente Auditoria P8",
+                                                    style: TextStyle(
+                                                      fontSize: MediaQuery.of(
+                                                        context,
+                                                      ).size.height *
+                                                          0.025,
+                                                      color: Colors.white,
+                                                    ),
+                                                  ),
+                                                ),
+                                              ),
+                                              if(
+                                              (
+                                                  user.user=="cezarbatista"||
+                                                      user.user=="marlielsongomes"||
+                                                      user.userCode=="002291"||
+                                                      user.userCode=="000001"||
+                                                      user.user=="jeansousa"||
+                                                      user.user=="danielsampaio"||
+                                                      user.user=="gabrielsilva"
+                                              )&&
+                                                  dropdownValue.toString().substring(0, 4)=="0110"||
+                                                  dropdownValue.toString().substring(0, 4)=="0107"||
+                                                  dropdownValue.toString().substring(0, 4)=="0109"||
+                                                  dropdownValue.toString().substring(0, 4)=="0116"
+                                              )...{StreamBuilder(
+                                                  stream: _streamController3.stream,
+                                                  builder: (context, snapshot) {
+                                                    return Container(
+                                                      margin: EdgeInsets.all(5),
+
+                                                      child: RaisedButton(
+                                                        shape: RoundedRectangleBorder(
+                                                            borderRadius: BorderRadius.circular(18.0),
+                                                            side: BorderSide(color: Colors.green[800],)),
+                                                        onPressed: () async {
+                                                          loadAta = true;
+                                                          showGeneralDialog(
+                                                              context: context,
+                                                              barrierDismissible: false,
+                                                              barrierColor: Colors.black45,
+                                                              pageBuilder:
+                                                                  (context, animation, secondaryAnimation) {
+                                                                int total = 0;
+                                                                return StreamBuilder(
+                                                                  stream: _streamController4.stream,
+                                                                  builder: (context, snapshot) {
+                                                                    return Material(
+                                                                        color: Colors.black.withOpacity(0.5),
+                                                                        child: Center(
+                                                                          child: Column(
+                                                                            mainAxisSize: MainAxisSize.min,
+                                                                            children: <Widget>[
+                                                                              Image.asset(
+                                                                                colorApp==Colors.green?
+                                                                                'assets/P8O.png':'assets/P8.png',
+                                                                                width: MediaQuery.of(context).size.width * 0.2,
+
+                                                                                alignment: Alignment.center,
+                                                                              ),
+                                                                              Text(
+                                                                                'Aguarde a finalização da auditoria das notas de atacado...\nTotal de notas de atacado auditadas: $total',
+                                                                                textAlign: TextAlign.center,
+                                                                                style: TextStyle(
+                                                                                  color: Colors.white,
+                                                                                  fontSize:
+                                                                                  25
+                                                                                ),
+                                                                              ),
+                                                                            ],
+                                                                          ),
+                                                                        ));
+                                                                  }
+                                                                );
+                                                              });
+                                                          _streamController3.add(null);
+                                                          bool f = false;
+                                                          for (audited = 0; audited<monitor.length;audited++) {
+
+                                                            if(
+                                                            (monitor[audited].branchOrigin=="0112"&&monitor[audited].branchDestiny=="0109"&&monitor[audited].concierge!="S")||
+                                                                (monitor[audited].branchOrigin=="0115"&&monitor[audited].branchDestiny=="0116"&&monitor[audited].concierge!="S")||
+                                                                (monitor[audited].branchOrigin=="0111"&&monitor[audited].branchDestiny=="0107"&&monitor[audited].concierge!="S")||
+                                                                (monitor[audited].branchOrigin=="0102"&&monitor[audited].branchDestiny=="0110"&&monitor[audited].concierge!="S")
+                                                            ){
+                                                              f = true;
+                                                              total++;
+                                                              gfe = monitor[audited].gfe;
+                                                              plate = monitor[audited].automobilePlate;
+                                                              nfCode = monitor[audited].keyNfe;
+                                                              await Concierge.postConcierge(ori: monitor[audited].branchOrigin);
+                                                              _streamController4.add(null);
+                                                            }
+                                                          }
+
+                                                          Navigator.pop(context);
+                                                          if(!f){
+                                                            showGeneralDialog(
+                                                                context: context,
+                                                                barrierDismissible: false,
+                                                                barrierColor: Colors.black45,
+                                                                pageBuilder:
+                                                                    (context, animation, secondaryAnimation) {
+                                                                  return StreamBuilder(
+                                                                      stream: _streamController4.stream,
+                                                                      builder: (context, snapshot) {
+                                                                        return Material(
+                                                                            color: Colors.black.withOpacity(0.5),
+                                                                            child: Center(
+                                                                              child: Column(
+                                                                                mainAxisSize: MainAxisSize.min,
+                                                                                children: <Widget>[
+                                                                                  Image.asset(
+                                                                                    colorApp==Colors.green?
+                                                                                    'assets/P8O.png':'assets/P8.png',
+                                                                                    width: MediaQuery.of(context).size.width * 0.2,
+
+                                                                                    alignment: Alignment.center,
+                                                                                  ),
+                                                                                  Text(
+                                                                                    'Não há nenhuma nota de atacado pendente\nde auditoria no momento',
+                                                                                    textAlign: TextAlign.center,
+                                                                                    style: TextStyle(
+                                                                                        color: Colors.white,
+                                                                                        fontSize:
+                                                                                        25
+                                                                                    ),
+                                                                                  ),
+                                                                                ],
+                                                                              ),
+                                                                            ));
+                                                                      }
+                                                                  );
+                                                                });
+                                                            await Future.delayed(Duration(seconds: 5));
+                                                            Navigator.pop(context);
+                                                          }
+                                                          _loadData();
+                                                          loadAta = false;
+                                                          _streamController3.add(null);
+                                                        },
+                                                        padding: EdgeInsets.all(10.0),
+                                                        color: Colors.white,
+                                                        textColor: Colors.green[800],
+                                                        child:loadAta?Center(
+                                                          child: Container(
+                                                            width: 15,
+                                                            height: 15,
+                                                            child: CircularProgressIndicator(
+                                                              valueColor: AlwaysStoppedAnimation<Color>(Colors.green[800]),
+                                                            ),
+                                                          ),
+                                                        ): Text("  Auditar Notas de Atacado  ",
+
+                                                            style: TextStyle(fontSize: 15,fontWeight: FontWeight.bold,)),
+                                                      ),
+                                                    );
+                                                  }
+                                              ),}
+
+                                            ],
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ),
+                          Expanded(
+                            child: Padding(
+                              padding: EdgeInsets.all(8.0),
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  border: Border.all(
+                                    color: Colors.green[900],
+                                    width: 1.0,
+                                  ),
+                                  borderRadius: BorderRadius.all(
+                                    Radius.circular(5.0),
+                                  ),
+                                  color: Colors.green[800],
+                                ),
+                                height: MediaQuery.of(
+                                      context,
+                                    ).size.height *
+                                    0.17,
+                                child: Column(
+                                  children: [
+                                    Padding(
+                                      padding: EdgeInsets.all(8.0),
+                                      child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          Icon(
+                                            MdiIcons.truckCheckOutline,
+                                            color: Colors.white,
+                                            size: 40,
+                                          ),
+                                          Column(
+                                            children: [
+                                              Text(
+                                                "Quantidade",
+                                                style: TextStyle(
+                                                  fontSize: MediaQuery.of(
+                                                        context,
+                                                      ).size.height *
+                                                      0.018,
+                                                  color: Colors.white,
+                                                ),
+                                              ),
+                                              Align(
+                                                alignment: Alignment.topRight,
+                                                child: Text(
+                                                  "$p8Checked",
                                                   style: TextStyle(
                                                     fontSize: MediaQuery.of(
                                                           context,
@@ -723,827 +1126,732 @@ class _MonitorP8State extends State<MonitorP8> {
                                                     color: Colors.white,
                                                   ),
                                                 ),
-                                                !progress?
-                                                Padding(
-                                                  padding: EdgeInsets.all(8.0),
-                                                  child: Container(
-                                                    height: MediaQuery.of(
-                                                      context,
-                                                    ).size.height *
-                                                        0.03,
-                                                    width: MediaQuery.of(
-                                                      context,
-                                                    ).size.width *
-                                                        0.015,
-                                                    child: Center(
-                                                      child:
-                                                      CircularProgressIndicator(
-                                                        valueColor:
-                                                        AlwaysStoppedAnimation<
-                                                            Color>(
-                                                          Colors.white,
-                                                        ),
-                                                      ),
-                                                    ),
-                                                  ),
-                                                )
-                                                    :Container()
-                                              ],
-                                            ),
+                                              ),
+                                            ],
                                           ),
                                         ],
                                       ),
-                                    ],
-                                  ),
-                                ),
-                                Padding(
-                                  padding: EdgeInsets.all(8.0),
-                                  child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.end,
-                                    children: [
-                                      Container(
-                                        color: Colors.white,
-                                        width: MediaQuery.of(
-                                          context,
-                                        ).size.width,
-                                        height: MediaQuery.of(
-                                              context,
-                                            ).size.height *
-                                            0.001,
-                                      ),
-                                      Padding(
-                                        padding: EdgeInsets.only(top: 4.0),
-                                        child: Align(
-                                          alignment: Alignment.topLeft,
-                                          child: Text(
-                                            "Pendente Auditoria P8",
-                                            style: TextStyle(
-                                              fontSize: MediaQuery.of(
-                                                    context,
-                                                  ).size.height *
-                                                  0.025,
-                                              color: Colors.white,
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                      ),
-                      Expanded(
-                        child: Padding(
-                          padding: EdgeInsets.all(8.0),
-                          child: Container(
-                            decoration: BoxDecoration(
-                              border: Border.all(
-                                color: Colors.green[900],
-                                width: 1.0,
-                              ),
-                              borderRadius: BorderRadius.all(
-                                Radius.circular(5.0),
-                              ),
-                              color: Colors.green[800],
-                            ),
-                            height: MediaQuery.of(
-                                  context,
-                                ).size.height *
-                                0.17,
-                            child: Column(
-                              children: [
-                                Padding(
-                                  padding: EdgeInsets.all(8.0),
-                                  child: Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Icon(
-                                        MdiIcons.truckCheckOutline,
-                                        color: Colors.white,
-                                        size: 40,
-                                      ),
-                                      Column(
+                                    ),
+                                    Padding(
+                                      padding: EdgeInsets.all(8.0),
+                                      child: Column(
+                                        mainAxisAlignment: MainAxisAlignment.end,
                                         children: [
-                                          Text(
-                                            "Quantidade",
-                                            style: TextStyle(
-                                              fontSize: MediaQuery.of(
-                                                    context,
-                                                  ).size.height *
-                                                  0.018,
-                                              color: Colors.white,
-                                            ),
+                                          Container(
+                                            color: Colors.white,
+                                            width: MediaQuery.of(
+                                              context,
+                                            ).size.width,
+                                            height: MediaQuery.of(
+                                                  context,
+                                                ).size.height *
+                                                0.001,
                                           ),
-                                          Align(
-                                            alignment: Alignment.topRight,
-                                            child: Text(
-                                              "$p8Checked",
-                                              style: TextStyle(
-                                                fontSize: MediaQuery.of(
-                                                      context,
-                                                    ).size.height *
-                                                    0.03,
-                                                color: Colors.white,
+                                          Padding(
+                                            padding: EdgeInsets.only(top: 4.0),
+                                            child: Align(
+                                              alignment: Alignment.topLeft,
+                                              child: Text(
+                                                "Auditados hoje",
+                                                style: TextStyle(
+                                                  fontSize: MediaQuery.of(
+                                                        context,
+                                                      ).size.height *
+                                                      0.025,
+                                                  color: Colors.white,
+                                                ),
                                               ),
                                             ),
                                           ),
                                         ],
                                       ),
-                                    ],
-                                  ),
+                                    ),
+                                  ],
                                 ),
-                                Padding(
-                                  padding: EdgeInsets.all(8.0),
-                                  child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.end,
-                                    children: [
-                                      Container(
-                                        color: Colors.white,
-                                        width: MediaQuery.of(
-                                          context,
-                                        ).size.width,
-                                        height: MediaQuery.of(
-                                              context,
-                                            ).size.height *
-                                            0.001,
-                                      ),
-                                      Padding(
-                                        padding: EdgeInsets.only(top: 4.0),
-                                        child: Align(
-                                          alignment: Alignment.topLeft,
-                                          child: Text(
-                                            "Auditados hoje",
-                                            style: TextStyle(
-                                              fontSize: MediaQuery.of(
+                              ),
+                            ),
+                          ),
+                        ],
+                      );
+                    },
+                  ),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: Column(
+                          children: [
+                            Padding(
+                              padding: colorApp == Colors.green
+                                  ? EdgeInsets.only(left: 8, right: 0)
+                                  : EdgeInsets.only(left: 8, right: 4),
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  border: Border.all(
+                                    color: colorApp != Colors.green
+                                        ? colorApp[900]
+                                        : Colors.grey[900],
+                                    width: 1.0,
+                                  ),
+                                  borderRadius: BorderRadius.only(
+                                    topLeft: Radius.circular(5.0),
+                                    topRight: Radius.circular(5.0),
+                                  ),
+                                  color: colorApp != Colors.green
+                                      ? colorApp[800]
+                                      : Colors.grey[800],
+                                ),
+                                width: MediaQuery.of(
+                                  context,
+                                ).size.width,
+                                height: 50,
+                                child: Row(
+                                  children: [
+                                    Expanded(
+                                      flex: 1,
+                                      child: Text(
+                                        "Origem",
+                                        textAlign: TextAlign.center,
+                                        style: TextStyle(
+                                          color: Colors.white,
+                                          fontSize: colorApp == Colors.green
+                                              ? MediaQuery.of(
                                                     context,
                                                   ).size.height *
-                                                  0.025,
-                                              color: Colors.white,
-                                            ),
-                                          ),
+                                                  0.018
+                                              : MediaQuery.of(
+                                                    context,
+                                                  ).size.height *
+                                                  0.022,
                                         ),
                                       ),
-                                    ],
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
-                  );
-                },
-              ),
-              Row(
-                children: [
-                  Expanded(
-                    child: Column(
-                      children: [
-                        Padding(
-                          padding: colorApp == Colors.green
-                              ? EdgeInsets.only(left: 8, right: 0)
-                              : EdgeInsets.only(left: 8, right: 4),
-                          child: Container(
-                            decoration: BoxDecoration(
-                              border: Border.all(
-                                color: colorApp != Colors.green
-                                    ? colorApp[900]
-                                    : Colors.grey[900],
-                                width: 1.0,
-                              ),
-                              borderRadius: BorderRadius.only(
-                                topLeft: Radius.circular(5.0),
-                                topRight: Radius.circular(5.0),
-                              ),
-                              color: colorApp != Colors.green
-                                  ? colorApp[800]
-                                  : Colors.grey[800],
-                            ),
-                            width: MediaQuery.of(
-                              context,
-                            ).size.width,
-                            height: 50,
-                            child: Row(
-                              children: [
-                                Expanded(
-                                  flex: 1,
-                                  child: Text(
-                                    "Origem",
-                                    textAlign: TextAlign.center,
-                                    style: TextStyle(
-                                      color: Colors.white,
-                                      fontSize: colorApp == Colors.green
-                                          ? MediaQuery.of(
-                                                context,
-                                              ).size.height *
-                                              0.018
-                                          : MediaQuery.of(
-                                                context,
-                                              ).size.height *
-                                              0.022,
                                     ),
-                                  ),
-                                ),
-                                Expanded(
-                                  flex: 1,
-                                  child: Text(
-                                    "Destino",
-                                    textAlign: TextAlign.center,
-                                    style: TextStyle(
-                                      color: Colors.white,
-                                      fontSize: colorApp == Colors.green
-                                          ? MediaQuery.of(
-                                                context,
-                                              ).size.height *
-                                              0.018
-                                          : MediaQuery.of(
-                                                context,
-                                              ).size.height *
-                                              0.022,
-                                    ),
-                                  ),
-                                ),
-                                Expanded(
-                                  flex: 2,
-                                  child: Text(
-                                    "Emissão",
-                                    textAlign: TextAlign.center,
-                                    style: TextStyle(
-                                      color: Colors.white,
-                                      fontSize: colorApp == Colors.green
-                                          ? MediaQuery.of(
-                                                context,
-                                              ).size.height *
-                                              0.018
-                                          : MediaQuery.of(
-                                                context,
-                                              ).size.height *
-                                              0.022,
-                                    ),
-                                  ),
-                                ),
-                                Expanded(
-                                  flex: 1,
-                                  child: Text(
-                                    "Dias",
-                                    textAlign: TextAlign.center,
-                                    style: TextStyle(
-                                      color: Colors.white,
-                                      fontSize: colorApp == Colors.green
-                                          ? MediaQuery.of(
-                                                context,
-                                              ).size.height *
-                                              0.018
-                                          : MediaQuery.of(
-                                                context,
-                                              ).size.height *
-                                              0.022,
-                                    ),
-                                  ),
-                                ),
-                                Expanded(
-                                  flex: 3,
-                                  child: Text(
-                                    "Nota Fiscal",
-                                    textAlign: TextAlign.center,
-                                    style: TextStyle(
-                                      color: Colors.white,
-                                      fontSize: colorApp == Colors.green
-                                          ? MediaQuery.of(
-                                                context,
-                                              ).size.height *
-                                              0.018
-                                          : MediaQuery.of(
-                                                context,
-                                              ).size.height *
-                                              0.022,
-                                    ),
-                                  ),
-                                ),
-                                Expanded(
-                                  flex: 2,
-                                  child: Text(
-                                    "Placa",
-                                    textAlign: TextAlign.center,
-                                    style: TextStyle(
-                                      color: Colors.white,
-                                      fontSize: colorApp == Colors.green
-                                          ? MediaQuery.of(
-                                                context,
-                                              ).size.height *
-                                              0.018
-                                          : MediaQuery.of(
-                                                context,
-                                              ).size.height *
-                                              0.022,
-                                    ),
-                                  ),
-                                ),
-                                Expanded(
-                                  flex: 2,
-                                  child: Text(
-                                    "Entrada",
-                                    textAlign: TextAlign.center,
-                                    style: TextStyle(
-                                      color: Colors.white,
-                                      fontSize: colorApp == Colors.green
-                                          ? MediaQuery.of(
-                                                context,
-                                              ).size.height *
-                                              0.018
-                                          : MediaQuery.of(
-                                                context,
-                                              ).size.height *
-                                              0.022,
-                                    ),
-                                  ),
-                                ),
-                                Expanded(
-                                  flex: 1,
-                                  child: Text(
-                                    "Status",
-                                    textAlign: TextAlign.center,
-                                    style: TextStyle(
-                                      color: Colors.white,
-                                      fontSize: colorApp == Colors.green
-                                          ? MediaQuery.of(
-                                                context,
-                                              ).size.height *
-                                              0.018
-                                          : MediaQuery.of(
-                                                context,
-                                              ).size.height *
-                                              0.022,
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                        Align(
-                          alignment: Alignment.topCenter,
-                          child: Padding(
-                            padding: colorApp == Colors.green
-                                ? EdgeInsets.only(
-                                    bottom: 8.0,
-                                    left: 8,
-                                    right: 0,
-                                  )
-                                : EdgeInsets.only(
-                                    bottom: 8.0,
-                                    left: 8,
-                                    right: 4,
-                                  ),
-                            child: Container(
-                              width: MediaQuery.of(
-                                context,
-                              ).size.width,
-                              height: 500,
-                              decoration: BoxDecoration(
-                                border: Border.all(
-                                  color: colorApp != Colors.green
-                                      ? colorApp
-                                      : Colors.grey,
-                                  width: 1.0,
-                                ),
-                                borderRadius: BorderRadius.only(
-                                  bottomLeft: Radius.circular(5.0),
-                                  bottomRight: Radius.circular(5.0),
-                                ),
-                              ),
-                              child: Align(
-                                alignment: Alignment.topCenter,
-                                child: StreamBuilder(
-                                  stream: _streamController.stream,
-                                  builder: (BuildContext context,
-                                      AsyncSnapshot snapshot) {
-                                    if (!snapshot.hasData) {
-                                      return Center(
-                                        child: Image.asset(
-                                          'assets/gif1.gif',
-                                          color: colorApp != Colors.green
-                                              ? colorApp
-                                              : Colors.grey,
-                                          height: 70,
-                                        ),
-                                      );
-                                    }
-                                    List<Monitor> monitor = snapshot.data;
-                                    if (monitor.isEmpty) {
-                                      return Center(
-                                        child: Column(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.center,
-                                          children: [
-                                            Icon(
-                                              MdiIcons.clipboardOutline,
-                                              color: colorApp != Colors.green
-                                                  ? colorApp
-                                                  : Colors.grey,
-                                              size: MediaQuery.of(
+                                    Expanded(
+                                      flex: 1,
+                                      child: Text(
+                                        "Destino",
+                                        textAlign: TextAlign.center,
+                                        style: TextStyle(
+                                          color: Colors.white,
+                                          fontSize: colorApp == Colors.green
+                                              ? MediaQuery.of(
                                                     context,
-                                                  ).size.width *
-                                                  0.05,
-                                            ),
-                                            SizedBox(
-                                              height: MediaQuery.of(
+                                                  ).size.height *
+                                                  0.018
+                                              : MediaQuery.of(
                                                     context,
-                                                  ).size.width *
-                                                  0.01,
-                                            ),
-                                            Text(
-                                              "Não ha registros",
-                                              style: TextStyle(
-                                                fontSize: MediaQuery.of(
-                                                      context,
-                                                    ).size.width *
-                                                    0.015,
-                                                color: colorApp != Colors.green
-                                                    ? colorApp
-                                                    : Colors.grey,
-                                              ),
-                                            ),
-                                          ],
+                                                  ).size.height *
+                                                  0.022,
                                         ),
-                                      );
-                                    }
+                                      ),
+                                    ),
+                                    Expanded(
+                                      flex: 2,
+                                      child: Text(
+                                        "Emissão",
+                                        textAlign: TextAlign.center,
+                                        style: TextStyle(
+                                          color: Colors.white,
+                                          fontSize: colorApp == Colors.green
+                                              ? MediaQuery.of(
+                                                    context,
+                                                  ).size.height *
+                                                  0.018
+                                              : MediaQuery.of(
+                                                    context,
+                                                  ).size.height *
+                                                  0.022,
+                                        ),
+                                      ),
+                                    ),
+                                    Expanded(
+                                      flex: 1,
+                                      child: Text(
+                                        "Dias",
+                                        textAlign: TextAlign.center,
+                                        style: TextStyle(
+                                          color: Colors.white,
+                                          fontSize: colorApp == Colors.green
+                                              ? MediaQuery.of(
+                                                    context,
+                                                  ).size.height *
+                                                  0.018
+                                              : MediaQuery.of(
+                                                    context,
+                                                  ).size.height *
+                                                  0.022,
+                                        ),
+                                      ),
+                                    ),
+                                    Expanded(
+                                      flex: 3,
+                                      child: Text(
+                                        "Nota Fiscal",
+                                        textAlign: TextAlign.center,
+                                        style: TextStyle(
+                                          color: Colors.white,
+                                          fontSize: colorApp == Colors.green
+                                              ? MediaQuery.of(
+                                                    context,
+                                                  ).size.height *
+                                                  0.018
+                                              : MediaQuery.of(
+                                                    context,
+                                                  ).size.height *
+                                                  0.022,
+                                        ),
+                                      ),
+                                    ),
+                                    Expanded(
+                                      flex: 2,
+                                      child: Text(
+                                        "Placa",
+                                        textAlign: TextAlign.center,
+                                        style: TextStyle(
+                                          color: Colors.white,
+                                          fontSize: colorApp == Colors.green
+                                              ? MediaQuery.of(
+                                                    context,
+                                                  ).size.height *
+                                                  0.018
+                                              : MediaQuery.of(
+                                                    context,
+                                                  ).size.height *
+                                                  0.022,
+                                        ),
+                                      ),
+                                    ),
+                                    Expanded(
+                                      flex: 2,
+                                      child: Text(
+                                        "Entrada",
+                                        textAlign: TextAlign.center,
+                                        style: TextStyle(
+                                          color: Colors.white,
+                                          fontSize: colorApp == Colors.green
+                                              ? MediaQuery.of(
+                                                    context,
+                                                  ).size.height *
+                                                  0.018
+                                              : MediaQuery.of(
+                                                    context,
+                                                  ).size.height *
+                                                  0.022,
+                                        ),
+                                      ),
+                                    ),
+                                    Expanded(
+                                      flex: 1,
+                                      child: Text(
+                                        "Status",
+                                        textAlign: TextAlign.center,
+                                        style: TextStyle(
+                                          color: Colors.white,
+                                          fontSize: colorApp == Colors.green
+                                              ? MediaQuery.of(
+                                                    context,
+                                                  ).size.height *
+                                                  0.018
+                                              : MediaQuery.of(
+                                                    context,
+                                                  ).size.height *
+                                                  0.022,
+                                        ),
+                                      ),
+                                    ),
 
-                                    return Scrollbar(
-                                      child: ListView.builder(
-                                        padding: EdgeInsets.zero,
-                                        itemCount: monitor.length,
-                                        itemBuilder: (
-                                          BuildContext context,
-                                          int index,
-                                        ) {
-                                          Monitor m = monitor[index];
-                                          key.add(m.keyNfe);
-                                          if (m.concierge == "N") {
-                                            return Column(
-                                              children: [
-                                                lineMonitor(
-                                                  m.automobilePlate,
-                                                  m.gfe,
-                                                  key.length,
-                                                  m.branchOrigin,
-                                                  m.branchDestiny,
-                                                  m.nf,
-                                                  m.series,
-                                                  m.automobilePlate,
-                                                  m.entryDate,
-                                                  m.emissionDate,
-                                                  m.daysInTransit,
-                                                  m,
-                                                ),
-                                                colorApp != Colors.green
-                                                    ? lineSep()
-                                                    : lineSpend(),
-                                              ],
-                                            );
-                                          } else {
-                                            return Container();
-                                          }
-                                        },
+                                   /* if(dropdownValue.toString().substring(0, 4)=="0109")...{
+
+                                    Expanded(
+                                      flex: 1,
+                                      child: Text(
+                                        "Auditar",
+                                        textAlign: TextAlign.center,
+                                        style: TextStyle(
+                                          color: Colors.white,
+                                          fontSize: colorApp == Colors.green
+                                              ? MediaQuery.of(
+                                                    context,
+                                                  ).size.height *
+                                                  0.018
+                                              : MediaQuery.of(
+                                                    context,
+                                                  ).size.height *
+                                                  0.022,
+                                        ),
                                       ),
-                                    );
-                                  },
+                                    ),}
+                                */  ],
                                 ),
                               ),
                             ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  colorApp == Colors.green
-                      ? Expanded(
-                          child: Column(
-                            children: [
-                              Padding(
+                            Align(
+                              alignment: Alignment.topCenter,
+                              child: Padding(
                                 padding: colorApp == Colors.green
-                                    ? EdgeInsets.only(left: 8, right: 8)
-                                    : EdgeInsets.only(left: 4, right: 8),
+                                    ? EdgeInsets.only(
+                                        bottom: 8.0,
+                                        left: 8,
+                                        right: 0,
+                                      )
+                                    : EdgeInsets.only(
+                                        bottom: 8.0,
+                                        left: 8,
+                                        right: 4,
+                                      ),
                                 child: Container(
+                                  width: MediaQuery.of(
+                                    context,
+                                  ).size.width,
+                                  height: 500,
                                   decoration: BoxDecoration(
                                     border: Border.all(
-                                      color: colorApp[900],
+                                      color: colorApp != Colors.green
+                                          ? colorApp
+                                          : Colors.grey,
                                       width: 1.0,
                                     ),
                                     borderRadius: BorderRadius.only(
-                                      topLeft: Radius.circular(5.0),
-                                      topRight: Radius.circular(5.0),
+                                      bottomLeft: Radius.circular(5.0),
+                                      bottomRight: Radius.circular(5.0),
                                     ),
-                                    color: colorApp[800],
                                   ),
-                                  width: MediaQuery.of(context).size.width,
-                                  height: 50,
-                                  child: Row(
-                                    children: [
-                                      Expanded(
-                                        flex: 1,
-                                        child: Text(
-                                          "Origem",
-                                          textAlign: TextAlign.center,
-                                          style: TextStyle(
-                                            color: Colors.white,
-                                            fontSize: colorApp == Colors.green
-                                                ? MediaQuery.of(context)
-                                                        .size
-                                                        .height *
-                                                    0.018
-                                                : MediaQuery.of(context)
-                                                        .size
-                                                        .height *
-                                                    0.022,
-                                          ),
-                                        ),
-                                      ),
-                                      Expanded(
-                                        flex: 1,
-                                        child: Text(
-                                          "Destino",
-                                          textAlign: TextAlign.center,
-                                          style: TextStyle(
-                                            color: Colors.white,
-                                            fontSize: colorApp == Colors.green
-                                                ? MediaQuery.of(context)
-                                                        .size
-                                                        .height *
-                                                    0.018
-                                                : MediaQuery.of(context)
-                                                        .size
-                                                        .height *
-                                                    0.022,
-                                          ),
-                                        ),
-                                      ),
-                                      Expanded(
-                                        flex: 2,
-                                        child: Text(
-                                          "Emissão",
-                                          textAlign: TextAlign.center,
-                                          style: TextStyle(
-                                            color: Colors.white,
-                                            fontSize: colorApp == Colors.green
-                                                ? MediaQuery.of(context)
-                                                        .size
-                                                        .height *
-                                                    0.018
-                                                : MediaQuery.of(context)
-                                                        .size
-                                                        .height *
-                                                    0.022,
-                                          ),
-                                        ),
-                                      ),
-                                      Expanded(
-                                        flex: 1,
-                                        child: Text(
-                                          "Dias",
-                                          textAlign: TextAlign.center,
-                                          style: TextStyle(
-                                            color: Colors.white,
-                                            fontSize: colorApp == Colors.green
-                                                ? MediaQuery.of(context)
-                                                        .size
-                                                        .height *
-                                                    0.018
-                                                : MediaQuery.of(context)
-                                                        .size
-                                                        .height *
-                                                    0.022,
-                                          ),
-                                        ),
-                                      ),
-                                      Expanded(
-                                        flex: 3,
-                                        child: Text(
-                                          "Nota Fiscal",
-                                          textAlign: TextAlign.center,
-                                          style: TextStyle(
-                                            color: Colors.white,
-                                            fontSize: colorApp == Colors.green
-                                                ? MediaQuery.of(context)
-                                                        .size
-                                                        .height *
-                                                    0.018
-                                                : MediaQuery.of(context)
-                                                        .size
-                                                        .height *
-                                                    0.022,
-                                          ),
-                                        ),
-                                      ),
-                                      Expanded(
-                                        flex: 2,
-                                        child: Text(
-                                          "Placa",
-                                          textAlign: TextAlign.center,
-                                          style: TextStyle(
-                                            color: Colors.white,
-                                            fontSize: colorApp == Colors.green
-                                                ? MediaQuery.of(context)
-                                                        .size
-                                                        .height *
-                                                    0.018
-                                                : MediaQuery.of(context)
-                                                        .size
-                                                        .height *
-                                                    0.022,
-                                          ),
-                                        ),
-                                      ),
-                                      Expanded(
-                                        flex: 2,
-                                        child: Text(
-                                          "Entrada",
-                                          textAlign: TextAlign.center,
-                                          style: TextStyle(
-                                            color: Colors.white,
-                                            fontSize: colorApp == Colors.green
-                                                ? MediaQuery.of(context)
-                                                        .size
-                                                        .height *
-                                                    0.018
-                                                : MediaQuery.of(context)
-                                                        .size
-                                                        .height *
-                                                    0.022,
-                                          ),
-                                        ),
-                                      ),
-                                      Expanded(
-                                        flex: 1,
-                                        child: Text(
-                                          "Status",
-                                          textAlign: TextAlign.center,
-                                          style: TextStyle(
-                                            color: Colors.white,
-                                            fontSize: colorApp == Colors.green
-                                                ? MediaQuery.of(context)
-                                                        .size
-                                                        .height *
-                                                    0.018
-                                                : MediaQuery.of(context)
-                                                        .size
-                                                        .height *
-                                                    0.022,
-                                          ),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                              Align(
-                                alignment: Alignment.topCenter,
-                                child: Padding(
-                                  padding: colorApp == Colors.green
-                                      ? EdgeInsets.only(
-                                          bottom: 8.0,
-                                          left: 8,
-                                          right: 8,
-                                        )
-                                      : EdgeInsets.only(
-                                          bottom: 8.0,
-                                          left: 4,
-                                          right: 8,
-                                        ),
-                                  child: Container(
-                                    width: MediaQuery.of(context).size.width,
-                                    height: 500,
-                                    decoration: BoxDecoration(
-                                      border: Border.all(
-                                        color: colorApp,
-                                        width: 1.0,
-                                      ),
-                                      borderRadius: BorderRadius.only(
-                                        bottomLeft: Radius.circular(5.0),
-                                        bottomRight: Radius.circular(5.0),
-                                      ),
-                                    ),
-                                    child: Align(
-                                      alignment: Alignment.topCenter,
-                                      child: StreamBuilder(
-                                        stream: _streamController.stream,
-                                        builder: (BuildContext context,
-                                            AsyncSnapshot snapshot) {
-                                          if (!snapshot.hasData) {
-                                            return Center(
-                                              child: Image.asset(
-                                                'assets/gif1.gif',
-                                                color: colorApp,
-                                                height: 70,
-                                              ),
-                                            );
-                                          }
-                                          List<Monitor> monitor = snapshot.data;
-                                          if (monitor.isEmpty) {
-                                            return Center(
-                                              child: Column(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment.center,
-                                                children: [
-                                                  Icon(
-                                                    MdiIcons.clipboardOutline,
-                                                    color: colorApp,
-                                                    size: MediaQuery.of(
-                                                          context,
-                                                        ).size.width *
-                                                        0.05,
-                                                  ),
-                                                  SizedBox(
-                                                    height: MediaQuery.of(
-                                                          context,
-                                                        ).size.width *
-                                                        0.01,
-                                                  ),
-                                                  Text(
-                                                    "Não ha registros",
-                                                    style: TextStyle(
-                                                      fontSize: MediaQuery.of(
-                                                            context,
-                                                          ).size.width *
-                                                          0.015,
-                                                      color: colorApp,
-                                                    ),
-                                                  ),
-                                                ],
-                                              ),
-                                            );
-                                          }
-
-                                          return Scrollbar(
-                                            child: ListView.builder(
-                                              padding: EdgeInsets.zero,
-                                              itemCount: monitor.length,
-                                              itemBuilder: (
-                                                BuildContext context,
-                                                int index,
-                                              ) {
-                                                Monitor m = monitor[index];
-                                                key.add(m.keyNfe);
-                                                if (m.concierge == "S") {
-                                                  return Column(
-                                                    children: [
-                                                      lineMonitorCheck(
-                                                        m.automobilePlate,
-                                                        m.gfe,
-                                                        key.length,
-                                                        m.branchOrigin,
-                                                        m.branchDestiny,
-                                                        m.nf,
-                                                        m.series,
-                                                        m.automobilePlate,
-                                                        m.entryDate,
-                                                        m.emissionDate,
-                                                        m.daysInTransit,
-                                                        m,
-                                                      ),
-                                                      lineSep(),
-                                                    ],
-                                                  );
-                                                } else {
-                                                  return Container();
-                                                }
-                                              },
+                                  child: Align(
+                                    alignment: Alignment.topCenter,
+                                    child: StreamBuilder(
+                                      stream: _streamController.stream,
+                                      builder: (BuildContext context,
+                                          AsyncSnapshot snapshot) {
+                                        if (!snapshot.hasData) {
+                                          return Center(
+                                            child: Image.asset(
+                                              'assets/gif1.gif',
+                                              color: colorApp != Colors.green
+                                                  ? colorApp
+                                                  : Colors.grey,
+                                              height: 70,
                                             ),
                                           );
-                                        },
-                                      ),
+                                        }
+                                        List<Monitor> monitor = snapshot.data;
+                                        if (monitor.isEmpty) {
+                                          return Center(
+                                            child: Column(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.center,
+                                              children: [
+                                                Icon(
+                                                  MdiIcons.clipboardOutline,
+                                                  color: colorApp != Colors.green
+                                                      ? colorApp
+                                                      : Colors.grey,
+                                                  size: MediaQuery.of(
+                                                        context,
+                                                      ).size.width *
+                                                      0.05,
+                                                ),
+                                                SizedBox(
+                                                  height: MediaQuery.of(
+                                                        context,
+                                                      ).size.width *
+                                                      0.01,
+                                                ),
+                                                Text(
+                                                  "Não ha registros",
+                                                  style: TextStyle(
+                                                    fontSize: MediaQuery.of(
+                                                          context,
+                                                        ).size.width *
+                                                        0.015,
+                                                    color: colorApp != Colors.green
+                                                        ? colorApp
+                                                        : Colors.grey,
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          );
+                                        }
+
+                                        return Scrollbar(
+                                          child: ListView.builder(
+                                            padding: EdgeInsets.zero,
+                                            itemCount: monitor.length,
+                                            itemBuilder: (
+                                              BuildContext context,
+                                              int index,
+                                            ) {
+                                              Monitor m = monitor[index];
+                                              key.add(m.keyNfe);
+                                              if (m.concierge == "N") {
+                                                return Column(
+                                                  children: [
+                                                    lineMonitor(
+                                                      m.automobilePlate,
+                                                      m.gfe,
+                                                      key.length,
+                                                      m.branchOrigin,
+                                                      m.branchDestiny,
+                                                      m.nf,
+                                                      m.series,
+                                                      m.automobilePlate,
+                                                      m.entryDate,
+                                                      m.emissionDate,
+                                                      m.daysInTransit,
+                                                      m,
+                                                    ),
+                                                    colorApp != Colors.green
+                                                        ? lineSep()
+                                                        : lineSpend(),
+                                                  ],
+                                                );
+                                              } else {
+                                                return Container();
+                                              }
+                                            },
+                                          ),
+                                        );
+                                      },
                                     ),
                                   ),
                                 ),
                               ),
-                            ],
-                          ),
-                        )
-                      : Padding(
-                          padding: EdgeInsets.only(
-                            left: 4,
-                          ),
+                            ),
+                          ],
                         ),
+                      ),
+                      colorApp == Colors.green
+                          ? Expanded(
+                              child: Column(
+                                children: [
+                                  Padding(
+                                    padding: colorApp == Colors.green
+                                        ? EdgeInsets.only(left: 8, right: 8)
+                                        : EdgeInsets.only(left: 4, right: 8),
+                                    child: Container(
+                                      decoration: BoxDecoration(
+                                        border: Border.all(
+                                          color: colorApp[900],
+                                          width: 1.0,
+                                        ),
+                                        borderRadius: BorderRadius.only(
+                                          topLeft: Radius.circular(5.0),
+                                          topRight: Radius.circular(5.0),
+                                        ),
+                                        color: colorApp[800],
+                                      ),
+                                      width: MediaQuery.of(context).size.width,
+                                      height: 50,
+                                      child: Row(
+                                        children: [
+                                          Expanded(
+                                            flex: 1,
+                                            child: Text(
+                                              "Origem",
+                                              textAlign: TextAlign.center,
+                                              style: TextStyle(
+                                                color: Colors.white,
+                                                fontSize: colorApp == Colors.green
+                                                    ? MediaQuery.of(context)
+                                                            .size
+                                                            .height *
+                                                        0.018
+                                                    : MediaQuery.of(context)
+                                                            .size
+                                                            .height *
+                                                        0.022,
+                                              ),
+                                            ),
+                                          ),
+                                          Expanded(
+                                            flex: 1,
+                                            child: Text(
+                                              "Destino",
+                                              textAlign: TextAlign.center,
+                                              style: TextStyle(
+                                                color: Colors.white,
+                                                fontSize: colorApp == Colors.green
+                                                    ? MediaQuery.of(context)
+                                                            .size
+                                                            .height *
+                                                        0.018
+                                                    : MediaQuery.of(context)
+                                                            .size
+                                                            .height *
+                                                        0.022,
+                                              ),
+                                            ),
+                                          ),
+                                          Expanded(
+                                            flex: 2,
+                                            child: Text(
+                                              "Emissão",
+                                              textAlign: TextAlign.center,
+                                              style: TextStyle(
+                                                color: Colors.white,
+                                                fontSize: colorApp == Colors.green
+                                                    ? MediaQuery.of(context)
+                                                            .size
+                                                            .height *
+                                                        0.018
+                                                    : MediaQuery.of(context)
+                                                            .size
+                                                            .height *
+                                                        0.022,
+                                              ),
+                                            ),
+                                          ),
+                                          Expanded(
+                                            flex: 1,
+                                            child: Text(
+                                              "Dias",
+                                              textAlign: TextAlign.center,
+                                              style: TextStyle(
+                                                color: Colors.white,
+                                                fontSize: colorApp == Colors.green
+                                                    ? MediaQuery.of(context)
+                                                            .size
+                                                            .height *
+                                                        0.018
+                                                    : MediaQuery.of(context)
+                                                            .size
+                                                            .height *
+                                                        0.022,
+                                              ),
+                                            ),
+                                          ),
+                                          Expanded(
+                                            flex: 3,
+                                            child: Text(
+                                              "Nota Fiscal",
+                                              textAlign: TextAlign.center,
+                                              style: TextStyle(
+                                                color: Colors.white,
+                                                fontSize: colorApp == Colors.green
+                                                    ? MediaQuery.of(context)
+                                                            .size
+                                                            .height *
+                                                        0.018
+                                                    : MediaQuery.of(context)
+                                                            .size
+                                                            .height *
+                                                        0.022,
+                                              ),
+                                            ),
+                                          ),
+                                          Expanded(
+                                            flex: 2,
+                                            child: Text(
+                                              "Placa",
+                                              textAlign: TextAlign.center,
+                                              style: TextStyle(
+                                                color: Colors.white,
+                                                fontSize: colorApp == Colors.green
+                                                    ? MediaQuery.of(context)
+                                                            .size
+                                                            .height *
+                                                        0.018
+                                                    : MediaQuery.of(context)
+                                                            .size
+                                                            .height *
+                                                        0.022,
+                                              ),
+                                            ),
+                                          ),
+                                          Expanded(
+                                            flex: 2,
+                                            child: Text(
+                                              "Entrada",
+                                              textAlign: TextAlign.center,
+                                              style: TextStyle(
+                                                color: Colors.white,
+                                                fontSize: colorApp == Colors.green
+                                                    ? MediaQuery.of(context)
+                                                            .size
+                                                            .height *
+                                                        0.018
+                                                    : MediaQuery.of(context)
+                                                            .size
+                                                            .height *
+                                                        0.022,
+                                              ),
+                                            ),
+                                          ),
+                                          Expanded(
+                                            flex: 1,
+                                            child: Text(
+                                              "Status",
+                                              textAlign: TextAlign.center,
+                                              style: TextStyle(
+                                                color: Colors.white,
+                                                fontSize: colorApp == Colors.green
+                                                    ? MediaQuery.of(context)
+                                                            .size
+                                                            .height *
+                                                        0.018
+                                                    : MediaQuery.of(context)
+                                                            .size
+                                                            .height *
+                                                        0.022,
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                  Align(
+                                    alignment: Alignment.topCenter,
+                                    child: Padding(
+                                      padding: colorApp == Colors.green
+                                          ? EdgeInsets.only(
+                                              bottom: 8.0,
+                                              left: 8,
+                                              right: 8,
+                                            )
+                                          : EdgeInsets.only(
+                                              bottom: 8.0,
+                                              left: 4,
+                                              right: 8,
+                                            ),
+                                      child: Container(
+                                        width: MediaQuery.of(context).size.width,
+                                        height: 500,
+                                        decoration: BoxDecoration(
+                                          border: Border.all(
+                                            color: colorApp,
+                                            width: 1.0,
+                                          ),
+                                          borderRadius: BorderRadius.only(
+                                            bottomLeft: Radius.circular(5.0),
+                                            bottomRight: Radius.circular(5.0),
+                                          ),
+                                        ),
+                                        child: Align(
+                                          alignment: Alignment.topCenter,
+                                          child: StreamBuilder(
+                                            stream: _streamController.stream,
+                                            builder: (BuildContext context,
+                                                AsyncSnapshot snapshot) {
+                                              if (!snapshot.hasData) {
+                                                return Center(
+                                                  child: Image.asset(
+                                                    'assets/gif1.gif',
+                                                    color: colorApp,
+                                                    height: 70,
+                                                  ),
+                                                );
+                                              }
+                                              List<Monitor> monitor = snapshot.data;
+                                              if (monitor.isEmpty) {
+                                                return Center(
+                                                  child: Column(
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment.center,
+                                                    children: [
+                                                      Icon(
+                                                        MdiIcons.clipboardOutline,
+                                                        color: colorApp,
+                                                        size: MediaQuery.of(
+                                                              context,
+                                                            ).size.width *
+                                                            0.05,
+                                                      ),
+                                                      SizedBox(
+                                                        height: MediaQuery.of(
+                                                              context,
+                                                            ).size.width *
+                                                            0.01,
+                                                      ),
+                                                      Text(
+                                                        "Não ha registros",
+                                                        style: TextStyle(
+                                                          fontSize: MediaQuery.of(
+                                                                context,
+                                                              ).size.width *
+                                                              0.015,
+                                                          color: colorApp,
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                );
+                                              }
+
+                                              return Scrollbar(
+                                                child: ListView.builder(
+                                                  padding: EdgeInsets.zero,
+                                                  itemCount: monitor.length,
+                                                  itemBuilder: (
+                                                    BuildContext context,
+                                                    int index,
+                                                  ) {
+                                                    Monitor m = monitor[index];
+                                                    key.add(m.keyNfe);
+                                                    if (m.concierge == "S") {
+                                                      return Column(
+                                                        children: [
+                                                          lineMonitorCheck(
+                                                            m.automobilePlate,
+                                                            m.gfe,
+                                                            key.length,
+                                                            m.branchOrigin,
+                                                            m.branchDestiny,
+                                                            m.nf,
+                                                            m.series,
+                                                            m.automobilePlate,
+                                                            m.entryDate,
+                                                            m.emissionDate,
+                                                            m.daysInTransit,
+                                                            m,
+                                                          ),
+                                                          lineSep(),
+                                                        ],
+                                                      );
+                                                    } else {
+                                                      return Container();
+                                                    }
+                                                  },
+                                                ),
+                                              );
+                                            },
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            )
+                          : Padding(
+                              padding: EdgeInsets.only(
+                                left: 4,
+                              ),
+                            ),
+                    ],
+                  ),
                 ],
               ),
-            ],
-          ),
-        ),
+            ),
+          );
+        }
       ),
     );
   }
 
   ///atualiza monitor p8
   _loadData() async {
-    currentSeconds = 0;
 
+
+
+    dateInit= DateTime.parse(DateFormat('yyyyMMdd').format(
+      DateTime.now().subtract(Duration(days: 120)),
+
+    ));
+    dataInitForm = DateFormat('yyyyMMdd').format(
+      dateInit,
+    );
     _streamController.add(null);
-    List<Monitor> monitor = [];
+     monitor = [];
     List<Monitor> monitorTemp= [];
     for (int u = 0; u<100000;u++) {
       progress = false;
@@ -1551,20 +1859,34 @@ class _MonitorP8State extends State<MonitorP8> {
         plate: _searchPlate.text.toUpperCase(),
         gfe: _searchGfe.text,
         off: u == 0?0:u == 1?1000:monitor.length,
-        limit: u == 0?1000:2000
+        limit: u == 0?1000:2000,
+         dateInit: "$dataInitForm",
+         dateEnd: "$dateEndForm",
+
       );
 
       monitor += monitorTemp;
 
       _streamController.add(monitor);
-      if(u!=0&&monitorTemp.length<2000){
+      if((u!=0&&monitorTemp.length<2000)||(u==0&&monitorTemp.length<1000)){
         progress = true;
         _streamController.add(monitor);
+       /* for (int s = 0; s<monitorTemp.length;s++) {
+          if(monitorTemp[s].branchOrigin=="0112"&&monitorTemp[s].branchDestiny=="0109"&&monitorTemp[s].concierge!="S"){
+            gfe = monitorTemp[s].gfe;
+            plate = monitorTemp[s].automobilePlate;
+            nfCode = monitorTemp[s].keyNfe;
+            await Concierge.postConcierge(ori: monitorTemp[s].branchOrigin);
+          }
+        }*/
         break;
       }
+
+    }
+    if(currentSeconds==0){
+      startTimeout();
     }
 
-    startTimeout();
   }
 
   ///filtra monitor p8
@@ -1576,6 +1898,8 @@ class _MonitorP8State extends State<MonitorP8> {
     List<Monitor> monitor = await MonitorConciergeP8.getMonitorP8(
       plate: _searchPlate.text.toUpperCase(),
       gfe: _searchGfe.text,
+      dateInit: "$dataInitForm",
+      dateEnd: "$dateEndForm",
     );
 
     _streamController.add(monitor);
@@ -2044,6 +2368,113 @@ class _MonitorP8State extends State<MonitorP8> {
               ],
             ),
           ),
+
+         /* if(dropdownValue.toString().substring(0, 4)=="0109")...{
+
+            Expanded(
+              flex: 1,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  GestureDetector(
+                    onTap: (origin=="0112"||origin=="0102"||origin=="0111")?() {
+
+                      nfCode = "";
+
+                      _searchPlate.text=plate;
+                      _searchGfe.text=gfeAction.toString();
+                      setState(
+                            () async {
+                          _loadDataNt();
+
+                          nfCode = m.keyNfe;
+                          _nfCode.text = "";
+                          var post = await Concierge.postConcierge();
+
+
+                          if (post[0]['success'] == false) {
+                            showDialog(
+                              context: context,
+                              builder: (BuildContext context) {
+                                // return object of type Dialog
+                                return AlertDialog(
+                                  backgroundColor: Colors.transparent,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius:
+                                    BorderRadius.circular(20.0),
+                                  ),
+                                  title: Column(
+                                    children: [
+                                      Container(
+                                        decoration: BoxDecoration(
+                                          borderRadius:
+                                          BorderRadius.circular(10.0),
+                                          color: Colors.black54,
+                                        ),
+                                        child: Container(
+                                          decoration: BoxDecoration(
+                                            border: Border.all(
+                                              color: Colors.white,
+                                              width: 1,
+                                            ),
+                                            borderRadius:
+                                            BorderRadius.circular(
+                                              10.0,
+                                            ),
+                                            color: Colors.black26,
+                                          ),
+                                          child: Padding(
+                                            padding: EdgeInsets.all(8.0),
+                                            child: Column(
+                                              children: [
+                                                Icon(
+                                                  Icons.clear,
+                                                  color: Colors.red,
+                                                  size: 200,
+                                                ),
+                                                Text(
+                                                  "${post[0]['message']}\n"
+                                                      "${post[0]['warning'
+                                                      ''] == null ? ""
+                                                      "" : post[0]['warning'
+                                                      '']}",
+                                                  textAlign:
+                                                  TextAlign.center,
+                                                  style: TextStyle(
+                                                    fontSize: MediaQuery.of(
+                                                      context,
+                                                    ).size.height *
+                                                        0.02,
+                                                    color: Colors.white,
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                );
+                              },
+                            );
+                          }
+
+
+                        },
+                      );
+
+                    }:(){},
+                    child:  Icon(
+                      MdiIcons.truckCheck,
+                      color: (origin=="0112"||origin=="0102"||origin=="0111")?Colors.green[800]:Colors.grey[800],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          }
+*/
         ],
       ),
     );

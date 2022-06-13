@@ -4,13 +4,17 @@ import 'package:clippy/browser.dart' as clippy;
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
+import 'package:flutter_masked_text/flutter_masked_text.dart';
 import 'package:intl/intl.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:monitor_geral/controller/monitor.dart';
 import 'package:monitor_geral/global.dart';
 import 'package:monitor_geral/model/monitor.dart';
+import 'package:monitor_geral/view/widgets/date.dart';
 import 'package:monitor_geral/view/widgets/monitor_excel.dart';
 import 'package:url_launcher/url_launcher.dart';
+
+import '../controller/concierge.dart';
 
 class Monitoring extends StatefulWidget {
   @override
@@ -18,21 +22,45 @@ class Monitoring extends StatefulWidget {
 }
 
 class _MonitoringState extends State<Monitoring> {
+
   bool auditorP8 = true;
   final _searchGfe = TextEditingController();
   final _searchPlate = TextEditingController();
   var plate = "";
   var gfe = "";
-  var pl = FocusNode();
   final _streamController = StreamController<List<Monitor>>.broadcast();
+  final _streamController2 = StreamController<List<Monitor>>.broadcast();
+  final _streamController3 = StreamController<List<Monitor>>.broadcast();
+  final _streamController4 = StreamController<List<Monitor>>.broadcast();
+  Timer timer;
+  final interval = Duration(seconds: 1);
+  var pl = FocusNode();
+  var nf = FocusNode();
+  final int timerMaxSeconds = 1200;
+
+  int currentSeconds = 0;
+  final _nfCode = TextEditingController();
+  bool nfValidator = true;
+  bool progress = false;
+  bool loadAta = false;
+  bool plateValidator = true;
+  List<Monitor> monitor = [];
+  bool fst = true;
+  int audited = 0;
+
+  MaskedTextController _fromDateController = MaskedTextController(
+    mask: '00/00/0000',
+    text: DateFormat('ddMMyyyy').format(DateTime.now()),
+  );
+  MaskedTextController _toDateController = MaskedTextController(
+    mask: '00/00/0000',
+    text: DateFormat('ddMMyyyy').format(DateTime.now()),
+  );
   StreamController _streamLoad = StreamController.broadcast();
   StreamController _streamLoadOut = StreamController.broadcast();
   bool load = false;
   final _streamControllerGeneral = StreamController<List<Monitor>>.broadcast();
-  Timer timer;
-  final interval = Duration(seconds: 1);
-  final int timerMaxSeconds = 300;
-  int currentSeconds = 0;
+
   List<Monitor> monitorData;
   String get timerText =>
       '${((timerMaxSeconds - currentSeconds) ~/ 60).toString().padLeft(
@@ -47,24 +75,38 @@ class _MonitoringState extends State<Monitoring> {
   startTimeout([int milliseconds]) {
     var duration = interval;
 
-    Timer.periodic(duration, (timer) {
-      if (mounted) {
-        setState(() {
-          currentSeconds = timer.tick;
-          if (timer.tick >= timerMaxSeconds) {
-            timer.cancel();
-            colorApp == Colors.indigo ? _loadData() : _loadDataFilter();
+    timer = Timer.periodic(duration, (timer) {
 
-            startTimeout();
-          }
-        });
+      if (!loadAta) {
+        if (mounted) {
+          setState(() {
+            currentSeconds = timer.tick;
+            if (timer.tick >= timerMaxSeconds) {
+              currentSeconds = 0;
+              _loadData();
+              timer.cancel();
+            }
+          });
+        }
+      }else{
+        if (mounted) {
+          setState(() {
+            currentSeconds = timer.tick;
+            if (timer.tick >= timerMaxSeconds) {
+              timer.cancel();
+              startTimeout();
+            }
+          });
+        }
       }
     });
   }
 
+
   @override
   void initState() {
-    startTimeout();
+
+   // startTimeout();
     _loadData();
     super.initState();
   }
@@ -78,6 +120,154 @@ class _MonitoringState extends State<Monitoring> {
           Row(
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
+              if(
+              (
+                  user.user=="cezarbatista"||
+                  user.user=="marlielsongomes"||
+                  user.user=="jeansousa"||
+                  user.user=="danielsampaio"||
+                  user.userCode=="002291"||
+                  user.userCode=="000001"||
+                      user.user=="gabrielsilva"
+              )&&
+              dropdownValue.toString().substring(0, 4)=="0110"||
+                  dropdownValue.toString().substring(0, 4)=="0107"||
+                  dropdownValue.toString().substring(0, 4)=="0109"||
+                  dropdownValue.toString().substring(0, 4)=="0116"
+              )...{StreamBuilder(
+                  stream: _streamController3.stream,
+                  builder: (context, snapshot) {
+                    return Container(
+                      margin: EdgeInsets.all(5),
+
+                      child: RaisedButton(
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(18.0),
+                            side: BorderSide(color: Colors.green[800],)),
+                        onPressed: () async {
+                          loadAta = true;
+                          showGeneralDialog(
+                              context: context,
+                              barrierDismissible: false,
+                              barrierColor: Colors.black45,
+                              pageBuilder:
+                                  (context, animation, secondaryAnimation) {
+                                int total = 0;
+                                return StreamBuilder(
+                                    stream: _streamController4.stream,
+                                    builder: (context, snapshot) {
+                                      return Material(
+                                          color: Colors.black.withOpacity(0.5),
+                                          child: Center(
+                                            child: Column(
+                                              mainAxisSize: MainAxisSize.min,
+                                              children: <Widget>[
+                                                Image.asset(
+                                                  colorApp==Colors.green?
+                                                  'assets/P8O.png':'assets/P8.png',
+                                                  width: MediaQuery.of(context).size.width * 0.2,
+
+                                                  alignment: Alignment.center,
+                                                ),
+                                                Text(
+                                                  'Aguarde a finalização da auditoria das notas de atacado...\nTotal de notas de atacado auditadas: $total',
+                                                  textAlign: TextAlign.center,
+                                                  style: TextStyle(
+                                                      color: Colors.white,
+                                                      fontSize:
+                                                      25
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ));
+                                    }
+                                );
+                              });
+                          _streamController3.add(null);
+                          bool f = false;
+                          for (audited = 0; audited<monitor.length;audited++) {
+
+                            if(
+                            (monitor[audited].branchOrigin=="0112"&&monitor[audited].branchDestiny=="0109"&&monitor[audited].concierge!="S")||
+                                (monitor[audited].branchOrigin=="0115"&&monitor[audited].branchDestiny=="0116"&&monitor[audited].concierge!="S")||
+                                (monitor[audited].branchOrigin=="0111"&&monitor[audited].branchDestiny=="0107"&&monitor[audited].concierge!="S")||
+                                (monitor[audited].branchOrigin=="0102"&&monitor[audited].branchDestiny=="0110"&&monitor[audited].concierge!="S")
+                            ){
+                              f = true;
+                              total++;
+                              gfe = monitor[audited].gfe;
+                              plate = monitor[audited].automobilePlate;
+                              nfCode = monitor[audited].keyNfe;
+                              await Concierge.postConcierge(ori: monitor[audited].branchOrigin);
+                              _streamController4.add(null);
+                            }
+                          }
+
+                          Navigator.pop(context);
+                          if(!f){
+                            showGeneralDialog(
+                                context: context,
+                                barrierDismissible: false,
+                                barrierColor: Colors.black45,
+                                pageBuilder:
+                                    (context, animation, secondaryAnimation) {
+                                  return StreamBuilder(
+                                      stream: _streamController4.stream,
+                                      builder: (context, snapshot) {
+                                        return Material(
+                                            color: Colors.black.withOpacity(0.5),
+                                            child: Center(
+                                              child: Column(
+                                                mainAxisSize: MainAxisSize.min,
+                                                children: <Widget>[
+                                                  Image.asset(
+                                                    colorApp==Colors.green?
+                                                    'assets/P8O.png':'assets/P8.png',
+                                                    width: MediaQuery.of(context).size.width * 0.2,
+
+                                                    alignment: Alignment.center,
+                                                  ),
+                                                  Text(
+                                                    'Não há nenhuma nota de atacado pendente\nde auditoria no momento',
+                                                    textAlign: TextAlign.center,
+                                                    style: TextStyle(
+                                                        color: Colors.white,
+                                                        fontSize:
+                                                        25
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            ));
+                                      }
+                                  );
+                                });
+                            await Future.delayed(Duration(seconds: 5));
+                            Navigator.pop(context);
+                          }
+                          _loadData();
+                          loadAta = false;
+                          _streamController3.add(null);
+                        },
+                        padding: EdgeInsets.all(10.0),
+                        color: Colors.white,
+                        textColor: Colors.green[800],
+                        child:loadAta?Center(
+                          child: Container(
+                            width: 15,
+                            height: 15,
+                            child: CircularProgressIndicator(
+                              valueColor: AlwaysStoppedAnimation<Color>(Colors.green[800]),
+                            ),
+                          ),
+                        ): Text("  Auditar Notas de Atacado  ",
+
+                            style: TextStyle(fontSize: 15,fontWeight: FontWeight.bold,)),
+                      ),
+                    );
+                  }
+              ),},
               Padding(
                 padding: EdgeInsets.only(
                   left: 20,
@@ -124,7 +314,9 @@ class _MonitoringState extends State<Monitoring> {
                     branchCrj(11),
                     branchCrj(12),
                     branchCrj(13),
+                    branchCrj(14),
                     branchCrj(15),
+                    branchCrj(16),
                   ].map<DropdownMenuItem<String>>((
                     String value,
                   ) {
@@ -269,28 +461,24 @@ class _MonitoringState extends State<Monitoring> {
                   ),
                 ),
               ),
+
               FlatButton(
-                onPressed: () {
-                  DatePicker.showDatePicker(context,
-                      showTitleActions: true,
-                      minTime: DateTime(1999),
-                      maxTime: DateTime(2050), onChanged: (
-                    dateInitValidator,
-                  ) {
-                    dateInit = dateInitValidator;
+                onPressed: () async {
+                  if(dateInit==null){dateInit= DateTime.parse(DateFormat('yyyyMMdd').format(
+                    DateTime.now().subtract(Duration(days: 30)),
+                  ));}
+                  dateInit = await getDate(context, dateInit);
+                  dataInitForm = DateFormat('yyyyMMdd').format(
+                    dateInit,
+                  );
+
+                  setState(() {
+                    _loadData();
                     dataInitForm = DateFormat('yyyyMMdd').format(
                       dateInit,
                     );
-                  }, onConfirm: (dateInitConfirm) {
-                    setState(() {
-                      _loadData();
-                      dateInit = dateInit;
+                  });
 
-                      dataInitForm = DateFormat('yyyyMMdd').format(
-                        dateInit,
-                      );
-                    });
-                  }, currentTime: dateInit, locale: LocaleType.pt);
                 },
                 child: Stack(children: <Widget>[
                   dateInit == null
@@ -327,33 +515,28 @@ class _MonitoringState extends State<Monitoring> {
                 ]),
               ),
               FlatButton(
-                onPressed: () {
-                  DatePicker.showDatePicker(context,
-                      showTitleActions: true,
-                      minTime: DateTime(1999),
-                      maxTime: DateTime(2050), onChanged: (
-                    dateEndValidator,
-                  ) {
-                    dateEnd = dateEndValidator;
+                onPressed: () async {
+                  if(dateEnd==null){dateEnd= DateTime.parse(DateFormat('yyyyMMdd').format(
+                    DateTime.now(),
+                  ));}
+                  dateEnd = await getDate(context, dateEnd);
+                  dateEndForm = DateFormat('yyyyMMdd').format(
+                    dateEnd,
+                  );
+                  setState(() {
+                    _loadData();
                     dateEndForm = DateFormat('yyyyMMdd').format(
                       dateEnd,
                     );
-                  }, onConfirm: (dateEndConfirm) {
-                    setState(() {
-                      _loadData();
-                      dateEnd = dateEndConfirm;
-                      dateEndForm = DateFormat('yyyyMMdd').format(
-                        dateEnd,
-                      );
-                    });
-                  }, currentTime: dateEnd, locale: LocaleType.pt);
+                  });
+
                 },
                 child: Stack(
                   children: <Widget>[
                     dateEnd == null
                         ? Row(
                             children: [
-                              //  Icon(Icons.calendar_today,color: Colors.white,),
+
                               Text(
                                   "Até: ${DateFormat('dd/MM/yyyy').format(
                                     DateTime.now(),
@@ -1243,29 +1426,35 @@ class _MonitoringState extends State<Monitoring> {
                                       ),
                                       Padding(
                                         padding: EdgeInsets.only(top: 4.0),
-                                        child: Align(
-                                          alignment: Alignment.topLeft,
-                                          child: auditorP8
-                                              ? Text(
-                                                  "Auditados P8",
-                                                  style: TextStyle(
-                                                    fontSize: MediaQuery.of(
-                                                          context,
-                                                        ).size.height *
-                                                        0.022,
-                                                    color: Colors.white,
-                                                  ),
-                                                )
-                                              : Text(
-                                                  "Pendentes de Auditoria P8",
-                                                  style: TextStyle(
-                                                    fontSize: MediaQuery.of(
-                                                          context,
-                                                        ).size.height *
-                                                        0.022,
-                                                    color: Colors.white,
-                                                  ),
-                                                ),
+                                        child: Row(
+
+                                          children: [
+                                            Align(
+                                              alignment: Alignment.topLeft,
+                                              child: auditorP8
+                                                  ? Text(
+                                                      "Auditados P8",
+                                                      style: TextStyle(
+                                                        fontSize: MediaQuery.of(
+                                                              context,
+                                                            ).size.height *
+                                                            0.022,
+                                                        color: Colors.white,
+                                                      ),
+                                                    )
+                                                  : Text(
+                                                      "Pendentes de Auditoria P8",
+                                                      style: TextStyle(
+                                                        fontSize: MediaQuery.of(
+                                                              context,
+                                                            ).size.height *
+                                                            0.022,
+                                                        color: Colors.white,
+                                                      ),
+                                                    ),
+                                            ),
+
+                                          ],
                                         ),
                                       ),
                                     ],
@@ -2168,7 +2357,7 @@ class _MonitoringState extends State<Monitoring> {
   _loadData() async {
     _streamController.add(null);
 
-    List<Monitor> monitor = await MonitorManagement.getMonitor(
+     monitor = await MonitorManagement.getMonitor(
       received: "",
       checked: "",
       addressed: "",
@@ -2180,6 +2369,7 @@ class _MonitoringState extends State<Monitoring> {
     );
 
     totalCollections = monitor.length;
+    startTimeout();
     _streamController.add(monitor);
   }
 
@@ -2194,7 +2384,11 @@ class _MonitoringState extends State<Monitoring> {
     general0108 = [0, 0, 0, 0, 0];
     general0109 = [0, 0, 0, 0, 0];
     general0110 = [0, 0, 0, 0, 0];
+    general0111 = [0, 0, 0, 0, 0];
     general0113 = [0, 0, 0, 0, 0];
+    general0114 = [0, 0, 0, 0, 0];
+    general0115 = [0, 0, 0, 0, 0];
+    general0116 = [0, 0, 0, 0, 0];
     totalGeneral = 0;
     _streamControllerGeneral.add(null);
     showDialog<void>(
@@ -2215,6 +2409,8 @@ class _MonitoringState extends State<Monitoring> {
     monitorGeneral = await MonitorManagement.getMonitor(
       dateInit: "$dataInitFormGeneral",
       dateEnd: "$dateEndFormGeneral",
+        noBranch:true
+
     );
 
     for (int i = 0; i < monitorGeneral.length; i++) {
@@ -2239,6 +2435,56 @@ class _MonitoringState extends State<Monitoring> {
         if (monitorGeneral[i].checked == "S") {}
         if (monitorGeneral[i].addressed == "S") {}
         general0103[4]++;
+      }else if (monitorGeneral[i].branchDestiny == "0114") {
+        if (monitorGeneral[i].concierge == "S") {
+          general0114[0]++;
+        }
+        if (monitorGeneral[i].received == "S") {
+          general0114[1]++;
+        }
+        if (monitorGeneral[i].checked == "S") {}
+        if (monitorGeneral[i].addressed == "S") {}
+        general0114[4]++;
+      } else if (monitorGeneral[i].branchDestiny == "0111") {
+        if (monitorGeneral[i].concierge == "S") {
+          general0111[0]++;
+        }
+        if (monitorGeneral[i].received == "S") {
+          general0111[1]++;
+        }
+        if (monitorGeneral[i].checked == "S") {}
+        if (monitorGeneral[i].addressed == "S") {}
+        general0111[4]++;
+      } else if (monitorGeneral[i].branchDestiny == "0115") {
+        if (monitorGeneral[i].concierge == "S") {
+          general0115[0]++;
+        }
+        if (monitorGeneral[i].received == "S") {
+          general0115[1]++;
+        }
+        if (monitorGeneral[i].checked == "S") {}
+        if (monitorGeneral[i].addressed == "S") {}
+        general0115[4]++;
+      }else if (monitorGeneral[i].branchDestiny == "0102") {
+        if (monitorGeneral[i].concierge == "S") {
+          general0102[0]++;
+        }
+        if (monitorGeneral[i].received == "S") {
+          general0102[1]++;
+        }
+        if (monitorGeneral[i].checked == "S") {}
+        if (monitorGeneral[i].addressed == "S") {}
+        general0102[4]++;
+      }else if (monitorGeneral[i].branchDestiny == "0116") {
+        if (monitorGeneral[i].concierge == "S") {
+          general0116[0]++;
+        }
+        if (monitorGeneral[i].received == "S") {
+          general0116[1]++;
+        }
+        if (monitorGeneral[i].checked == "S") {}
+        if (monitorGeneral[i].addressed == "S") {}
+        general0116[4]++;
       } else if (monitorGeneral[i].branchDestiny == "0104") {
         if (monitorGeneral[i].concierge == "S") {
           general0104[0]++;
@@ -2309,6 +2555,16 @@ class _MonitoringState extends State<Monitoring> {
         if (monitorGeneral[i].checked == "S") {}
         if (monitorGeneral[i].addressed == "S") {}
         general0110[4]++;
+      } else if (monitorGeneral[i].branchDestiny == "0112") {
+        if (monitorGeneral[i].concierge == "S") {
+          general0112[0]++;
+        }
+        if (monitorGeneral[i].received == "S") {
+          general0112[1]++;
+        }
+        if (monitorGeneral[i].checked == "S") {}
+        if (monitorGeneral[i].addressed == "S") {}
+        general0112[4]++;
       } else if (monitorGeneral[i].branchDestiny == "0113") {
         if (monitorGeneral[i].concierge == "S") {
           general0113[0]++;
@@ -3358,6 +3614,12 @@ alertGeneral(_loadDataGeneral(), context, date, line, lineTotal, monitorData,
                                   ).format(
                                     DateTime.now(),
                                   )}";
+                                  dateInitGeneral= DateTime.parse(DateFormat('yyyyMMdd').format(
+                                    DateTime.now(),
+                                  ));
+                                  dateEndGeneral= DateTime.parse(DateFormat('yyyyMMdd').format(
+                                    DateTime.now(),
+                                  ));
                                   dateEndFormGeneral = "${DateFormat(
                                     'yyyyMMdd',
                                   ).format(
@@ -3396,8 +3658,26 @@ alertGeneral(_loadDataGeneral(), context, date, line, lineTotal, monitorData,
                           mainAxisAlignment: MainAxisAlignment.end,
                           children: [
                             FlatButton(
-                              onPressed: () {
-                                DatePicker.showDatePicker(context,
+                              onPressed: () async {
+                                if(dateInitGeneral==null){dateInitGeneral= DateTime.parse(DateFormat('yyyyMMdd').format(
+                                  DateTime.now(),
+                                ));}
+                                dateInitGeneral = await getDate(context, dateInitGeneral);
+                                dataInitFormGeneral = DateFormat('yyyyMMdd').format(
+                                  dateInitGeneral,
+                                );
+                                setState(() {
+                                  //  dateEndGeneral = dateEndGeneralController;
+                                  dataInitFormGeneral = DateFormat(
+                                    'yyyyMMdd',
+                                  ).format(
+                                    dateInitGeneral,
+                                  );
+                                  _loadDataGeneral();
+
+                                });
+
+                                /*  DatePicker.showDatePicker(context,
                                     showTitleActions: true,
                                     minTime: DateTime(
                                       1999,
@@ -3432,13 +3712,32 @@ alertGeneral(_loadDataGeneral(), context, date, line, lineTotal, monitorData,
                                   );
                                 },
                                     currentTime: dateInitGeneral,
-                                    locale: LocaleType.pt);
+                                    locale: LocaleType.pt);*/
                               },
                               child: date(dateInitGeneral, "De"),
                             ),
                             FlatButton(
-                              onPressed: () {
-                                DatePicker.showDatePicker(context,
+                              onPressed: () async {
+            if(dateEndGeneral==null){dateEndGeneral= DateTime.parse(DateFormat('yyyyMMdd').format(
+            DateTime.now(),
+            ));}
+            dateEndGeneral = await getDate(context, dateEndGeneral);
+            dateEndFormGeneral = DateFormat('yyyyMMdd').format(
+              dateEndGeneral,
+            );
+            setState(() {
+            //  dateEndGeneral = dateEndGeneralController;
+              dateEndFormGeneral = DateFormat(
+                'yyyyMMdd',
+              ).format(
+                dateEndGeneral,
+              );
+              _loadDataGeneral();
+
+            });
+
+
+                                /*DatePicker.showDatePicker(context,
                                     showTitleActions: true,
                                     minTime: DateTime(
                                       1999,
@@ -3470,7 +3769,7 @@ alertGeneral(_loadDataGeneral(), context, date, line, lineTotal, monitorData,
                                   );
                                 },
                                     currentTime: dateEndGeneral,
-                                    locale: LocaleType.pt);
+                                    locale: LocaleType.pt);*/
                               },
                               child: date(dateEndGeneral, "Até"),
                             ),
@@ -3726,9 +4025,30 @@ alertGeneral(_loadDataGeneral(), context, date, line, lineTotal, monitorData,
                       9,
                       "DVM - 0113",
                       general0113,
+                    ),line(
+                      10,
+                      "EUS - 0114",
+                      general0114,
+                    ),line(
+                      11,
+                      "TER-ATA - 0115",
+                      general0115,
+                    ),line(
+                      12,
+                      "TER-VAR - 0116",
+                      general0116,
+                    ),
+                    line(
+                      13,
+                      "JUA-ATA - 0102",
+                      general0102,
+                    ),line(
+                      14,
+                      "NAT-ATA - 0111",
+                      general0102,
                     ),
                     lineTotal(
-                      10,
+                      15,
                       "TOTAL",
                     ),
                   ],
@@ -3744,7 +4064,7 @@ alertGeneral(_loadDataGeneral(), context, date, line, lineTotal, monitorData,
 
 valueBranch(index) {
   return Text(
-    "${general0101[index] + general0103[index] + general0104[index] + general0105[index] + general0106[index] + general0107[index] + general0108[index] + general0109[index] + general0110[index] + general0113[index]}",
+    "${general0112[index] +general0116[index] +general0115[index] +general0114[index] +general0102[index] +general0101[index] + general0103[index] + general0104[index] + general0105[index] + general0106[index] + general0107[index] + general0108[index] + general0109[index] + general0110[index] + general0113[index]}",
     textAlign: TextAlign.center,
     style: TextStyle(color: Colors.white, fontSize: 17),
   );

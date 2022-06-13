@@ -8,10 +8,13 @@ import 'package:monitor_geral/model/monitor.dart';
 ///chamada responsavel buscar coletas p8 filtradas
 class MonitorConciergeP8 {
   static Future<List<Monitor>> getMonitorP8(
-      {String gfe = "", String plate = "",int off = 0, int limit = 100}) async {
+      { String dateInit = "",
+        String dateEnd = "",String gfe = "", String plate = "",int off = 0, int limit = 100}) async {
     var url =
-        'http://172.40.1.7:7903/rest/AUDITORIAS/MONITOR?P8=S&FILIALDESTINO='
+        'http://api.carajaslabs.com.br:9198/rest/AUDITORIAS/MONITOR?P8=S&FILIALDESTINO='
         '${dropdownValue.toString().substring(0, 4)}&ROMANEIO=$gfe&'
+        'DATADE=$dateInit&'
+        'DATAATE=$dateEnd&'
         'PLACAVEICULO=$plate';
 
     var response = await http.get(url,

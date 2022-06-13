@@ -9,7 +9,7 @@ class Login {
   static Future<User> login(String usr, String pwd) async {
     var url;
 
-    url = 'http://172.40.1.7:7903/rest/AUTHUSER?USR=$usr&PWD=$pwd';
+    url = 'http://api.carajaslabs.com.br:9198/rest/AUTHUSER?USR=$usr&PWD=$pwd';
 
     var response = await http.get(url);
 

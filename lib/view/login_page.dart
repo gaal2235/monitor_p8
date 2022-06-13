@@ -34,12 +34,12 @@ class _LoginPageState extends State<LoginPage> {
 
   bool _showProgress = false;
 
-  bool status = false;
+  bool status = true;
 
   void initState() {
     // TODO: implement initState
     super.initState();
-
+    colorApp=Colors.green;
     _loginPrefs();
   }
 
@@ -89,6 +89,7 @@ class _LoginPageState extends State<LoginPage> {
                                     0.01,
                               ),
 
+                              /*
                               Row(children: [
                                 Expanded(
 
@@ -261,6 +262,7 @@ class _LoginPageState extends State<LoginPage> {
                                   ),
                                 ),
                               ],),
+                              */
 
                               SizedBox(
                                 height: MediaQuery.of(context).size.height * 0.01,

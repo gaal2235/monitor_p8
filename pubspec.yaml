@@ -21,6 +21,7 @@ environment:
   sdk: ">=2.7.0 <3.0.0"
 
 dependencies:
+  platform: ^3.1.0
   date_utils: ^0.1.0+3
   flutter_masked_text: ^0.8.0
   url_launcher: ^5.5.0
@@ -33,7 +34,7 @@ dependencies:
   datetime_picker_formfield: ^1.0.0
   shared_preferences: ^0.5.6+3
   expandable: ^4.1.4
-  just_audio: ^0.5.6
+
   flutter:
 
     sdk: flutter

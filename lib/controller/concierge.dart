@@ -6,13 +6,13 @@ import 'package:monitor_geral/global.dart';
 
 ///chamada responsavel realizar coleta portaria
 class Concierge {
-  static Future<dynamic> postConcierge() async {
-    var url = 'http://172.40.1.7:7903/rest/AUDITORIAS/PORTARIA';
+  static Future<dynamic> postConcierge({String ori = "0105"}) async {
+    var url = 'http://api.carajaslabs.com.br:9198/rest/AUDITORIAS/PORTARIA';
     Map date = {
       "canal": "AUDITOR",
       "romaneio": gfe,
       "placa": "${plate.replaceAll("-", "")}",
-      "filialorigem": "0105",
+      "filialorigem": "$ori",
       "filialdestino": "${dropdownValue.substring(0, 4)}",
       "chavenfe": "$nfCode",
       "idUsr": user.userCode

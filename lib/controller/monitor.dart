@@ -14,10 +14,10 @@ class MonitorManagement {
         String dateInit = "",
         String dateEnd = "",
         String gfe = "",
-        String plate = ""}) async {
-    var url = 'http://172.40.1.7:7903/rest/AUDITORIAS/MONITOR?'
+        String plate = "",bool noBranch = false}) async {
+    var url = 'http://api.carajaslabs.com.br:9198/rest/AUDITORIAS/MONITOR?'
         'DATADE=$dateInit&'
-        'DATAATE=$dateEnd&FILIALDESTINO=${dropdownValue.substring(0,4)}&'
+        'DATAATE=$dateEnd&FILIALDESTINO=${noBranch?"":dropdownValue.substring(0,4)}&'
         'RECEBIDO=$received&'
         'CONFERIDO=$checked&ENDERECADO=$addressed&PORTARIA=$concierge&'
         'ROMANEIO=$gfe&PLACAVEICULO=$plate';
