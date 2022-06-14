@@ -39,57 +39,53 @@ class _LoginPageState extends State<LoginPage> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    colorApp=Colors.green;
+    colorApp = Colors.green;
     _loginPrefs();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor:colorApp,
+      backgroundColor: colorApp,
       body: SingleChildScrollView(
+        controller: _controller,
+        child: Column(
+          children: [
+            Image.asset(
+              colorApp == Colors.green ? 'assets/P8O.png' : 'assets/P8.png',
+              width: MediaQuery.of(context).size.width * 0.70,
+              height: MediaQuery.of(context).size.height * 0.560,
+              alignment: Alignment.center,
+            ),
+            Form(
+              key: _formKey,
+              child: Card(
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(30),
+                ),
+                color: Colors.white,
+                elevation: 9.0,
+                margin: EdgeInsets.only(
+                  right: 350.0,
+                  left: 350.0,
+                  bottom: 0,
+                  top: 0,
+                ),
+                child: Container(
+                  padding: EdgeInsets.all(18),
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: Column(
+                          children: <Widget>[
+                            SizedBox(
+                              height: MediaQuery.of(
+                                    context,
+                                  ).size.height *
+                                  0.01,
+                            ),
 
-          controller: _controller,
-          child: Column(
-
-            children: [
-
-              Image.asset(
-                colorApp==Colors.green?
-                'assets/P8O.png':'assets/P8.png',
-                width: MediaQuery.of(context).size.width * 0.70,
-                height: MediaQuery.of(context).size.height * 0.560,
-                alignment: Alignment.center,
-              ),
-              Form(
-                key: _formKey,
-                child: Card(
-                  shape:  RoundedRectangleBorder(
-                    borderRadius:  BorderRadius.circular(30),
-                  ),
-                  color: Colors.white,
-                  elevation: 9.0,
-                  margin: EdgeInsets.only(
-                    right: 350.0,
-                    left: 350.0,
-                    bottom: 0,
-                    top: 0,
-                  ),
-                  child: Container(
-                    padding: EdgeInsets.all(18),
-                    child: Row(
-                      children: [
-                        Expanded(
-                          child: Column(
-                            children: <Widget>[
-                              SizedBox(
-                                height: MediaQuery.of(
-                                  context,
-                                ).size.height *
-                                    0.01,
-                              ),
-
-                              /*
+                            /*
                               Row(children: [
                                 Expanded(
 
@@ -264,138 +260,133 @@ class _LoginPageState extends State<LoginPage> {
                               ],),
                               */
 
-                              SizedBox(
-                                height: MediaQuery.of(context).size.height * 0.01,
-                              ),
-                              Focus(
-                                child: Theme(
-                                  data: ThemeData(
-                                      primaryColor: colorApp,
-                                      cursorColor: colorApp),
-                                  child: TextFormField(
-                                    controller: _tUsr,
-                                    textInputAction: TextInputAction.next,
-                                    validator: (s) => _validateLogin(s),
-                                    focusNode: _loginFocus,
-                                    onFieldSubmitted: (term) {
-                                      _fieldFocusChange(
-                                        context,
-                                        _loginFocus,
-                                        _focusPassword,
-                                      );
-                                    },
-                                    onTap: () {
-                                      Timer(
-                                        Duration(seconds: 1),
-                                        () => _controller.jumpTo(
-                                          _controller.position.maxScrollExtent,
-                                        ),
-                                      );
-                                    },
-                                    decoration: InputDecoration(
-                                      hintText: 'Digite o login',
-                                      icon: Icon(
-                                        Icons.person,
-                                        size: 40,
-                                        color: Colors.grey,
-                                      ),
-                                      fillColor: Colors.white,
-                                    ),
-                                  ),
-                                ),
-                                onFocusChange: (login) {
-                                  Timer(
-                                    Duration(seconds: 1),
-                                    () => _controller.jumpTo(
-                                      _controller.position.maxScrollExtent,
-                                    ),
-                                  );
-                                },
-                              ),
-                              SizedBox(height: 10),
-                              Theme(
-                                data: ThemeData(
-                                    primaryColor: colorApp,
-                                    cursorColor: colorApp),
+                            SizedBox(
+                              height: MediaQuery.of(context).size.height * 0.01,
+                            ),
+                            Focus(
+                              child: Theme(
+                                data: ThemeData(primaryColor: colorApp, cursorColor: colorApp),
                                 child: TextFormField(
-                                  controller: _tPwd,
-                                  validator: _validatePassword,
-                                  focusNode: _focusPassword,
-                                  obscureText: true,
-                                  textInputAction: TextInputAction.done,
-                                  onFieldSubmitted: (value) {
-                                    _focusPassword.unfocus();
-                                    _onClickLogin();
+                                  controller: _tUsr,
+                                  textInputAction: TextInputAction.next,
+                                  validator: (s) => _validateLogin(s),
+                                  focusNode: _loginFocus,
+                                  onFieldSubmitted: (term) {
+                                    _fieldFocusChange(
+                                      context,
+                                      _loginFocus,
+                                      _focusPassword,
+                                    );
                                   },
                                   onTap: () {
                                     Timer(
                                       Duration(seconds: 1),
                                       () => _controller.jumpTo(
-                                          _controller.position.maxScrollExtent),
+                                        _controller.position.maxScrollExtent,
+                                      ),
                                     );
                                   },
-                                  style: TextStyle(
-                                    fontSize: 16,
-                                    color: Colors.grey,
-                                  ),
                                   decoration: InputDecoration(
-                                    hintText: "Digite a senha",
+                                    hintText: 'Digite o login',
                                     icon: Icon(
-                                      Icons.lock,
+                                      Icons.person,
                                       size: 40,
                                       color: Colors.grey,
                                     ),
+                                    fillColor: Colors.white,
                                   ),
                                 ),
                               ),
-                              SizedBox(
-                                height: MediaQuery.of(
-                                      context,
-                                    ).size.height *
-                                    0.01,
-                              ),
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: <Widget>[
-                                  SizedBox(
-                                    height: MediaQuery.of(
-                                          context,
-                                        ).size.height *
-                                        0.01,
+                              onFocusChange: (login) {
+                                Timer(
+                                  Duration(seconds: 1),
+                                  () => _controller.jumpTo(
+                                    _controller.position.maxScrollExtent,
                                   ),
-                                ],
-                              ),
-                              SizedBox(
-                                height: MediaQuery.of(
-                                  context,
-                                ).size.height *
-                                    0.01,
-                              ),
-                              StreamBuilder<bool>(
-                                initialData: false,
-                                builder: (context, snapshot) {
-                                  return AppButton(
-                                    "Login",
-                                    onPressed: _onClickLogin,
-                                    showProgress: _showProgress,
+                                );
+                              },
+                            ),
+                            SizedBox(height: 10),
+                            Theme(
+                              data: ThemeData(primaryColor: colorApp, cursorColor: colorApp),
+                              child: TextFormField(
+                                controller: _tPwd,
+                                validator: _validatePassword,
+                                focusNode: _focusPassword,
+                                obscureText: true,
+                                textInputAction: TextInputAction.done,
+                                onFieldSubmitted: (value) {
+                                  _focusPassword.unfocus();
+                                  _onClickLogin();
+                                },
+                                onTap: () {
+                                  Timer(
+                                    Duration(seconds: 1),
+                                    () => _controller.jumpTo(_controller.position.maxScrollExtent),
                                   );
                                 },
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  color: Colors.grey,
+                                ),
+                                decoration: InputDecoration(
+                                  hintText: "Digite a senha",
+                                  icon: Icon(
+                                    Icons.lock,
+                                    size: 40,
+                                    color: Colors.grey,
+                                  ),
+                                ),
                               ),
-
-                            ],
-                          ),
+                            ),
+                            SizedBox(
+                              height: MediaQuery.of(
+                                    context,
+                                  ).size.height *
+                                  0.01,
+                            ),
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: <Widget>[
+                                SizedBox(
+                                  height: MediaQuery.of(
+                                        context,
+                                      ).size.height *
+                                      0.01,
+                                ),
+                              ],
+                            ),
+                            SizedBox(
+                              height: MediaQuery.of(
+                                    context,
+                                  ).size.height *
+                                  0.01,
+                            ),
+                            StreamBuilder<bool>(
+                              initialData: false,
+                              builder: (context, snapshot) {
+                                return AppButton(
+                                  "Login",
+                                  onPressed: _onClickLogin,
+                                  showProgress: _showProgress,
+                                );
+                              },
+                            ),
+                          ],
                         ),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
                 ),
               ),
-              SizedBox(
-                height: MediaQuery.of(context).size.height * 0.01,
-              ),
-            ],
-          ),),
+            ),
+            SizedBox(
+              height: MediaQuery.of(context).size.height * 0.01,
+            ),
+          ],
+        ),
+      ),
     );
   }
 
@@ -420,18 +411,20 @@ class _LoginPageState extends State<LoginPage> {
       _showProgress = true;
     });
     branch = await AdminBranch.branchCarajas();
-    dropdownValue =  "${branch[0].code} ${branch[0].initials=="S/CLASS"?"":"- ${branch[0].initials}"} - ${branch[0].cidadeEmpresa}";
+    dropdownValue =
+        "${branch[0].code} ${branch[0].initials == "S/CLASS" ? "" : "- ${branch[0].initials}"} - ${branch[0].cidadeEmpresa}";
 
     user = await Login.login(usr, pwd);
 
     if (user != null) {
-      if(status==false){
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(
-          builder: (BuildContext context) => Monitoring(),
-        ),
-      );}else{
+      if (status == false) {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (BuildContext context) => Monitoring(),
+          ),
+        );
+      } else {
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(
@@ -469,7 +462,7 @@ class _LoginPageState extends State<LoginPage> {
             ),
             actions: <Widget>[
               FlatButton(
-                child:  Text(
+                child: Text(
                   "OK",
                   style: TextStyle(color: Colors.grey),
                 ),
@@ -510,8 +503,7 @@ class _LoginPageState extends State<LoginPage> {
     return null;
   }
 
-  _fieldFocusChange(
-      BuildContext context, FocusNode currentFocus, FocusNode nextFocus) {
+  _fieldFocusChange(BuildContext context, FocusNode currentFocus, FocusNode nextFocus) {
     currentFocus.unfocus();
     FocusScope.of(context).requestFocus(nextFocus);
   }

@@ -3,7 +3,6 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:monitor_geral/global.dart';
 
-
 ///chamada responsavel realizar coleta portaria
 class Concierge {
   static Future<dynamic> postConcierge({String ori = "0105"}) async {
@@ -20,7 +19,7 @@ class Concierge {
 
     var body = json.encode(date);
 
-    var response = await http.post(url, body: body);
+    var response = await http.post(Uri.parse(url), body: body);
 
     return json.decode(response.body);
   }

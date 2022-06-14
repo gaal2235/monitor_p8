@@ -8,21 +8,22 @@ import 'package:monitor_geral/model/monitor.dart';
 class MonitorManagement {
   static Future<List<Monitor>> getMonitor(
       {String received = "",
-        String checked = "",
-        String addressed = "",
-        String concierge = "",
-        String dateInit = "",
-        String dateEnd = "",
-        String gfe = "",
-        String plate = "",bool noBranch = false}) async {
+      String checked = "",
+      String addressed = "",
+      String concierge = "",
+      String dateInit = "",
+      String dateEnd = "",
+      String gfe = "",
+      String plate = "",
+      bool noBranch = false}) async {
     var url = 'http://api.carajaslabs.com.br:9198/rest/AUDITORIAS/MONITOR?'
         'DATADE=$dateInit&'
-        'DATAATE=$dateEnd&FILIALDESTINO=${noBranch?"":dropdownValue.substring(0,4)}&'
+        'DATAATE=$dateEnd&FILIALDESTINO=${noBranch ? "" : dropdownValue.substring(0, 4)}&'
         'RECEBIDO=$received&'
         'CONFERIDO=$checked&ENDERECADO=$addressed&PORTARIA=$concierge&'
         'ROMANEIO=$gfe&PLACAVEICULO=$plate';
 
-    var response = await http.get(url);
+    var response = await http.get(Uri.parse(url));
     String json = response.body;
 
     //var colet  = Colet.fromJson(convert.json.decode(response.body));
