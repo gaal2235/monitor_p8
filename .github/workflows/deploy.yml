@@ -1,0 +1,49 @@
+name: Deploy Flutter Web Build
+
+on:
+  push:
+    branches: [ main ]
+
+env:
+  project: monitor-geral-p8
+  folder: production
+  version: ""
+
+jobs:
+  build:
+    runs-on: self-hosted
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          path: ${{ github.workspace }}\${{ env.folder }}
+          clean: false
+      - uses: joeserhtf/flutter-action@main
+        with:
+          flutter-version: '3.0.1'
+      - name: Go to folder fetch data and build
+        run: |
+          cd ${{ env.folder }}
+          flutter clean
+          flutter pub get
+          flutter build web
+          echo "${{ env.project }}"
+        # Problems with bash on windows .sh from flutter default
+        # make jq
+
+  deploy:
+    needs: build
+    runs-on: self-hosted
+    steps:
+      - name: Copy last update
+        run: XCOPY ${{ github.workspace }}\${{ env.folder }}\build\web C:\labs\${{ env.folder }}\apps\${{ env.project }}${{ env.version != '' && '\' || '' }}${{ env.version }} /D /E /Y /I
+
+  location:
+    needs: deploy
+    runs-on: self-hosted
+    steps:
+      - name: Copy server nginx
+        run: XCOPY ${{ github.workspace }}\${{ env.folder }}\location_config\${{ env.project }}${{ env.version != '' && '_' || '' }}${{ env.version }}_server.conf C:\labs\production\nginx_labs\labs\servers\ /D /Y /I
+      - name: Reload Nginx
+        run: |
+          cd C:\labs\production\nginx_labs
+          .\nginx -s reload
