@@ -13,7 +13,7 @@ class MonitorConciergeP8 {
       String plate = "",
       int off = 0,
       int limit = 100}) async {
-    var url = 'http://api.carajaslabs.com.br:9198/rest/AUDITORIAS/MONITOR?P8=S&FILIALDESTINO='
+    String url = '$gUrl/rest/AUDITORIAS/MONITOR?P8=S&FILIALDESTINO='
         '${dropdownValue.toString().substring(0, 4)}&ROMANEIO=$gfe&'
         'DATADE=$dateInit&'
         'DATAATE=$dateEnd&'

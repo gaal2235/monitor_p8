@@ -2,21 +2,17 @@ import 'dart:convert' as convert;
 
 import 'package:http/http.dart' as http;
 import 'package:monitor_geral/model/branch_carajas.dart';
+import '../global.dart';
 
 import '../model/branch_carajas.dart';
-
 
 ///chamada responsavel por validar login e senha e possibilitar login
 class AdminBranch {
   static Future<List<BranchCarajas>> branchCarajas() async {
-    var url;
-
-    url = "http://api.carajaslabs.com.br:9198/rest/ADMIN/FILIAIS";
-    var response = await http.get(url);
+    String url = "$gUrl/rest/ADMIN/FILIAIS";
+    var response = await http.get(Uri.parse(url));
 
     String json = response.body;
-
-
 
     List list = convert.json.decode(json);
     final branchCrj = List<BranchCarajas>();
@@ -25,6 +21,6 @@ class AdminBranch {
 
       branchCrj.add(b);
     }
-  return branchCrj;
+    return branchCrj;
   }
 }

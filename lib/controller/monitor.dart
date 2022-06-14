@@ -16,7 +16,7 @@ class MonitorManagement {
       String gfe = "",
       String plate = "",
       bool noBranch = false}) async {
-    var url = 'http://api.carajaslabs.com.br:9198/rest/AUDITORIAS/MONITOR?'
+    String url = '$gUrl/rest/AUDITORIAS/MONITOR?'
         'DATADE=$dateInit&'
         'DATAATE=$dateEnd&FILIALDESTINO=${noBranch ? "" : dropdownValue.substring(0, 4)}&'
         'RECEBIDO=$received&'
