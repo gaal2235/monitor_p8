@@ -321,7 +321,7 @@ class _MonitoringState extends State<Monitoring> {
                   ) {
                     return DropdownMenuItem<String>(
                       value: value,
-                      child: Text(value),
+                      child: Text(value.contains("0117")?"0117 - MCZ - MACEIO - PRAIA":value),
                     );
                   }).toList(),
                 ),
@@ -2388,6 +2388,7 @@ class _MonitoringState extends State<Monitoring> {
     general0114 = [0, 0, 0, 0, 0];
     general0115 = [0, 0, 0, 0, 0];
     general0116 = [0, 0, 0, 0, 0];
+    general0117 = [0, 0, 0, 0, 0];
     totalGeneral = 0;
     _streamControllerGeneral.add(null);
     showDialog<void>(
@@ -2484,6 +2485,16 @@ class _MonitoringState extends State<Monitoring> {
         if (monitorGeneral[i].checked == "S") {}
         if (monitorGeneral[i].addressed == "S") {}
         general0116[4]++;
+      }else if (monitorGeneral[i].branchDestiny == "0117") {
+        if (monitorGeneral[i].concierge == "S") {
+          general0117[0]++;
+        }
+        if (monitorGeneral[i].received == "S") {
+          general0117[1]++;
+        }
+        if (monitorGeneral[i].checked == "S") {}
+        if (monitorGeneral[i].addressed == "S") {}
+        general0117[4]++;
       } else if (monitorGeneral[i].branchDestiny == "0104") {
         if (monitorGeneral[i].concierge == "S") {
           general0104[0]++;
@@ -4044,10 +4055,14 @@ alertGeneral(_loadDataGeneral(), context, date, line, lineTotal, monitorData,
                     ),line(
                       14,
                       "NAT-ATA - 0111",
+                      general0111,
+                    ),line(
+                      15,
+                      "MCZ-PR - 0117",
                       general0102,
                     ),
                     lineTotal(
-                      15,
+                      16,
                       "TOTAL",
                     ),
                   ],
@@ -4063,7 +4078,7 @@ alertGeneral(_loadDataGeneral(), context, date, line, lineTotal, monitorData,
 
 valueBranch(index) {
   return Text(
-    "${general0112[index] +general0116[index] +general0115[index] +general0114[index] +general0102[index] +general0101[index] + general0103[index] + general0104[index] + general0105[index] + general0106[index] + general0107[index] + general0108[index] + general0109[index] + general0110[index] + general0113[index]}",
+    "${general0112[index] +general0116[index] +general0115[index] +general0114[index] +general0102[index] +general0101[index] + general0103[index] + general0104[index] + general0105[index] + general0106[index] + general0107[index] + general0108[index] + general0109[index] + general0110[index] + general0113[index]+ general0117[index]}",
     textAlign: TextAlign.center,
     style: TextStyle(color: Colors.white, fontSize: 17),
   );

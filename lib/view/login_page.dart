@@ -34,12 +34,12 @@ class _LoginPageState extends State<LoginPage> {
 
   bool _showProgress = false;
 
-  bool status = true;
+  bool status = false;
 
   void initState() {
     // TODO: implement initState
     super.initState();
-    colorApp = Colors.green;
+    colorApp = Colors.indigo;
     _loginPrefs();
   }
 
@@ -52,7 +52,7 @@ class _LoginPageState extends State<LoginPage> {
         child: Column(
           children: [
             Image.asset(
-              colorApp == Colors.green ? 'assets/P8O.png' : 'assets/P8.png',
+              colorApp == Colors.indigo ? 'assets/P8O.png' : 'assets/P8.png',
               width: MediaQuery.of(context).size.width * 0.70,
               height: MediaQuery.of(context).size.height * 0.560,
               alignment: Alignment.center,
@@ -85,7 +85,6 @@ class _LoginPageState extends State<LoginPage> {
                                   0.01,
                             ),
 
-                            /*
                               Row(children: [
                                 Expanded(
 
@@ -258,7 +257,6 @@ class _LoginPageState extends State<LoginPage> {
                                   ),
                                 ),
                               ],),
-                              */
 
                             SizedBox(
                               height: MediaQuery.of(context).size.height * 0.01,

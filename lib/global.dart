@@ -5,7 +5,7 @@ import 'package:monitor_geral/model/monitor.dart';
 import 'package:monitor_geral/model/user.dart';
 
 
-String gUrl = "http://labs.carajaslabs.com.br/advpl9198";
+String gUrl = "http://labs.carajaslabs.com.br/advpl";
 
 List key = [];
 int conference = 0;
@@ -51,6 +51,7 @@ List general0115 = [0, 0, 0, 0, 0];
 List general0114 = [0, 0, 0, 0, 0];
 List general0111 = [0, 0, 0, 0, 0];
 List general0116 = [0, 0, 0, 0, 0];
+List general0117 = [0, 0, 0, 0, 0];
 List<Monitor> monitorGeneral;
 int totalGeneral = 0;
 List<BranchCarajas> branch;

@@ -137,12 +137,13 @@ class _MonitorP8State extends State<MonitorP8> {
                     branchCrj(14),
                     branchCrj(15),
                     branchCrj(16),
+
                   ].map<DropdownMenuItem<String>>((
                     String value,
                   ) {
                     return DropdownMenuItem<String>(
                       value: value,
-                      child: Text(value),
+                      child: Text(value.contains("0117")?"0117 - MCZ - MACEIO - PRAIA":value),
                     );
                   }).toList(),
                 ),
