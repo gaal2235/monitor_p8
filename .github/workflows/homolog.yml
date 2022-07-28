@@ -8,11 +8,13 @@ env:
   project: monitor-geral-p8
   folder: homolog
   version: homolog
-  flutter_version: '3.0.1'
+  flutter_version: ${{ secrets.FLUTTER_VERSION }}
   labs_path: C:\labs
   rollback_by_commit: ${{ secrets.rollback_by_commit }}
-  project_url: 'http://10.254.8.141:8080/monitor-geral-p8_homolog'
-  nginx_folder: location
+  api_advpl: ${{ secrets.API_ADVPL_HOMOLOG }}
+  api_node: ${{ secrets.API_NODE_HOMOLOG }}
+  telegram_active: ${{ secrets.TELEGRAM_ACTIVE }}
+  project_url: 'https://carajaslabs.com.br/monitorgeral'
 
 jobs:
   build:
@@ -30,7 +32,7 @@ jobs:
           cd ${{ env.folder }}
           flutter clean
           flutter pub get
-          flutter build web
+          flutter build web --dart-define="apiAdvpl"=${{ env.api_advpl }} --dart-define="apiNode"=${{ env.api_node }}
 
   deploy:
     needs: build
@@ -45,8 +47,8 @@ jobs:
           }
       - name: Copy last update
         run: |
+          XCOPY ${{ github.workspace }}\${{ env.folder }}\build\web\assets\assets ${{ github.workspace }}\${{ env.folder }}\build\web\assets /D /E /Y /I
           XCOPY ${{ github.workspace }}\${{ env.folder }}\build\web ${{ env.labs_path }}\${{ env.folder }}\apps\${{ env.project }}${{ env.version != '' && '\' || '' }}${{ env.version }} /D /E /Y /I
-          XCOPY ${{ github.workspace }}\${{ env.folder }}\location_config ${{ env.labs_path }}\${{ env.folder }}\apps\${{ env.project }}${{ env.version != '' && '\' || '' }}${{ env.version }}\location_config /D /E /Y /I
 
   location:
     needs: deploy
@@ -54,17 +56,12 @@ jobs:
     steps:
       - name: Backup of Nginx location folder
         run: |
-          if (Test-Path -Path ${{ env.labs_path }}\${{ env.folder }}\nginx_labs\labs\${{ env.nginx_folder }}s) {
-            XCOPY ${{ env.labs_path }}\${{ env.folder }}\nginx_labs\labs\${{ env.nginx_folder }}s ${{ env.labs_path }}\${{ env.folder }}\nginx_labs\labs\backup\${{ env.nginx_folder }}s /D /E /Y /I
-          } else {
-            echo "First deploy, no backup available for nginx"
-          }
+          XCOPY ${{ env.labs_path }}\${{ env.folder }}\nginx_labs\labs\${{ env.project }}*.conf ${{ env.labs_path }}\${{ env.folder }}\nginx_labs\backup\labs /D /E /Y /I
       - name: Copy server nginx
         run: |
-          if (Test-Path -Path ${{ env.labs_path }}\${{ env.folder }}\apps\${{ env.project }}${{ env.version != '' && '\' || '' }}${{ env.version }}\location_config\${{ env.project }}${{ env.version != '' && '_' || '' }}${{ env.version }}_${{ env.nginx_folder }}.conf) {
-            XCOPY ${{ env.labs_path }}\${{ env.folder }}\apps\${{ env.project }}${{ env.version != '' && '\' || '' }}${{ env.version }}\location_config\${{ env.project }}${{ env.version != '' && '_' || '' }}${{ env.version }}_${{ env.nginx_folder }}.conf ${{ env.labs_path }}\${{ env.folder }}\nginx_labs\labs\${{ env.nginx_folder }}s\ /D /E /Y /I
-          } else {
-            echo "Location file not found" ${{ env.labs_path }}\${{ env.folder }}\apps\${{ env.project }}${{ env.version != '' && '\' || '' }}${{ env.version }}\location_config\${{ env.project }}${{ env.version != '' && '_' || '' }}${{ env.version }}_${{ env.nginx_folder }}.conf
+          XCOPY ${{ github.workspace }}\${{ env.folder }}\location_config\*_${{ env.folder }}.conf ${{ env.labs_path }}\${{ env.folder }}\nginx_labs\labs\locations /D /E /Y /I
+          if ('${{ env.folder }}' -eq 'production') {
+            XCOPY ${{ github.workspace }}\${{ env.folder }}\location_config\*_server.conf ${{ env.labs_path }}\${{ env.folder }}\nginx_labs\labs\servers /D /E /Y /I
           }
       - name: Reload Nginx
         run: |
@@ -87,22 +84,17 @@ jobs:
         if: ${{ env.rollback_by_commit == 'true' }}
         run: |
           cd ${{ env.folder }}
-          git push --force origin ${{ github.event.before }}:${{ env.folder }}
+          git push --force origin ${{ github.event.before }}:${{ github.ref_name }}
       - name: Copy backup from folder
         if: ${{ env.rollback_by_commit != 'true' }}
         run: |
-          XCOPY ${{ env.labs_path }}\${{ env.folder }}\backup\apps\${{ env.project }}${{ env.version != '' && '\' || '' }}${{ env.version }} ${{ env.labs_path }}\${{ env.folder }}\apps\${{ env.project }}${{ env.version != '' && '\' || '' }}${{ env.version }} /D /E /Y /I
+          XCOPY ${{ env.labs_path }}\${{ env.folder }}\backup\apps\${{ env.project }}${{ env.version != '' && '\' || '' }}${{ env.version }} ${{ env.labs_path }}\${{ env.folder }}\apps\${{ env.project }}${{ env.version != '' && '\' || '' }}${{ env.version }} /E /Y /I
       - name: Backup nginx to remove wrong config
         if: ${{ env.rollback_by_commit != 'true' && needs.location.result == 'failure' }}
-        run:
-          if (Test-Path -Path ${{ env.labs_path }}\${{ env.folder }}\nginx_labs\labs\${{ env.nginx_folder }}s\${{ env.project }}${{ env.version != '' && '_' || '' }}${{ env.version }}_${{ env.nginx_folder }}.conf) {
-            Remove-item ${{ env.labs_path }}\${{ env.folder }}\nginx_labs\labs\${{ env.nginx_folder }}s\${{ env.project }}${{ env.version != '' && '_' || '' }}${{ env.version }}_${{ env.nginx_folder }}.conf -Recurse -Force -Confirm:$false
-            XCOPY ${{ env.labs_path }}\${{ env.folder }}\nginx_labs\labs\backup\${{ env.nginx_folder }}s ${{ env.labs_path }}\${{ env.folder }}\nginx_labs\labs\${{ env.nginx_folder }}s /D /E /Y /I
-            cd ${{ env.labs_path }}\${{ env.folder }}\nginx_labs
-            .\nginx -s reload
-          } else {
-            echo "No config found that caused error"
-          }
+        run: |
+          XCOPY ${{ env.labs_path }}\${{ env.folder }}\nginx_labs\backup\labs\${{ env.project }}*.conf ${{ env.labs_path }}\${{ env.folder }}\nginx_labs\labs /E /Y /I
+          cd ${{ env.labs_path }}\${{ env.folder }}\nginx_labs
+          .\nginx -s reload
 
   send_telegram_notification:
     runs-on: ubuntu-latest
@@ -110,6 +102,7 @@ jobs:
     if: always()
     steps:
       - name: Send telegram message end
+        if: ${{ env.telegram_active == 'true' }}
         uses: appleboy/telegram-action@master
         with:
           to: ${{ secrets.TELEGRAM_TO }}
