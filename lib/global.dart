@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:flutter/foundation.dart';
 import 'package:monitor_geral/model/branch_carajas.dart';
 import 'package:monitor_geral/model/monitor.dart';
 import 'package:monitor_geral/model/user.dart';
 
 
-String gUrl = "http://labs.carajaslabs.com.br/advpl";
+String gUrl = kDebugMode ? "https://carajaslabs.com.br/advpl" : "../../advpl";
 
 List key = [];
 int conference = 0;
@@ -21,14 +22,17 @@ int p8 = 0;
 int registry = 0;
 var dropdownValue = '0101';
 var colorApp = Colors.indigo;
-DateTime dateInit;
-DateTime dateEnd;
-DateTime dateInitGeneral;
-DateTime dateEndGeneral;
+
+DateTime? dateInit;
+DateTime? dateEnd;
+DateTime? dateInitGeneral;
+DateTime? dateEndGeneral;
+
 String dateEndForm = "${DateFormat('yyyyMMdd').format(DateTime.now())}";
 String dataInitForm = "${DateFormat('yyyyMMdd').format(DateTime.now())}";
 String dateEndFormGeneral = "${DateFormat('yyyyMMdd').format(DateTime.now())}";
 String dataInitFormGeneral = "${DateFormat('yyyyMMdd').format(DateTime.now())}";
+
 var received;
 var checked;
 var addressed;
