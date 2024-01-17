@@ -6,7 +6,7 @@ import 'package:monitor_geral/model/monitor.dart';
 import 'package:monitor_geral/model/user.dart';
 
 
-String gUrl = "https://carajaslabs.com.br/advpl";
+String gUrl = kDebugMode ? "https://carajaslabs.com.br/advpl" : "../../advpl";
 
 List key = [];
 int conference = 0;
