@@ -6,7 +6,7 @@ import 'package:monitor_geral/model/monitor.dart';
 import 'package:monitor_geral/model/user.dart';
 
 
-String gUrl = kDebugMode ? "https://carajaslabs.com.br/advpl" : "../../advpl";
+String gUrl = "https://carajaslabs.com.br/advpl";
 
 List key = [];
 int conference = 0;
@@ -37,7 +37,7 @@ var received;
 var checked;
 var addressed;
 var concierge;
-User user;
+User? user;
 var totalCollections;
 List general0101 = [0, 0, 0, 0, 0];
 List general0102 = [0, 0, 0, 0, 0];
@@ -56,9 +56,9 @@ List general0114 = [0, 0, 0, 0, 0];
 List general0111 = [0, 0, 0, 0, 0];
 List general0116 = [0, 0, 0, 0, 0];
 List general0117 = [0, 0, 0, 0, 0];
-List<Monitor> monitorGeneral;
+List<Monitor?>? monitorGeneral;
 int totalGeneral = 0;
-List<BranchCarajas> branch;
+List<BranchCarajas?>? branch;
 int oneDay = 0;
 int p8Pending = 0;
 int p8Checked = 0;

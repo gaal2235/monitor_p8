@@ -1,22 +1,22 @@
-name: Production Flutter Web Build
+name: Homolog Flutter Web Build
 
 on:
   push:
-    branches: [ main ]
+    branches: [ dev ]
 
 env:
   project: monitor-geral-p8monitorgeral
-  folder: production
-  version: ""
+  folder: developer
+  version: developer
   flutter_version: ${{ secrets.FLUTTER_VERSION }}
-  labs_path: ${{ secrets.PATH_PROD }}
+  labs_path: ${{ secrets.PATH_DEV }}
   rollback_by_commit: ${{ secrets.rollback_by_commit }}
-  api_base: ${{ secrets.API_PROD }}
+  api_base: ${{ secrets.API_DEV }}
   project_url: 'monitorgeral'
 
 jobs:
   build:
-    runs-on: [ self-hosted, Windows, production ]
+    runs-on: [ self-hosted, Windows, developer ]
     steps:
       - uses: actions/checkout@v3
         with:
@@ -44,7 +44,7 @@ jobs:
 
   deploy:
     needs: build
-    runs-on: [ self-hosted, Windows, production ]
+    runs-on: [ self-hosted, Windows, developer ]
     steps:
       - name: Make backup
         run: |
@@ -60,7 +60,7 @@ jobs:
 
   location:
     needs: deploy
-    runs-on: [ self-hosted, Windows, production ]
+    runs-on: [ self-hosted, Windows, developer ]
     steps:
       - name: Backup of Nginx location folder
         run: |
@@ -78,7 +78,7 @@ jobs:
 
   rollback:
     needs: [ build, deploy, location ]
-    runs-on: [ self-hosted, Windows, production ]
+    runs-on: [ self-hosted, Windows, homolog ]
     if: always() && ( needs.deploy.result == 'failure' || needs.location.result == 'failure' )
     steps:
       - name: Set up token
@@ -112,12 +112,12 @@ jobs:
       - name: Send telegram message end
         uses: appleboy/telegram-action@master
         with:
-          to: ${{ secrets.TELEGRAM_TO_PROD }}
+          to: ${{ secrets.TELEGRAM_TO }}
           token: ${{ secrets.TELEGRAM_TOKEN }}
           message: |
             ${{ env.folder == 'production' && '⚠ Production' || 'Homolog' }} deploy completed with: ${{ (needs.build.result == 'success' && needs.deploy.result == 'success' && needs.location.result == 'success') && ' ✅ Success' || ' ❌ Failure' }}
 
-            Url: https://carajaslabs.com.br/${{ env.project_url }}
+            Url: https://dev.carajaslabs.com.br/${{ env.project_url }}
 
             Repository: ${{ github.repository }}
             ${{ github.actor }} created commit to branch: ${{ github.ref_name }}:

@@ -1,9 +1,10 @@
 import 'dart:async';
 
-import 'package:clippy/browser.dart' as clippy;
+//import 'package:clippy/browser.dart' as clippy;
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_masked_text/flutter_masked_text.dart';
+import 'package:flutter_masked_text2/flutter_masked_text2.dart';
+
 import 'package:intl/intl.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:monitor_geral/controller/monitor.dart';
@@ -27,11 +28,11 @@ class _MonitoringState extends State<Monitoring> {
   final _searchPlate = TextEditingController();
   var plate = "";
   var gfe = "";
-  final _streamController = StreamController<List<Monitor>>.broadcast();
-  final _streamController2 = StreamController<List<Monitor>>.broadcast();
-  final _streamController3 = StreamController<List<Monitor>>.broadcast();
-  final _streamController4 = StreamController<List<Monitor>>.broadcast();
-  Timer timer;
+  final _streamController = StreamController<List<Monitor?>?>.broadcast();
+  final _streamController2 = StreamController<List<Monitor?>?>.broadcast();
+  final _streamController3 = StreamController<List<Monitor?>?>.broadcast();
+  final _streamController4 = StreamController<List<Monitor?>?>.broadcast();
+  Timer? timer;
   final interval = Duration(seconds: 1);
   var pl = FocusNode();
   var nf = FocusNode();
@@ -43,7 +44,7 @@ class _MonitoringState extends State<Monitoring> {
   bool progress = false;
   bool loadAta = false;
   bool plateValidator = true;
-  List<Monitor> monitor = [];
+  List<Monitor?>? monitor = [];
   bool fst = true;
   int audited = 0;
 
@@ -58,9 +59,9 @@ class _MonitoringState extends State<Monitoring> {
   StreamController _streamLoad = StreamController.broadcast();
   StreamController _streamLoadOut = StreamController.broadcast();
   bool load = false;
-  final _streamControllerGeneral = StreamController<List<Monitor>>.broadcast();
+  final _streamControllerGeneral = StreamController<List<Monitor?>?>.broadcast();
 
-  List<Monitor> monitorData;
+  List<Monitor?>? monitorData;
   String get timerText =>
       '${((timerMaxSeconds - currentSeconds) ~/ 60).toString().padLeft(
             2,
@@ -71,7 +72,7 @@ class _MonitoringState extends State<Monitoring> {
             '0',
           )}';
 
-  startTimeout([int milliseconds]) {
+  startTimeout([int? milliseconds]) {
     var duration = interval;
 
     timer = Timer.periodic(duration, (timer) {
@@ -121,13 +122,13 @@ class _MonitoringState extends State<Monitoring> {
             children: [
               if(
               (
-                  user.user=="cezarbatista"||
-                  user.user=="marlielsongomes"||
-                  user.user=="jeansousa"||
-                  user.user=="danielsampaio"||
-                  user.userCode=="002291"||
-                  user.userCode=="000001"||
-                      user.user=="gabrielsilva"
+                  user?.user=="cezarbatista"||
+                  user?.user=="marlielsongomes"||
+                  user?.user=="jeansousa"||
+                  user?.user=="danielsampaio"||
+                  user?.userCode=="002291"||
+                  user?.userCode=="000001"||
+                      user?.user=="gabrielsilva"
               )&&
               dropdownValue.toString().substring(0, 4)=="0110"||
                   dropdownValue.toString().substring(0, 4)=="0107"||
@@ -139,10 +140,10 @@ class _MonitoringState extends State<Monitoring> {
                     return Container(
                       margin: EdgeInsets.all(5),
 
-                      child: RaisedButton(
-                        shape: RoundedRectangleBorder(
+                      child: ElevatedButton(
+                      /*  shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(18.0),
-                            side: BorderSide(color: Colors.green[800],)),
+                            side: BorderSide(color: Colors.green[800],)),*/
                         onPressed: () async {
                           loadAta = true;
                           showGeneralDialog(
@@ -185,20 +186,20 @@ class _MonitoringState extends State<Monitoring> {
                               });
                           _streamController3.add(null);
                           bool f = false;
-                          for (audited = 0; audited<monitor.length;audited++) {
+                          for (audited = 0; audited<(monitor?.length??0);audited++) {
 
                             if(
-                            (monitor[audited].branchOrigin=="0112"&&monitor[audited].branchDestiny=="0109"&&monitor[audited].concierge!="S")||
-                                (monitor[audited].branchOrigin=="0115"&&monitor[audited].branchDestiny=="0116"&&monitor[audited].concierge!="S")||
-                                (monitor[audited].branchOrigin=="0111"&&monitor[audited].branchDestiny=="0107"&&monitor[audited].concierge!="S")||
-                                (monitor[audited].branchOrigin=="0102"&&monitor[audited].branchDestiny=="0110"&&monitor[audited].concierge!="S")
+                            (monitor?[audited]?.branchOrigin=="0112"&&monitor?[audited]?.branchDestiny=="0109"&&monitor?[audited]?.concierge!="S")||
+                                (monitor?[audited]?.branchOrigin=="0115"&&monitor?[audited]?.branchDestiny=="0116"&&monitor?[audited]?.concierge!="S")||
+                                (monitor?[audited]?.branchOrigin=="0111"&&monitor?[audited]?.branchDestiny=="0107"&&monitor?[audited]?.concierge!="S")||
+                                (monitor?[audited]?.branchOrigin=="0102"&&monitor?[audited]?.branchDestiny=="0110"&&monitor?[audited]?.concierge!="S")
                             ){
                               f = true;
                               total++;
-                              gfe = monitor[audited].gfe;
-                              plate = monitor[audited].automobilePlate;
-                              nfCode = monitor[audited].keyNfe;
-                              await Concierge.postConcierge(ori: monitor[audited].branchOrigin);
+                              gfe = monitor?[audited]?.gfe??'';
+                              plate = monitor?[audited]?.automobilePlate??'';
+                              nfCode = monitor?[audited]?.keyNfe??'';
+                              await Concierge.postConcierge(ori: monitor?[audited]?.branchOrigin??'');
                               _streamController4.add(null);
                             }
                           }
@@ -249,15 +250,15 @@ class _MonitoringState extends State<Monitoring> {
                           loadAta = false;
                           _streamController3.add(null);
                         },
-                        padding: EdgeInsets.all(10.0),
+                        /*padding: EdgeInsets.all(10.0),
                         color: Colors.white,
-                        textColor: Colors.green[800],
+                        textColor: Colors.green[800],*/
                         child:loadAta?Center(
                           child: Container(
                             width: 15,
                             height: 15,
                             child: CircularProgressIndicator(
-                              valueColor: AlwaysStoppedAnimation<Color>(Colors.green[800]),
+                              valueColor: AlwaysStoppedAnimation<Color>(Colors.green[800]??Colors.green),
                             ),
                           ),
                         ): Text("  Auditar Notas de Atacado  ",
@@ -286,9 +287,9 @@ class _MonitoringState extends State<Monitoring> {
                     height: 2,
                     color: colorApp,
                   ),
-                  onChanged: (String newValue) {
+                  onChanged: (String? newValue) {
                     setState(() {
-                      dropdownValue = newValue;
+                      dropdownValue = newValue??'';
 
                       Navigator.pushReplacement(
                         context,
@@ -321,7 +322,7 @@ class _MonitoringState extends State<Monitoring> {
                   ) {
                     return DropdownMenuItem<String>(
                       value: value,
-                      child: Text(value.contains("0117")?"0117 - MCZ - MACEIO - PRAIA":value),
+                      child: Text(value.contains("0116")?"0116 - MCZ - MACEIO - PRAIA":value),
                     );
                   }).toList(),
                 ),
@@ -336,7 +337,7 @@ class _MonitoringState extends State<Monitoring> {
                       Theme(
                         data: ThemeData(
                           primaryColor: Colors.white,
-                          cursorColor: Colors.white,
+                          cardColor: Colors.white,
                           disabledColor: Colors.white,
                           unselectedWidgetColor: Colors.white,
                         ),
@@ -402,7 +403,7 @@ class _MonitoringState extends State<Monitoring> {
                       Theme(
                         data: ThemeData(
                           primaryColor: Colors.white,
-                          cursorColor: Colors.white,
+                          cardColor: Colors.white,
                           disabledColor: Colors.white,
                           unselectedWidgetColor: Colors.white,
                         ),
@@ -461,20 +462,20 @@ class _MonitoringState extends State<Monitoring> {
                 ),
               ),
 
-              FlatButton(
+              ElevatedButton( style: ElevatedButton.styleFrom(elevation: 0,backgroundColor: Colors.transparent),
                 onPressed: () async {
                   if(dateInit==null){dateInit= DateTime.parse(DateFormat('yyyyMMdd').format(
                     DateTime.now().subtract(Duration(days: 30)),
                   ));}
                   dateInit = await getDate(context, dateInit);
                   dataInitForm = DateFormat('yyyyMMdd').format(
-                    dateInit,
+                    dateInit!,
                   );
 
                   setState(() {
                     _loadData();
                     dataInitForm = DateFormat('yyyyMMdd').format(
-                      dateInit,
+                      dateInit!,
                     );
                   });
 
@@ -500,7 +501,7 @@ class _MonitoringState extends State<Monitoring> {
                           children: [
                             Text(
                                 'De: ${DateFormat('dd/MM/yyyy').format(
-                                  dateInit,
+                                  dateInit!,
                                 )}',
                                 style: TextStyle(
                                   color: Colors.white,
@@ -513,19 +514,19 @@ class _MonitoringState extends State<Monitoring> {
                         )
                 ]),
               ),
-              FlatButton(
+              ElevatedButton( style: ElevatedButton.styleFrom(elevation: 0,backgroundColor: Colors.transparent),
                 onPressed: () async {
                   if(dateEnd==null){dateEnd= DateTime.parse(DateFormat('yyyyMMdd').format(
                     DateTime.now(),
                   ));}
                   dateEnd = await getDate(context, dateEnd);
                   dateEndForm = DateFormat('yyyyMMdd').format(
-                    dateEnd,
+                    dateEnd!,
                   );
                   setState(() {
                     _loadData();
                     dateEndForm = DateFormat('yyyyMMdd').format(
-                      dateEnd,
+                      dateEnd!,
                     );
                   });
 
@@ -554,7 +555,7 @@ class _MonitoringState extends State<Monitoring> {
                               Text(
                                 "Até: "
                                 "${DateFormat('dd/MM/yyyy').format(
-                                  dateEnd,
+                                  dateEnd!,
                                 )}",
                                 style: TextStyle(
                                   color: Colors.white,
@@ -585,7 +586,7 @@ class _MonitoringState extends State<Monitoring> {
                       stream: _streamLoadOut.stream,
                       builder: (context, snapshot) {
                         return !load
-                            ? Icon(MdiIcons.microsoftExcel)
+                            ? Icon(MdiIcons.microsoftExcel,color: Colors.white,)
                             : Container(
                           width: 20,
                               height: 20,
@@ -600,7 +601,7 @@ class _MonitoringState extends State<Monitoring> {
               SizedBox(
                 width: 8,
               ),
-              Icon(Icons.timer),
+              Icon(Icons.timer,color: Colors.white,),
               SizedBox(
                 width: 5,
               ),
@@ -665,8 +666,8 @@ class _MonitoringState extends State<Monitoring> {
                             decoration: BoxDecoration(
                               border: Border.all(
                                 color: auditorP8
-                                    ? Colors.green[900]
-                                    : Colors.red[900],
+                                    ? Colors.green[900]??Colors.green
+                                    : Colors.red[900]??Colors.red,
                                 width: 1.0,
                               ),
                               borderRadius: BorderRadius.all(
@@ -691,7 +692,7 @@ class _MonitoringState extends State<Monitoring> {
                                       Icon(
                                         MdiIcons.truckCheckOutline,
                                         color: Colors.white,
-                                        size: 40,
+                                        size: 30,
                                       ),
                                       Column(
                                         children: [
@@ -778,7 +779,7 @@ class _MonitoringState extends State<Monitoring> {
                           child: Container(
                             decoration: BoxDecoration(
                               border: Border.all(
-                                color: Colors.blueGrey[900],
+                                color: Colors.blueGrey[900]??Colors.blueGrey,
                                 width: 1.0,
                               ),
                               borderRadius: BorderRadius.all(
@@ -801,7 +802,7 @@ class _MonitoringState extends State<Monitoring> {
                                       Icon(
                                         MdiIcons.textBoxCheckOutline,
                                         color: Colors.white,
-                                        size: 40,
+                                        size: 30,
                                       ),
                                       Column(
                                         children: [
@@ -893,7 +894,7 @@ class _MonitoringState extends State<Monitoring> {
                           child: Container(
                             decoration: BoxDecoration(
                               border: Border.all(
-                                color: Colors.cyan[900],
+                                color: Colors.cyan[900]??Colors.cyan,
                                 width: 1.0,
                               ),
                               borderRadius: BorderRadius.all(
@@ -920,7 +921,7 @@ class _MonitoringState extends State<Monitoring> {
                                       Icon(
                                         MdiIcons.import,
                                         color: Colors.white,
-                                        size: 40,
+                                        size: 30,
                                       ),
                                       Column(
                                         children: [
@@ -1014,7 +1015,7 @@ class _MonitoringState extends State<Monitoring> {
                           child: Container(
                             decoration: BoxDecoration(
                               border: Border.all(
-                                color: Colors.teal[900],
+                                color: Colors.teal[900]??Colors.teal,
                                 width: 1.0,
                               ),
                               borderRadius: BorderRadius.all(
@@ -1041,7 +1042,7 @@ class _MonitoringState extends State<Monitoring> {
                                       Icon(
                                         MdiIcons.transfer,
                                         color: Colors.white,
-                                        size: 40,
+                                        size: 30,
                                       ),
                                       Column(
                                         children: [
@@ -1164,7 +1165,7 @@ class _MonitoringState extends State<Monitoring> {
                                         Icon(
                                           MdiIcons.chartBarStacked,
                                           color: Colors.white,
-                                          size: 40,
+                                          size: 30,
                                         ),
                                         Column(
                                           children: [
@@ -1256,30 +1257,30 @@ class _MonitoringState extends State<Monitoring> {
                 total = 0;
                 p8 = 0;
 
-                List<Monitor> monitor2 = snapshot.data;
-                registry = monitor2.length;
-                for (int t = 0; t < monitor2.length; t++) {
-                  if (monitor2[t].checked == "S") {
+                List<Monitor?>? monitor2 = snapshot.data;
+                registry = monitor2?.length??0;
+                for (int t = 0; t < (monitor2?.length??0); t++) {
+                  if (monitor2?[t]?.checked == "S") {
                     conference++;
                   }
-                  if (monitor2[t].received == "S") {
+                  if (monitor2?[t]?.received == "S") {
                     pending++;
                   }
-                  if (monitor2[t].addressed == "S") {
+                  if (monitor2?[t]?.addressed == "S") {
                     address++;
                   }
                   if (auditorP8) {
-                    if (monitor2[t].concierge == "S") {
+                    if (monitor2?[t]?.concierge == "S") {
                       p8++;
                     }
                   } else {
-                    if (monitor2[t].concierge == "N") {
+                    if (monitor2?[t]?.concierge == "N") {
                       p8++;
                     }
                   }
-                  if (monitor2[t].daysInTransit != " DD" &&
-                      monitor2[t].daysInTransit != "0 DD" &&
-                      monitor2[t].daysInTransit != "1 DD") {
+                  if (monitor2?[t]?.daysInTransit != " DD" &&
+                      monitor2?[t]?.daysInTransit != "0 DD" &&
+                      monitor2?[t]?.daysInTransit != "1 DD") {
                     onDay++;
                   }
                 }
@@ -1328,8 +1329,8 @@ class _MonitoringState extends State<Monitoring> {
                             decoration: BoxDecoration(
                               border: Border.all(
                                 color: auditorP8
-                                    ? Colors.green[900]
-                                    : Colors.red[800],
+                                    ? Colors.green[900]??Colors.green
+                                    : Colors.red[800]??Colors.red,
                                 width: 1.0,
                               ),
                               borderRadius: BorderRadius.all(
@@ -1357,12 +1358,12 @@ class _MonitoringState extends State<Monitoring> {
                                               ? Icon(
                                                   MdiIcons.truckFastOutline,
                                                   color: Colors.white,
-                                                  size: 40,
+                                                  size: 30,
                                                 )
                                               : Icon(
                                                   MdiIcons.truckCheckOutline,
                                                   color: Colors.white,
-                                                  size: 40,
+                                                  size: 30,
                                                 ),
                                           colorApp == Colors.green ||
                                                   colorApp == Colors.red
@@ -1396,7 +1397,7 @@ class _MonitoringState extends State<Monitoring> {
                                                 fontSize: MediaQuery.of(
                                                       context,
                                                     ).size.height *
-                                                    0.025,
+                                                    0.02,
                                                 color: Colors.white,
                                               ),
                                             ),
@@ -1473,7 +1474,7 @@ class _MonitoringState extends State<Monitoring> {
                           child: Container(
                             decoration: BoxDecoration(
                               border: Border.all(
-                                color: Colors.blueGrey[900],
+                                color: Colors.blueGrey[900]?? Colors.blueGrey,
                                 width: 1.0,
                               ),
                               borderRadius: BorderRadius.all(
@@ -1496,7 +1497,7 @@ class _MonitoringState extends State<Monitoring> {
                                       Icon(
                                         MdiIcons.textBoxCheckOutline,
                                         color: Colors.white,
-                                        size: 40,
+                                        size: 30,
                                       ),
                                       Column(
                                         children: [
@@ -1519,7 +1520,7 @@ class _MonitoringState extends State<Monitoring> {
                                                 fontSize: MediaQuery.of(
                                                       context,
                                                     ).size.height *
-                                                    0.025,
+                                                    0.02,
                                                 color: Colors.white,
                                               ),
                                             ),
@@ -1592,7 +1593,7 @@ class _MonitoringState extends State<Monitoring> {
                           child: Container(
                             decoration: BoxDecoration(
                               border: Border.all(
-                                color: Colors.cyan[900],
+                                color: Colors.cyan[900]??Colors.cyan,
                                 width: 1.0,
                               ),
                               borderRadius: BorderRadius.all(
@@ -1615,7 +1616,7 @@ class _MonitoringState extends State<Monitoring> {
                                       Icon(
                                         MdiIcons.import,
                                         color: Colors.white,
-                                        size: 40,
+                                        size: 30,
                                       ),
                                       Column(
                                         children: [
@@ -1637,7 +1638,7 @@ class _MonitoringState extends State<Monitoring> {
                                                 fontSize: MediaQuery.of(
                                                       context,
                                                     ).size.height *
-                                                    0.025,
+                                                    0.02,
                                                 color: Colors.white,
                                               ),
                                             ),
@@ -1710,7 +1711,7 @@ class _MonitoringState extends State<Monitoring> {
                           child: Container(
                             decoration: BoxDecoration(
                               border: Border.all(
-                                color: Colors.teal[900],
+                                color: Colors.teal[900]??Colors.teal,
                                 width: 1.0,
                               ),
                               borderRadius: BorderRadius.all(
@@ -1733,7 +1734,7 @@ class _MonitoringState extends State<Monitoring> {
                                       Icon(
                                         MdiIcons.transfer,
                                         color: Colors.white,
-                                        size: 40,
+                                        size: 30,
                                       ),
                                       Column(
                                         children: [
@@ -1755,7 +1756,7 @@ class _MonitoringState extends State<Monitoring> {
                                                 fontSize: MediaQuery.of(
                                                       context,
                                                     ).size.height *
-                                                    0.025,
+                                                    0.02,
                                                 color: Colors.white,
                                               ),
                                             ),
@@ -1882,7 +1883,7 @@ class _MonitoringState extends State<Monitoring> {
                                       Icon(
                                         MdiIcons.chartBarStacked,
                                         color: Colors.white,
-                                        size: 40,
+                                        size: 30,
                                       ),
                                       Column(
                                         children: [
@@ -1905,7 +1906,7 @@ class _MonitoringState extends State<Monitoring> {
                                                       MediaQuery.of(context)
                                                               .size
                                                               .height *
-                                                          0.025,
+                                                          0.02,
                                                   color: Colors.white,
                                                 ),
                                               )),
@@ -1968,7 +1969,7 @@ class _MonitoringState extends State<Monitoring> {
                     child: Container(
                       decoration: BoxDecoration(
                         border: Border.all(
-                          color: colorApp[900],
+                          color: colorApp[900]??colorApp,
                           width: 1.0,
                         ),
                         borderRadius: BorderRadius.only(
@@ -2239,7 +2240,7 @@ class _MonitoringState extends State<Monitoring> {
                                   );
                                 }
                                 monitorData = snapshot.data;
-                                if (monitorData.isEmpty) {
+                                if (monitorData?.isEmpty??false) {
                                   return Center(
                                       child: Column(
                                     mainAxisAlignment: MainAxisAlignment.center,
@@ -2273,32 +2274,32 @@ class _MonitoringState extends State<Monitoring> {
                                 return Scrollbar(
                                   child: ListView.builder(
                                     padding: EdgeInsets.zero,
-                                    itemCount: monitorData.length,
+                                    itemCount: monitorData?.length,
                                     itemBuilder: (
                                       BuildContext context,
                                       int index,
                                     ) {
-                                      Monitor m = monitorData[index];
-                                      key.add(m.keyNfe);
+                                      Monitor? m = monitorData?[index];
+                                      key.add(m?.keyNfe??'');
 
                                       return Column(
                                         children: [
                                           lineMonitor(
                                             key.length,
-                                            m.branchOrigin,
-                                            m.branchDestiny,
-                                            m.nf,
-                                            m.series,
-                                            m.observation,
-                                            m.emissionDate,
-                                            m.entryDate,
-                                            m.emissionDate,
-                                            m.daysInTransit,
+                                            m?.branchOrigin??'',
+                                            m?.branchDestiny??'',
+                                            m?.nf??'',
+                                            m?.series??'',
+                                            m?.observation??'',
+                                            m?.emissionDate??'',
+                                            m?.entryDate??'',
+                                            m?.emissionDate??'',
+                                            m?.daysInTransit??'',
                                             GestureDetector(
                                               onTap: () {
                                                 register(m);
                                               },
-                                              child: m.concierge == "N"
+                                              child: m?.concierge == "N"
                                                   ? iconStatus(
                                                       alertDetailsStatus(),
                                                       Colors.red[800],
@@ -2311,7 +2312,7 @@ class _MonitoringState extends State<Monitoring> {
                                                           .truckCheckOutline,
                                                     ),
                                             ),
-                                            m.checked == "S"
+                                            m?.checked == "S"
                                                 ? iconStatus(
                                                     alertDetailsStatus(),
                                                     Colors.blueGrey[800],
@@ -2319,14 +2320,14 @@ class _MonitoringState extends State<Monitoring> {
                                                         .textBoxCheckOutline,
                                                   )
                                                 : Container(),
-                                            m.received == "S"
+                                            m?.received == "S"
                                                 ? iconStatus(
                                                     alertDetailsStatus(),
                                                     Colors.cyan[800],
                                                     MdiIcons.import,
                                                   )
                                                 : Container(),
-                                            m.addressed == "S"
+                                            m?.addressed == "S"
                                                 ? Container()
                                                 : Container(),
                                           ),
@@ -2367,7 +2368,7 @@ class _MonitoringState extends State<Monitoring> {
       gfe: gfe,
     );
 
-    totalCollections = monitor.length;
+    totalCollections = monitor?.length;
     startTimeout();
     _streamController.add(monitor);
   }
@@ -2388,7 +2389,7 @@ class _MonitoringState extends State<Monitoring> {
     general0114 = [0, 0, 0, 0, 0];
     general0115 = [0, 0, 0, 0, 0];
     general0116 = [0, 0, 0, 0, 0];
-    general0117 = [0, 0, 0, 0, 0];
+    general0116 = [0, 0, 0, 0, 0];
     totalGeneral = 0;
     _streamControllerGeneral.add(null);
     showDialog<void>(
@@ -2413,177 +2414,177 @@ class _MonitoringState extends State<Monitoring> {
 
     );
 
-    for (int i = 0; i < monitorGeneral.length; i++) {
+    for (int i = 0; i < (monitorGeneral?.length??0); i++) {
       totalGeneral++;
-      if (monitorGeneral[i].branchDestiny == "0101") {
-        if (monitorGeneral[i].concierge == "S") {
+      if (monitorGeneral?[i]?.branchDestiny == "0101") {
+        if (monitorGeneral?[i]?.concierge == "S") {
           general0101[0]++;
         }
-        if (monitorGeneral[i].received == "S") {
+        if (monitorGeneral?[i]?.received == "S") {
           general0101[1]++;
         }
-        if (monitorGeneral[i].checked == "S") {}
-        if (monitorGeneral[i].addressed == "S") {}
+        if (monitorGeneral?[i]?.checked == "S") {}
+        if (monitorGeneral?[i]?.addressed == "S") {}
         general0101[4]++;
-      } else if (monitorGeneral[i].branchDestiny == "0103") {
-        if (monitorGeneral[i].concierge == "S") {
+      } else if (monitorGeneral?[i]?.branchDestiny == "0103") {
+        if (monitorGeneral?[i]?.concierge == "S") {
           general0103[0]++;
         }
-        if (monitorGeneral[i].received == "S") {
+        if (monitorGeneral?[i]?.received == "S") {
           general0103[1]++;
         }
-        if (monitorGeneral[i].checked == "S") {}
-        if (monitorGeneral[i].addressed == "S") {}
+        if (monitorGeneral?[i]?.checked == "S") {}
+        if (monitorGeneral?[i]?.addressed == "S") {}
         general0103[4]++;
-      }else if (monitorGeneral[i].branchDestiny == "0114") {
-        if (monitorGeneral[i].concierge == "S") {
+      }else if (monitorGeneral?[i]?.branchDestiny == "0114") {
+        if (monitorGeneral?[i]?.concierge == "S") {
           general0114[0]++;
         }
-        if (monitorGeneral[i].received == "S") {
+        if (monitorGeneral?[i]?.received == "S") {
           general0114[1]++;
         }
-        if (monitorGeneral[i].checked == "S") {}
-        if (monitorGeneral[i].addressed == "S") {}
+        if (monitorGeneral?[i]?.checked == "S") {}
+        if (monitorGeneral?[i]?.addressed == "S") {}
         general0114[4]++;
-      } else if (monitorGeneral[i].branchDestiny == "0111") {
-        if (monitorGeneral[i].concierge == "S") {
+      } else if (monitorGeneral?[i]?.branchDestiny == "0111") {
+        if (monitorGeneral?[i]?.concierge == "S") {
           general0111[0]++;
         }
-        if (monitorGeneral[i].received == "S") {
+        if (monitorGeneral?[i]?.received == "S") {
           general0111[1]++;
         }
-        if (monitorGeneral[i].checked == "S") {}
-        if (monitorGeneral[i].addressed == "S") {}
+        if (monitorGeneral?[i]?.checked == "S") {}
+        if (monitorGeneral?[i]?.addressed == "S") {}
         general0111[4]++;
-      } else if (monitorGeneral[i].branchDestiny == "0115") {
-        if (monitorGeneral[i].concierge == "S") {
+      } else if (monitorGeneral?[i]?.branchDestiny == "0115") {
+        if (monitorGeneral?[i]?.concierge == "S") {
           general0115[0]++;
         }
-        if (monitorGeneral[i].received == "S") {
+        if (monitorGeneral?[i]?.received == "S") {
           general0115[1]++;
         }
-        if (monitorGeneral[i].checked == "S") {}
-        if (monitorGeneral[i].addressed == "S") {}
+        if (monitorGeneral?[i]?.checked == "S") {}
+        if (monitorGeneral?[i]?.addressed == "S") {}
         general0115[4]++;
-      }else if (monitorGeneral[i].branchDestiny == "0102") {
-        if (monitorGeneral[i].concierge == "S") {
+      }else if (monitorGeneral?[i]?.branchDestiny == "0102") {
+        if (monitorGeneral?[i]?.concierge == "S") {
           general0102[0]++;
         }
-        if (monitorGeneral[i].received == "S") {
+        if (monitorGeneral?[i]?.received == "S") {
           general0102[1]++;
         }
-        if (monitorGeneral[i].checked == "S") {}
-        if (monitorGeneral[i].addressed == "S") {}
+        if (monitorGeneral?[i]?.checked == "S") {}
+        if (monitorGeneral?[i]?.addressed == "S") {}
         general0102[4]++;
-      }else if (monitorGeneral[i].branchDestiny == "0116") {
-        if (monitorGeneral[i].concierge == "S") {
+      }else if (monitorGeneral?[i]?.branchDestiny == "0116") {
+        if (monitorGeneral?[i]?.concierge == "S") {
           general0116[0]++;
         }
-        if (monitorGeneral[i].received == "S") {
+        if (monitorGeneral?[i]?.received == "S") {
           general0116[1]++;
         }
-        if (monitorGeneral[i].checked == "S") {}
-        if (monitorGeneral[i].addressed == "S") {}
+        if (monitorGeneral?[i]?.checked == "S") {}
+        if (monitorGeneral?[i]?.addressed == "S") {}
         general0116[4]++;
-      }else if (monitorGeneral[i].branchDestiny == "0117") {
-        if (monitorGeneral[i].concierge == "S") {
-          general0117[0]++;
+      }else if (monitorGeneral?[i]?.branchDestiny == "0116") {
+        if (monitorGeneral?[i]?.concierge == "S") {
+          general0116[0]++;
         }
-        if (monitorGeneral[i].received == "S") {
-          general0117[1]++;
+        if (monitorGeneral?[i]?.received == "S") {
+          general0116[1]++;
         }
-        if (monitorGeneral[i].checked == "S") {}
-        if (monitorGeneral[i].addressed == "S") {}
-        general0117[4]++;
-      } else if (monitorGeneral[i].branchDestiny == "0104") {
-        if (monitorGeneral[i].concierge == "S") {
+        if (monitorGeneral?[i]?.checked == "S") {}
+        if (monitorGeneral?[i]?.addressed == "S") {}
+        general0116[4]++;
+      } else if (monitorGeneral?[i]?.branchDestiny == "0104") {
+        if (monitorGeneral?[i]?.concierge == "S") {
           general0104[0]++;
         }
-        if (monitorGeneral[i].received == "S") {
+        if (monitorGeneral?[i]?.received == "S") {
           general0104[1]++;
         }
-        if (monitorGeneral[i].checked == "S") {}
-        if (monitorGeneral[i].addressed == "S") {}
+        if (monitorGeneral?[i]?.checked == "S") {}
+        if (monitorGeneral?[i]?.addressed == "S") {}
         general0104[4]++;
-      } else if (monitorGeneral[i].branchDestiny == "0105") {
-        if (monitorGeneral[i].concierge == "S") {
+      } else if (monitorGeneral?[i]?.branchDestiny == "0105") {
+        if (monitorGeneral?[i]?.concierge == "S") {
           general0105[0]++;
         }
-        if (monitorGeneral[i].received == "S") {
+        if (monitorGeneral?[i]?.received == "S") {
           general0105[1]++;
         }
-        if (monitorGeneral[i].checked == "S") {}
-        if (monitorGeneral[i].addressed == "S") {}
+        if (monitorGeneral?[i]?.checked == "S") {}
+        if (monitorGeneral?[i]?.addressed == "S") {}
         general0105[4]++;
-      } else if (monitorGeneral[i].branchDestiny == "0106") {
-        if (monitorGeneral[i].concierge == "S") {
+      } else if (monitorGeneral?[i]?.branchDestiny == "0106") {
+        if (monitorGeneral?[i]?.concierge == "S") {
           general0106[0]++;
         }
-        if (monitorGeneral[i].received == "S") {
+        if (monitorGeneral?[i]?.received == "S") {
           general0106[1]++;
         }
-        if (monitorGeneral[i].checked == "S") {}
-        if (monitorGeneral[i].addressed == "S") {}
+        if (monitorGeneral?[i]?.checked == "S") {}
+        if (monitorGeneral?[i]?.addressed == "S") {}
         general0106[4]++;
-      } else if (monitorGeneral[i].branchDestiny == "0107") {
-        if (monitorGeneral[i].concierge == "S") {
+      } else if (monitorGeneral?[i]?.branchDestiny == "0107") {
+        if (monitorGeneral?[i]?.concierge == "S") {
           general0107[0]++;
         }
-        if (monitorGeneral[i].received == "S") {
+        if (monitorGeneral?[i]?.received == "S") {
           general0107[1]++;
         }
-        if (monitorGeneral[i].checked == "S") {}
-        if (monitorGeneral[i].addressed == "S") {}
+        if (monitorGeneral?[i]?.checked == "S") {}
+        if (monitorGeneral?[i]?.addressed == "S") {}
         general0107[4]++;
-      } else if (monitorGeneral[i].branchDestiny == "0108") {
-        if (monitorGeneral[i].concierge == "S") {
+      } else if (monitorGeneral?[i]?.branchDestiny == "0108") {
+        if (monitorGeneral?[i]?.concierge == "S") {
           general0108[0]++;
         }
-        if (monitorGeneral[i].received == "S") {
+        if (monitorGeneral?[i]?.received == "S") {
           general0108[1]++;
         }
-        if (monitorGeneral[i].checked == "S") {}
-        if (monitorGeneral[i].addressed == "S") {}
+        if (monitorGeneral?[i]?.checked == "S") {}
+        if (monitorGeneral?[i]?.addressed == "S") {}
         general0108[4]++;
-      } else if (monitorGeneral[i].branchDestiny == "0109") {
-        if (monitorGeneral[i].concierge == "S") {
+      } else if (monitorGeneral?[i]?.branchDestiny == "0109") {
+        if (monitorGeneral?[i]?.concierge == "S") {
           general0109[0]++;
         }
-        if (monitorGeneral[i].received == "S") {
+        if (monitorGeneral?[i]?.received == "S") {
           general0109[1]++;
         }
-        if (monitorGeneral[i].checked == "S") {}
-        if (monitorGeneral[i].addressed == "S") {}
+        if (monitorGeneral?[i]?.checked == "S") {}
+        if (monitorGeneral?[i]?.addressed == "S") {}
         general0109[4]++;
-      } else if (monitorGeneral[i].branchDestiny == "0110") {
-        if (monitorGeneral[i].concierge == "S") {
+      } else if (monitorGeneral?[i]?.branchDestiny == "0110") {
+        if (monitorGeneral?[i]?.concierge == "S") {
           general0110[0]++;
         }
-        if (monitorGeneral[i].received == "S") {
+        if (monitorGeneral?[i]?.received == "S") {
           general0110[1]++;
         }
-        if (monitorGeneral[i].checked == "S") {}
-        if (monitorGeneral[i].addressed == "S") {}
+        if (monitorGeneral?[i]?.checked == "S") {}
+        if (monitorGeneral?[i]?.addressed == "S") {}
         general0110[4]++;
-      } else if (monitorGeneral[i].branchDestiny == "0112") {
-        if (monitorGeneral[i].concierge == "S") {
+      } else if (monitorGeneral?[i]?.branchDestiny == "0112") {
+        if (monitorGeneral?[i]?.concierge == "S") {
           general0112[0]++;
         }
-        if (monitorGeneral[i].received == "S") {
+        if (monitorGeneral?[i]?.received == "S") {
           general0112[1]++;
         }
-        if (monitorGeneral[i].checked == "S") {}
-        if (monitorGeneral[i].addressed == "S") {}
+        if (monitorGeneral?[i]?.checked == "S") {}
+        if (monitorGeneral?[i]?.addressed == "S") {}
         general0112[4]++;
-      } else if (monitorGeneral[i].branchDestiny == "0113") {
-        if (monitorGeneral[i].concierge == "S") {
+      } else if (monitorGeneral?[i]?.branchDestiny == "0113") {
+        if (monitorGeneral?[i]?.concierge == "S") {
           general0113[0]++;
         }
-        if (monitorGeneral[i].received == "S") {
+        if (monitorGeneral?[i]?.received == "S") {
           general0113[1]++;
         }
-        if (monitorGeneral[i].checked == "S") {}
-        if (monitorGeneral[i].addressed == "S") {}
+        if (monitorGeneral?[i]?.checked == "S") {}
+        if (monitorGeneral?[i]?.addressed == "S") {}
         general0113[4]++;
       }
     }
@@ -2596,7 +2597,7 @@ class _MonitoringState extends State<Monitoring> {
   _loadDataFilter() async {
     _streamController.add(null);
 
-    List<Monitor> monitor = await MonitorManagement.getMonitor(
+    List<Monitor?>? monitor = await MonitorManagement.getMonitor(
       received: "$received",
       checked: "$checked",
       addressed: "$addressed",
@@ -2653,7 +2654,7 @@ class _MonitoringState extends State<Monitoring> {
                               textAlign: TextAlign.center,
                               style: TextStyle(
                                 color: Colors.white,
-                                fontSize: 17,
+                                fontSize: 16,
                               ),
                             ),
                           ),
@@ -2672,7 +2673,7 @@ class _MonitoringState extends State<Monitoring> {
                               textAlign: TextAlign.center,
                               style: TextStyle(
                                 color: Colors.black,
-                                fontSize: 17,
+                                fontSize: 16,
                               ),
                             ),
                           ),
@@ -2691,7 +2692,7 @@ class _MonitoringState extends State<Monitoring> {
                               textAlign: TextAlign.center,
                               style: TextStyle(
                                 color: Colors.black,
-                                fontSize: 17,
+                                fontSize: 16,
                               ),
                             ),
                           ),
@@ -2710,7 +2711,7 @@ class _MonitoringState extends State<Monitoring> {
                               textAlign: TextAlign.center,
                               style: TextStyle(
                                 color: Colors.black,
-                                fontSize: 17,
+                                fontSize: 16,
                               ),
                             ),
                           ),
@@ -2729,7 +2730,7 @@ class _MonitoringState extends State<Monitoring> {
                               textAlign: TextAlign.center,
                               style: TextStyle(
                                 color: Colors.black,
-                                fontSize: 17,
+                                fontSize: 16,
                               ),
                             ),
                           ),
@@ -2748,7 +2749,7 @@ class _MonitoringState extends State<Monitoring> {
                               textAlign: TextAlign.center,
                               style: TextStyle(
                                 color: Colors.white,
-                                fontSize: 17,
+                                fontSize: 16,
                               ),
                             ),
                           ),
@@ -2808,7 +2809,7 @@ class _MonitoringState extends State<Monitoring> {
                               textAlign: TextAlign.center,
                               style: TextStyle(
                                 color: Colors.white,
-                                fontSize: 17,
+                                fontSize: 16,
                               ),
                             ),
                           ),
@@ -2878,7 +2879,7 @@ class _MonitoringState extends State<Monitoring> {
                               textAlign: TextAlign.center,
                               style: TextStyle(
                                 color: Colors.white,
-                                fontSize: 17,
+                                fontSize: 16,
                               ),
                             ),
                           ),
@@ -2968,18 +2969,9 @@ class _MonitoringState extends State<Monitoring> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                GestureDetector(
-                    onTap: () async {
-                      await clippy.write(nf);
-                    },
-                    child: Icon(
-                      MdiIcons.noteMultipleOutline,
-                      color: colorApp,
-                    )),
-                SizedBox(
-                  width: 5,
-                ),
-                Text(
+
+
+              SelectableText(
                   nf,
                   textAlign: TextAlign.center,
                   style: TextStyle(color: Colors.black),
@@ -3099,18 +3091,8 @@ class _MonitoringState extends State<Monitoring> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                GestureDetector(
-                    onTap: () async {
-                      await clippy.write(nf);
-                    },
-                    child: Icon(
-                      MdiIcons.noteMultipleOutline,
-                      color: colorApp,
-                    )),
-                SizedBox(
-                  width: 5,
-                ),
-                Text(
+
+                SelectableText(
                   nf,
                   textAlign: TextAlign.center,
                   style: TextStyle(color: Colors.black),
@@ -3158,7 +3140,7 @@ class _MonitoringState extends State<Monitoring> {
     }
   }
 
-  void register(Monitor m) {
+  void register(Monitor? m) {
     showDialog<void>(
       context: context,
       barrierDismissible: false, // user must tap button!
@@ -3182,7 +3164,7 @@ class _MonitoringState extends State<Monitoring> {
                           children: [
                             Align(
                               alignment: Alignment.topCenter,
-                              child: m.concierge == "N"
+                              child: m?.concierge == "N"
                                   ? Padding(
                                       padding: EdgeInsets.all(8.0),
                                       child: Column(
@@ -3224,7 +3206,7 @@ class _MonitoringState extends State<Monitoring> {
                                 Align(
                                   alignment: Alignment.center,
                                   child: Container(
-                                    color: m.concierge == "N"
+                                    color: m?.concierge == "N"
                                         ? Colors.grey
                                         : Colors.green,
                                     width: MediaQuery.of(
@@ -3240,8 +3222,8 @@ class _MonitoringState extends State<Monitoring> {
                                   alignment: Alignment.topCenter,
                                   child: Icon(
                                     Icons.arrow_drop_down,
-                                    size: 40,
-                                    color: m.concierge == "N"
+                                    size: 30,
+                                    color: m?.concierge == "N"
                                         ? Colors.grey
                                         : Colors.green,
                                   ),
@@ -3249,13 +3231,13 @@ class _MonitoringState extends State<Monitoring> {
                                 Align(
                                   alignment: Alignment.topCenter,
                                   child: Text(
-                                    "${m.conciergeDate}",
+                                    "${m?.conciergeDate}",
                                     style: TextStyle(
                                       fontSize: MediaQuery.of(
                                             context,
                                           ).size.height *
                                           0.02,
-                                      color: m.concierge == "N"
+                                      color: m?.concierge == "N"
                                           ? Colors.grey
                                           : Colors.green,
                                     ),
@@ -3264,13 +3246,13 @@ class _MonitoringState extends State<Monitoring> {
                                 Align(
                                   alignment: Alignment.topCenter,
                                   child: Text(
-                                    "${m.conciergeUser}",
+                                    "${m?.conciergeUser}",
                                     style: TextStyle(
                                       fontSize: MediaQuery.of(
                                             context,
                                           ).size.height *
                                           0.02,
-                                      color: m.concierge == "N"
+                                      color: m?.concierge == "N"
                                           ? Colors.grey
                                           : Colors.green,
                                     ),
@@ -3309,7 +3291,7 @@ class _MonitoringState extends State<Monitoring> {
                                 Align(
                                   alignment: Alignment.center,
                                   child: Container(
-                                    color: m.checked == "S"
+                                    color: m?.checked == "S"
                                         ? Colors.green
                                         : Colors.grey,
                                     width: MediaQuery.of(
@@ -3325,8 +3307,8 @@ class _MonitoringState extends State<Monitoring> {
                                   alignment: Alignment.topCenter,
                                   child: Icon(
                                     Icons.arrow_drop_down,
-                                    size: 40,
-                                    color: m.checked == "S"
+                                    size: 30,
+                                    color: m?.checked == "S"
                                         ? Colors.green
                                         : Colors.grey,
                                   ),
@@ -3340,7 +3322,7 @@ class _MonitoringState extends State<Monitoring> {
                                             context,
                                           ).size.height *
                                           0.02,
-                                      color: m.concierge == "N"
+                                      color: m?.concierge == "N"
                                           ? Colors.grey
                                           : Colors.green,
                                     ),
@@ -3355,7 +3337,7 @@ class _MonitoringState extends State<Monitoring> {
                                             context,
                                           ).size.height *
                                           0.02,
-                                      color: m.concierge == "N"
+                                      color: m?.concierge == "N"
                                           ? Colors.grey
                                           : Colors.green,
                                     ),
@@ -3394,7 +3376,7 @@ class _MonitoringState extends State<Monitoring> {
                                 Align(
                                   alignment: Alignment.center,
                                   child: Container(
-                                    color: m.received == "S"
+                                    color: m?.received == "S"
                                         ? Colors.green
                                         : Colors.grey,
                                     width: MediaQuery.of(
@@ -3410,8 +3392,8 @@ class _MonitoringState extends State<Monitoring> {
                                   alignment: Alignment.topCenter,
                                   child: Icon(
                                     Icons.arrow_drop_down,
-                                    size: 40,
-                                    color: m.received == "S"
+                                    size: 30,
+                                    color: m?.received == "S"
                                         ? Colors.green
                                         : Colors.grey,
                                   ),
@@ -3425,7 +3407,7 @@ class _MonitoringState extends State<Monitoring> {
                                             context,
                                           ).size.height *
                                           0.02,
-                                      color: m.concierge == "N"
+                                      color: m?.concierge == "N"
                                           ? Colors.grey
                                           : Colors.green,
                                     ),
@@ -3440,7 +3422,7 @@ class _MonitoringState extends State<Monitoring> {
                                             context,
                                           ).size.height *
                                           0.02,
-                                      color: m.concierge == "N"
+                                      color: m?.concierge == "N"
                                           ? Colors.grey
                                           : Colors.green,
                                     ),
@@ -3480,7 +3462,7 @@ class _MonitoringState extends State<Monitoring> {
                                 Align(
                                   alignment: Alignment.center,
                                   child: Container(
-                                    color: m.addressed == "S"
+                                    color: m?.addressed == "S"
                                         ? Colors.grey
                                         : Colors.green,
                                     width: MediaQuery.of(
@@ -3496,8 +3478,8 @@ class _MonitoringState extends State<Monitoring> {
                                   alignment: Alignment.topCenter,
                                   child: Icon(
                                     Icons.arrow_drop_down,
-                                    size: 40,
-                                    color: m.addressed == "S"
+                                    size: 30,
+                                    color: m?.addressed == "S"
                                         ? Colors.grey
                                         : Colors.green,
                                   ),
@@ -3511,7 +3493,7 @@ class _MonitoringState extends State<Monitoring> {
                                             context,
                                           ).size.height *
                                           0.02,
-                                      color: m.concierge == "N"
+                                      color: m?.concierge == "N"
                                           ? Colors.grey
                                           : Colors.green,
                                     ),
@@ -3526,7 +3508,7 @@ class _MonitoringState extends State<Monitoring> {
                                             context,
                                           ).size.height *
                                           0.02,
-                                      color: m.concierge == "N"
+                                      color: m?.concierge == "N"
                                           ? Colors.grey
                                           : Colors.green,
                                     ),
@@ -3667,21 +3649,21 @@ alertGeneral(_loadDataGeneral(), context, date, line, lineTotal, monitorData,
                         Row(
                           mainAxisAlignment: MainAxisAlignment.end,
                           children: [
-                            FlatButton(
+                            ElevatedButton(
                               onPressed: () async {
                                 if(dateInitGeneral==null){dateInitGeneral= DateTime.parse(DateFormat('yyyyMMdd').format(
                                   DateTime.now(),
                                 ));}
                                 dateInitGeneral = await getDate(context, dateInitGeneral);
                                 dataInitFormGeneral = DateFormat('yyyyMMdd').format(
-                                  dateInitGeneral,
+                                  dateInitGeneral!,
                                 );
                                 setState(() {
                                   //  dateEndGeneral = dateEndGeneralController;
                                   dataInitFormGeneral = DateFormat(
                                     'yyyyMMdd',
                                   ).format(
-                                    dateInitGeneral,
+                                    dateInitGeneral!,
                                   );
                                   _loadDataGeneral();
 
@@ -3726,21 +3708,21 @@ alertGeneral(_loadDataGeneral(), context, date, line, lineTotal, monitorData,
                               },
                               child: date(dateInitGeneral, "De"),
                             ),
-                            FlatButton(
+                            ElevatedButton(
                               onPressed: () async {
             if(dateEndGeneral==null){dateEndGeneral= DateTime.parse(DateFormat('yyyyMMdd').format(
             DateTime.now(),
             ));}
             dateEndGeneral = await getDate(context, dateEndGeneral);
             dateEndFormGeneral = DateFormat('yyyyMMdd').format(
-              dateEndGeneral,
+              dateEndGeneral!,
             );
             setState(() {
             //  dateEndGeneral = dateEndGeneralController;
               dateEndFormGeneral = DateFormat(
                 'yyyyMMdd',
               ).format(
-                dateEndGeneral,
+                dateEndGeneral!,
               );
               _loadDataGeneral();
 
@@ -3821,7 +3803,7 @@ alertGeneral(_loadDataGeneral(), context, date, line, lineTotal, monitorData,
                                               load = true;
                                               _streamLoad.add(123);
                                               await toExcelMonitor(
-                                                  monitorGeneral.isNotEmpty
+                                                  monitorGeneral?.isNotEmpty??false
                                                       ? monitorGeneral
                                                       : monitorData);
                                               load = false;
@@ -3874,7 +3856,7 @@ alertGeneral(_loadDataGeneral(), context, date, line, lineTotal, monitorData,
                         width: MediaQuery.of(
                           context,
                         ).size.width,
-                        height: 50,
+                        height: 35,
                         child: Row(
                           children: [
                             Expanded(
@@ -3887,7 +3869,7 @@ alertGeneral(_loadDataGeneral(), context, date, line, lineTotal, monitorData,
                                     textAlign: TextAlign.center,
                                     style: TextStyle(
                                       color: Colors.white,
-                                      fontSize: 17,
+                                      fontSize: 16,
                                     ),
                                   ),
                                 ),
@@ -3906,7 +3888,7 @@ alertGeneral(_loadDataGeneral(), context, date, line, lineTotal, monitorData,
                                 textAlign: TextAlign.center,
                                 style: TextStyle(
                                   color: Colors.white,
-                                  fontSize: 17,
+                                  fontSize: 16,
                                 ),
                               ),
                             ),
@@ -3921,7 +3903,7 @@ alertGeneral(_loadDataGeneral(), context, date, line, lineTotal, monitorData,
                                 textAlign: TextAlign.center,
                                 style: TextStyle(
                                   color: Colors.white,
-                                  fontSize: 17,
+                                  fontSize: 16,
                                 ),
                               ),
                             ),
@@ -3936,7 +3918,7 @@ alertGeneral(_loadDataGeneral(), context, date, line, lineTotal, monitorData,
                                 textAlign: TextAlign.center,
                                 style: TextStyle(
                                   color: Colors.white,
-                                  fontSize: 17,
+                                  fontSize: 16,
                                 ),
                               ),
                             ),
@@ -3953,7 +3935,7 @@ alertGeneral(_loadDataGeneral(), context, date, line, lineTotal, monitorData,
                                 textAlign: TextAlign.center,
                                 style: TextStyle(
                                   color: Colors.white,
-                                  fontSize: 17,
+                                  fontSize: 16,
                                 ),
                               ),
                             ),
@@ -3976,7 +3958,7 @@ alertGeneral(_loadDataGeneral(), context, date, line, lineTotal, monitorData,
                                     textAlign: TextAlign.center,
                                     style: TextStyle(
                                       color: Colors.white,
-                                      fontSize: 17,
+                                      fontSize: 16,
                                     ),
                                   ),
                                 ),
@@ -4058,7 +4040,7 @@ alertGeneral(_loadDataGeneral(), context, date, line, lineTotal, monitorData,
                       general0111,
                     ),line(
                       15,
-                      "MCZ-PR - 0117",
+                      "MCZ-PR - 0116",
                       general0102,
                     ),
                     lineTotal(
@@ -4078,14 +4060,14 @@ alertGeneral(_loadDataGeneral(), context, date, line, lineTotal, monitorData,
 
 valueBranch(index) {
   return Text(
-    "${general0112[index] +general0116[index] +general0115[index] +general0114[index] +general0102[index] +general0101[index] + general0103[index] + general0104[index] + general0105[index] + general0106[index] + general0107[index] + general0108[index] + general0109[index] + general0110[index] + general0113[index]+ general0117[index]}",
+    "${general0112[index] +general0116[index] +general0115[index] +general0114[index] +general0102[index] +general0101[index] + general0103[index] + general0104[index] + general0105[index] + general0106[index] + general0107[index] + general0108[index] + general0109[index] + general0110[index] + general0113[index]+ general0116[index]}",
     textAlign: TextAlign.center,
-    style: TextStyle(color: Colors.white, fontSize: 17),
+    style: TextStyle(color: Colors.white, fontSize: 16),
   );
 }
 
 branchCrj(index) {
-  return "${branch[index].code} ${branch[index].initials == "S/CLASS" ? "" : "- ${branch[index].initials}"} - ${branch[index].cidadeEmpresa}";
+  return "${branch?[index]?.code} ${branch?[index]?.initials == "S/CLASS" ? "" : "- ${branch?[index]?.initials}"} - ${branch?[index]?.cidadeEmpresa}";
 }
 
 iconStatus(onTap, color, icon) {

@@ -1,7 +1,7 @@
 class BranchCarajas {
-  String code;
-  String initials;
-  String cidadeEmpresa;
+  String? code;
+  String? initials;
+  String? cidadeEmpresa;
 
   BranchCarajas(
       {this.code,
@@ -22,4 +22,6 @@ class BranchCarajas {
     data['cidadeEmpresa'] = this.cidadeEmpresa;
     return data;
   }
+  static List<BranchCarajas?> toList(List json) => json.map((e) => BranchCarajas.fromJson(e)).toList();
+
 }

@@ -1,22 +1,22 @@
 class Monitor {
-  String keyNfe;
-  String branchOrigin;
-  String branchDestiny;
-  String nf;
-  String series;
-  String gfe;
-  String automobilePlate;
-  String emissionDate;
-  String daysInTransit;
-  String daysInTransitConcierge;
-  String received;
-  String checked;
-  String addressed;
-  String concierge;
-  String conciergeDate;
-  String conciergeUser;
-  String observation;
-  String entryDate;
+  String? keyNfe;
+  String? branchOrigin;
+  String? branchDestiny;
+  String? nf;
+  String? series;
+  String? gfe;
+  String? automobilePlate;
+  String? emissionDate;
+  String? daysInTransit;
+  String? daysInTransitConcierge;
+  String? received;
+  String? checked;
+  String? addressed;
+  String? concierge;
+  String? conciergeDate;
+  String? conciergeUser;
+  String? observation;
+  String? entryDate;
 
   Monitor(
       {this.keyNfe,
@@ -81,4 +81,6 @@ class Monitor {
     data['dataEntrada'] = this.entryDate;
     return data;
   }
+  static List<Monitor?> toList(List json) => json.map((e) => Monitor.fromJson(e)).toList();
+
 }

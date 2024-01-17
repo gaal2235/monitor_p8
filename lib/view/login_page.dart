@@ -30,7 +30,7 @@ class _LoginPageState extends State<LoginPage> {
 
   final _loginFocus = FocusNode();
 
-  Function next;
+  Function? next;
 
   bool _showProgress = false;
 
@@ -39,7 +39,7 @@ class _LoginPageState extends State<LoginPage> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    colorApp = Colors.indigo;
+    colorApp = Colors.green;
     _loginPrefs();
   }
 
@@ -52,7 +52,7 @@ class _LoginPageState extends State<LoginPage> {
         child: Column(
           children: [
             Image.asset(
-              colorApp == Colors.indigo ? 'assets/P8O.png' : 'assets/P8.png',
+              colorApp != Colors.indigo ? 'assets/P8O.png' : 'assets/P8.png',
               width: MediaQuery.of(context).size.width * 0.70,
               height: MediaQuery.of(context).size.height * 0.560,
               alignment: Alignment.center,
@@ -134,7 +134,7 @@ class _LoginPageState extends State<LoginPage> {
                                               height: MediaQuery.of(
                                                 context,
                                               ).size.height,
-                                              child: FlatButton(
+                                              child: ElevatedButton(
                                                 child: Text(
                                                   "Monitor Geral",
                                                   style: TextStyle(
@@ -220,7 +220,7 @@ class _LoginPageState extends State<LoginPage> {
                                               height: MediaQuery.of(
                                                 context,
                                               ).size.height,
-                                              child: FlatButton(
+                                              child: ElevatedButton(
                                                 child: Text(
                                                   "Monitor P8",
                                                   style: TextStyle(
@@ -263,11 +263,11 @@ class _LoginPageState extends State<LoginPage> {
                             ),
                             Focus(
                               child: Theme(
-                                data: ThemeData(primaryColor: colorApp, cursorColor: colorApp),
+                                data: ThemeData(primaryColor: colorApp, cardColor: colorApp),
                                 child: TextFormField(
                                   controller: _tUsr,
                                   textInputAction: TextInputAction.next,
-                                  validator: (s) => _validateLogin(s),
+                                  validator: (s) => _validateLogin(s!),
                                   focusNode: _loginFocus,
                                   onFieldSubmitted: (term) {
                                     _fieldFocusChange(
@@ -306,7 +306,7 @@ class _LoginPageState extends State<LoginPage> {
                             ),
                             SizedBox(height: 10),
                             Theme(
-                              data: ThemeData(primaryColor: colorApp, cursorColor: colorApp),
+                              data: ThemeData(primaryColor: colorApp, cardColor: colorApp),
                               child: TextFormField(
                                 controller: _tPwd,
                                 validator: _validatePassword,
@@ -361,15 +361,16 @@ class _LoginPageState extends State<LoginPage> {
                                   ).size.height *
                                   0.01,
                             ),
-                            StreamBuilder<bool>(
+                            StreamBuilder(
                               initialData: false,
                               builder: (context, snapshot) {
                                 return AppButton(
+
                                   "Login",
                                   onPressed: _onClickLogin,
                                   showProgress: _showProgress,
                                 );
-                              },
+                              }, stream: null,
                             ),
                           ],
                         ),
@@ -392,13 +393,13 @@ class _LoginPageState extends State<LoginPage> {
   _loginPrefs() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     setState(() {
-      _tUsr.text = prefs.getString('login');
-      _tPwd.text = prefs.getString('senha');
+      _tUsr.text = prefs?.getString('login')??'';
+      _tPwd.text = prefs?.getString('senha')??'';
     });
   }
 
   void _onClickLogin() async {
-    if (!_formKey.currentState.validate()) {
+    if (!_formKey.currentState!.validate()) {
       return;
     }
 
@@ -408,9 +409,9 @@ class _LoginPageState extends State<LoginPage> {
     setState(() {
       _showProgress = true;
     });
-    branch = await AdminBranch.branchCarajas();
+    branch = await AdminBranch.branchCarajas()??[];
     dropdownValue =
-        "${branch[0].code} ${branch[0].initials == "S/CLASS" ? "" : "- ${branch[0].initials}"} - ${branch[0].cidadeEmpresa}";
+        "${branch?[0]?.code} ${branch?[0]?.initials == "S/CLASS" ? "" : "- ${branch?[0]?.initials}"} - ${branch?[0]?.cidadeEmpresa}";
 
     user = await Login.login(usr, pwd);
 
@@ -459,7 +460,7 @@ class _LoginPageState extends State<LoginPage> {
               ],
             ),
             actions: <Widget>[
-              FlatButton(
+              ElevatedButton(
                 child: Text(
                   "OK",
                   style: TextStyle(color: Colors.grey),
@@ -482,7 +483,7 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   ///valida login
-  String _validateLogin(String text) {
+  String? _validateLogin(String text) {
     if (text.isEmpty) {
       return "Digite o login";
     }
@@ -491,11 +492,11 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   ///valida senha
-  String _validatePassword(String text) {
-    if (text.isEmpty) {
+  String? _validatePassword(String? text) {
+    if (text?.isEmpty??false) {
       return "Digite a senha";
     }
-    if (text.length < 3) {
+    if ((text?.length??0) < 3) {
       return "A senha precisa ter pelo menos 3 números";
     }
     return null;

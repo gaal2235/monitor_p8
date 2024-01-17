@@ -6,7 +6,7 @@ import 'package:monitor_geral/model/user.dart';
 
 ///chamada responsavel por validar login e senha e possibilitar login
 class Login {
-  static Future<User> login(String usr, String pwd) async {
+  static Future<User?>? login(String usr, String pwd) async {
     String url = '$gUrl/rest/AUTHUSER?USR=$usr&PWD=$pwd';
 
     var response = await http.get(Uri.parse(url));

@@ -5,16 +5,14 @@ on:
     branches: [ homolog ]
 
 env:
-  project: monitor-geral-p8
+  project: monitor-geral-p8monitorgeral
   folder: homolog
   version: homolog
   flutter_version: ${{ secrets.FLUTTER_VERSION }}
-  labs_path: C:\labs
+  labs_path: ${{ secrets.PATH_HMLG }}
   rollback_by_commit: ${{ secrets.rollback_by_commit }}
-  api_advpl: ${{ secrets.API_ADVPL_HOMOLOG }}
-  api_node: ${{ secrets.API_NODE_HOMOLOG }}
-  telegram_active: ${{ secrets.TELEGRAM_ACTIVE }}
-  project_url: 'https://carajaslabs.com.br/monitorgeral'
+  api_base: ${{ secrets.API_HOMOLOG }}
+  project_url: 'monitorgeral'
 
 jobs:
   build:
@@ -24,6 +22,16 @@ jobs:
         with:
           path: ${{ github.workspace }}\${{ env.folder }}
           clean: false
+      - name: Create Nginx Location
+        uses: "DamianReeves/write-file-action@master"
+        with:
+          path: ${{ github.workspace }}\${{ env.folder }}\location_config\${{ env.project }}_${{ env.folder }}.conf
+          write-mode: overwrite
+          contents: |
+            location /${{ env.project_url }} {
+                alias ${{ env.labs_path }}/${{ env.folder }}/apps/${{ env.project }}${{ env.version != '' && '/' || '' }}${{ env.version }}/;
+                try_files $uri $uri/ = 404;
+            }
       - uses: joeserhtf/flutter-action@main
         with:
           flutter-version: ${{ env.flutter_version }}
@@ -32,7 +40,7 @@ jobs:
           cd ${{ env.folder }}
           flutter clean
           flutter pub get
-          flutter build web --dart-define="apiAdvpl"=${{ env.api_advpl }} --dart-define="apiNode"=${{ env.api_node }}
+          flutter build web --no-tree-shake-icons --dart-define="apiBase"="../.."
 
   deploy:
     needs: build
@@ -102,7 +110,6 @@ jobs:
     if: always()
     steps:
       - name: Send telegram message end
-        if: ${{ env.telegram_active == 'true' }}
         uses: appleboy/telegram-action@master
         with:
           to: ${{ secrets.TELEGRAM_TO }}
@@ -110,7 +117,7 @@ jobs:
           message: |
             ${{ env.folder == 'production' && '⚠ Production' || 'Homolog' }} deploy completed with: ${{ (needs.build.result == 'success' && needs.deploy.result == 'success' && needs.location.result == 'success') && ' ✅ Success' || ' ❌ Failure' }}
 
-            Url: ${{ env.project_url }}
+            Url: https://homolog.carajaslabs.com.br/${{ env.project_url }}
 
             Repository: ${{ github.repository }}
             ${{ github.actor }} created commit to branch: ${{ github.ref_name }}:

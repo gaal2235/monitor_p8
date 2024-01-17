@@ -1,4 +1,5 @@
 import 'dart:convert' as convert;
+import 'dart:convert';
 
 import 'package:http/http.dart' as http;
 import 'package:monitor_geral/global.dart';
@@ -6,7 +7,7 @@ import 'package:monitor_geral/model/monitor.dart';
 
 ///chamada responsavel buscar coletas p8 filtradas
 class MonitorConciergeP8 {
-  static Future<List<Monitor>> getMonitorP8(
+  static Future<List<Monitor?>?> getMonitorP8(
       {String dateInit = "",
       String dateEnd = "",
       String gfe = "",
@@ -24,16 +25,7 @@ class MonitorConciergeP8 {
       if (limit != null) ...{"limit": "$limit"}
     });
 
-    String json = response.body;
-
-    List list = convert.json.decode(json);
-    final monitorP8 = List<Monitor>();
-    for (Map map in list) {
-      Monitor m = Monitor.fromJson(map);
-
-      monitorP8.add(m);
-    }
-
+    List<Monitor?>? monitorP8 = Monitor.toList(json.decode(response.body));
     return monitorP8;
   }
 }

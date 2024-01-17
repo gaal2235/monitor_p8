@@ -1,19 +1,19 @@
 class SalesmanCode {
-  String branchCarajas;
-  String uf;
-  String branchCarajasName;
-  String companyName;
-  String companyGroup;
-  String companyAddress;
-  String companyCity;
-  String companyUf;
-  String companyNeighborhood;
-  String companyCep;
-  String ip;
+  String? branchCarajas;
+  String? uf;
+  String? branchCarajasName;
+  String? companyName;
+  String? companyGroup;
+  String? companyAddress;
+  String? companyCity;
+  String? companyUf;
+  String? companyNeighborhood;
+  String? companyCep;
+  String? ip;
   dynamic discountPercentage;
-  String salesmanCode;
-  String officeCode;
-  String officeName;
+  String? salesmanCode;
+  String? officeCode;
+  String? officeName;
 
   SalesmanCode(
       {this.branchCarajas,

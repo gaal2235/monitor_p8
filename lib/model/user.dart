@@ -3,15 +3,15 @@ import 'package:monitor_geral/model/salesman_code.dart';
 import 'operator_wms.dart';
 
 class User {
-  String userCode;
-  String user;
-  String name;
-  String department;
-  String office;
-  String email;
-  String token;
-  List<OperatorWMS> operatorWms;
-  List<SalesmanCode> salesmanCode;
+  String? userCode;
+  String? user;
+  String? name;
+  String? department;
+  String? office;
+  String? email;
+  String? token;
+  List<OperatorWMS>? operatorWms;
+  List<SalesmanCode>? salesmanCode;
 
   User(
       {this.userCode,
@@ -33,15 +33,15 @@ class User {
     email = json['email'];
     token = json['token'];
     if (json['operadorWMS'] != null) {
-      operatorWms =  List<OperatorWMS>();
+      operatorWms =  [];
       json['operadorWMS'].forEach((v) {
-        operatorWms.add( OperatorWMS.fromJson(v));
+        operatorWms?.add( OperatorWMS.fromJson(v));
       });
     }
     if (json['codVend'] != null) {
-      salesmanCode =  List<SalesmanCode>();
+      salesmanCode =  [];
       json['codVend'].forEach((v) {
-        salesmanCode.add( SalesmanCode.fromJson(v));
+        salesmanCode?.add( SalesmanCode.fromJson(v));
       });
     }
   }
@@ -56,10 +56,10 @@ class User {
     data['email'] = this.email;
     data['token'] = this.token;
     if (this.operatorWms != null) {
-      data['operadorWMS'] = this.operatorWms.map((v) => v.toJson()).toList();
+      data['operadorWMS'] = this.operatorWms?.map((v) => v.toJson()).toList();
     }
     if (this.salesmanCode != null) {
-      data['codVend'] = this.salesmanCode.map((v) => v.toJson()).toList();
+      data['codVend'] = this.salesmanCode?.map((v) => v.toJson()).toList();
     }
     return data;
   }

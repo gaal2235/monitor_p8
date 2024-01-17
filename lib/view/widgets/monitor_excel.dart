@@ -1,33 +1,36 @@
 
+import 'dart:convert';
+import 'dart:html';
+
 import 'package:essential_xlsx/essential_xlsx.dart';
 import 'package:monitor_geral/model/monitor.dart';
 /// Excel for Budget track report
-toExcelMonitor(List<Monitor>track) async {
+toExcelMonitor(List<Monitor?>?track) async {
  // print("vvvv");
 
   List<Map<String, dynamic>> data = [];
   print(track);
-  for (int k = 0; k < track.length; k++) {
+  for (int k = 0; k < (track?.length??0); k++) {
 
 
     data.add({
-      "Origem": "${track[k].branchOrigin??''}",
-      "Destino": "${track[k].branchDestiny??''}",
-      "Emissão": "${track[k].emissionDate??''}",
-      "DiasEmTransito": "${track[k].daysInTransit??''}",
-      "Nf": "${track[k].nf??''}",
-      "Series": "${track[k].series??''}",
-      "Entrada": "${track[k].conciergeDate??''}",
-      "Pedido": "${track[k].received??''}",
-      "Gfe": "${track[k].gfe??''}",
-      "Descri": "${track[k].observation??''}",
-      "Placa": "${track[k].automobilePlate??''}",
-      "Conferencia": "${track[k].checked??''}",
-      "Enderecamento": "${track[k].addressed??''}",
-      "CheckP8": "${track[k].concierge??''}",
-      "Recebimento": "${track[k].received??''}",
-      "UserCheck": "${track[k].conciergeUser??''}",
-      "HoraCheck": "${track[k].conciergeDate??''}",
+      "Origem": "${track?[k]?.branchOrigin??''}",
+      "Destino": "${track?[k]?.branchDestiny??''}",
+      "Emissão": "${track?[k]?.emissionDate??''}",
+      "DiasEmTransito": "${track?[k]?.daysInTransit??''}",
+      "Nf": "${track?[k]?.nf??''}",
+      "Series": "${track?[k]?.series??''}",
+      "Entrada": "${track?[k]?.conciergeDate??''}",
+      "Pedido": "${track?[k]?.received??''}",
+      "Gfe": "${track?[k]?.gfe??''}",
+      "Descri": "${track?[k]?.observation??''}",
+      "Placa": "${track?[k]?.automobilePlate??''}",
+      "Conferencia": "${track?[k]?.checked??''}",
+      "Enderecamento": "${track?[k]?.addressed??''}",
+      "CheckP8": "${track?[k]?.concierge??''}",
+      "Recebimento": "${track?[k]?.received??''}",
+      "UserCheck": "${track?[k]?.conciergeUser??''}",
+      "HoraCheck": "${track?[k]?.conciergeDate??''}",
     });
   }
 
@@ -48,7 +51,11 @@ toExcelMonitor(List<Monitor>track) async {
         idx++;
       });
 
-      simpleXLSX.build();
+      //simpleXLSX.build();
+      final List<int> bytes = simpleXLSX.build();
+      AnchorElement(href: 'data:application/octet-stream;charset=utf-16le;base64,${base64.encode(bytes)}')
+        ..setAttribute('download', 'Relatorio_P8.xlsx')
+        ..click();
     }
   }
 

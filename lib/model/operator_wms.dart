@@ -1,8 +1,8 @@
 class OperatorWMS {
-  String branchOperator;
-  String branchOperatorName;
-  String statusOperator;
-  String usrOperatorCode;
+  String? branchOperator;
+  String? branchOperatorName;
+  String? statusOperator;
+  String? usrOperatorCode;
 
   OperatorWMS(
       {this.branchOperator,

@@ -1,4 +1,5 @@
 import 'dart:convert' as convert;
+import 'dart:convert';
 
 import 'package:http/http.dart' as http;
 import 'package:monitor_geral/global.dart';
@@ -6,7 +7,7 @@ import 'package:monitor_geral/model/monitor.dart';
 
 ///chamada responsavel buscar coletas p8
 class MonitorManagement {
-  static Future<List<Monitor>> getMonitor(
+  static Future<List<Monitor?>?> getMonitor(
       {String received = "",
       String checked = "",
       String addressed = "",
@@ -24,17 +25,10 @@ class MonitorManagement {
         'ROMANEIO=$gfe&PLACAVEICULO=$plate';
 
     var response = await http.get(Uri.parse(url));
-    String json = response.body;
+
 
     //var colet  = Colet.fromJson(convert.json.decode(response.body));
-
-    List list = convert.json.decode(json);
-    final monitor = List<Monitor>();
-    for (Map map in list) {
-      Monitor m = Monitor.fromJson(map);
-
-      monitor.add(m);
-    }
+    List<Monitor?>? monitor = Monitor.toList(json.decode(response.body));
 
     return monitor;
   }

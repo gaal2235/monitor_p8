@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:clippy/browser.dart' as clippy;
+//import 'package:clippy/browser.dart' as clippy;
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:monitor_geral/controller/concierge.dart';
@@ -24,15 +24,15 @@ bool nfValidator = true;
 bool progress = false;
 bool loadAta = false;
 bool plateValidator = true;
-List<Monitor> monitor = [];
+List<Monitor?> monitor = [];
 bool fst = true;
 int audited = 0;
 class _MonitorP8State extends State<MonitorP8> {
-  final _streamController = StreamController<List<Monitor>>.broadcast();
-  final _streamController2 = StreamController<List<Monitor>>.broadcast();
-  final _streamController3 = StreamController<List<Monitor>>.broadcast();
-  final _streamController4 = StreamController<List<Monitor>>.broadcast();
-  Timer timer;
+  final _streamController = StreamController<List<Monitor?>?>.broadcast();
+  final _streamController2 = StreamController<List<Monitor>?>.broadcast();
+  final _streamController3 = StreamController<List<Monitor>?>.broadcast();
+  final _streamController4 = StreamController<List<Monitor>?>.broadcast();
+  Timer? timer;
   final interval = Duration(seconds: 1);
   var pl = FocusNode();
   var nf = FocusNode();
@@ -44,7 +44,7 @@ class _MonitorP8State extends State<MonitorP8> {
       '${((timerMaxSeconds - currentSeconds) ~/ 60).toString().padLeft(2, '0')}:'
       ' ${((timerMaxSeconds - currentSeconds) % 60).toString().padLeft(2, '0')}';
 
-  startTimeout([int milliseconds]) {
+  startTimeout([int? milliseconds]) {
     var duration = interval;
 
     timer = Timer.periodic(duration, (timer) {
@@ -75,7 +75,7 @@ class _MonitorP8State extends State<MonitorP8> {
   }
 
   @override
-  Future<void> initState() {
+ initState() {
 
 
     _loadData();
@@ -107,9 +107,9 @@ class _MonitorP8State extends State<MonitorP8> {
                     height: 2,
                     color: Colors.white,
                   ),
-                  onChanged: (String newValue) async {
+                  onChanged: (String? newValue) async {
                     setState(() {
-                      dropdownValue = newValue;
+                      dropdownValue = newValue??'';
 
                       Navigator.pushReplacement(
                         context,
@@ -155,7 +155,7 @@ class _MonitorP8State extends State<MonitorP8> {
                   child: Theme(
                     data: ThemeData(
                       primaryColor: Colors.white,
-                      cursorColor: Colors.white,
+                      cardColor: Colors.white,
                       disabledColor: Colors.white,
                       unselectedWidgetColor: Colors.white,
                     ),
@@ -199,7 +199,7 @@ class _MonitorP8State extends State<MonitorP8> {
                   child: Theme(
                     data: ThemeData(
                       primaryColor: Colors.white,
-                      cursorColor: Colors.white,
+                      cardColor: Colors.white,
                       disabledColor: Colors.white,
                       unselectedWidgetColor: Colors.white,
                     ),
@@ -242,7 +242,7 @@ class _MonitorP8State extends State<MonitorP8> {
                   child: Theme(
                     data: ThemeData(
                       primaryColor: Colors.white,
-                      cursorColor: Colors.white,
+                      cardColor: Colors.white,
                       disabledColor: Colors.white,
                       unselectedWidgetColor: Colors.white,
                     ),
@@ -353,7 +353,9 @@ class _MonitorP8State extends State<MonitorP8> {
                   ),
                 ),
               ),
-              FlatButton(
+              ElevatedButton(
+                style: ElevatedButton.styleFrom(elevation: 0,backgroundColor: Colors.transparent),
+
                 onPressed: () async {
                   if(dateInit==null){dateInit= DateTime.parse(DateFormat('yyyyMMdd').format(
                     DateTime.now().subtract(Duration(days: 30)),
@@ -361,13 +363,13 @@ class _MonitorP8State extends State<MonitorP8> {
                   ));}
                   dateInit = await getDate(context, dateInit);
                   dataInitForm = DateFormat('yyyyMMdd').format(
-                    dateInit,
+                    dateInit!,
                   );
 
                   setState(() {
                     _loadData();
                     dataInitForm = DateFormat('yyyyMMdd').format(
-                      dateInit,
+                      dateInit!,
                     );
                   });
 
@@ -393,7 +395,7 @@ class _MonitorP8State extends State<MonitorP8> {
                     children: [
                       Text(
                           'De: ${DateFormat('dd/MM/yyyy').format(
-                            dateInit,
+                            dateInit!,
                           )}',
                           style: TextStyle(
                             color: Colors.white,
@@ -406,19 +408,19 @@ class _MonitorP8State extends State<MonitorP8> {
                   )
                 ]),
               ),
-              FlatButton(
+              ElevatedButton( style: ElevatedButton.styleFrom(elevation: 0,backgroundColor: Colors.transparent),
                 onPressed: () async {
                   if(dateEnd==null){dateEnd= DateTime.parse(DateFormat('yyyyMMdd').format(
                     DateTime.now(),
                   ));}
                   dateEnd = await getDate(context, dateEnd);
                   dateEndForm = DateFormat('yyyyMMdd').format(
-                    dateEnd,
+                    dateEnd!,
                   );
                   setState(() {
                     _loadData();
                     dateEndForm = DateFormat('yyyyMMdd').format(
-                      dateEnd,
+                      dateEnd!,
                     );
                   });
 
@@ -447,7 +449,7 @@ class _MonitorP8State extends State<MonitorP8> {
                         Text(
                           "Até: "
                               "${DateFormat('dd/MM/yyyy').format(
-                            dateEnd,
+                            dateEnd!,
                           )}",
                           style: TextStyle(
                             color: Colors.white,
@@ -535,7 +537,7 @@ class _MonitorP8State extends State<MonitorP8> {
                                 child: Container(
                                   decoration: BoxDecoration(
                                     border: Border.all(
-                                      color: Colors.grey[900],
+                                      color: Colors.grey[900]??Colors.grey,
                                       width: 1.0,
                                     ),
                                     borderRadius: BorderRadius.all(
@@ -644,7 +646,7 @@ class _MonitorP8State extends State<MonitorP8> {
                                 child: Container(
                                   decoration: BoxDecoration(
                                     border: Border.all(
-                                      color: Colors.green[900],
+                                      color: Colors.green[900]??Colors.green,
                                       width: 1.0,
                                     ),
                                     borderRadius: BorderRadius.all(
@@ -757,32 +759,32 @@ class _MonitorP8State extends State<MonitorP8> {
                       total = 0;
                       p8Pending = 0;
                       p8Checked = 0;
-                      List<Monitor> monitor = snapshot.data;
+                      List<Monitor?>? monitor = snapshot.data;
 
-                      registry = monitor.length;
-                      for (int t = 0; t < monitor.length; t++) {
-                        if (monitor[t].checked == "N") {
+                      registry = monitor?.length??0;
+                      for (int t = 0; t < (monitor?.length??0); t++) {
+                        if (monitor?[t]?.checked == "N") {
                           conference++;
                         }
-                        if (monitor[t].addressed == "N") {
+                        if (monitor?[t]?.addressed == "N") {
                           pending++;
                         }
-                        if (monitor[t].observation == "SEM PRE-NOTA") {
+                        if (monitor?[t]?.observation == "SEM PRE-NOTA") {
                           supply++;
                         }
-                        if (monitor[t].concierge == "N") {
+                        if (monitor?[t]?.concierge == "N") {
                           p8Pending++;
                         }
-                        if (monitor[t].concierge == "S") {
+                        if (monitor?[t]?.concierge == "S") {
                           p8Checked++;
                         }
-                        if (monitor[t].daysInTransit != " DD" &&
-                            monitor[t].daysInTransit != "0 DD" &&
-                            monitor[t].daysInTransit != "1 DD") {
+                        if (monitor?[t]?.daysInTransit != " DD" &&
+                            monitor?[t]?.daysInTransit != "0 DD" &&
+                            monitor?[t]?.daysInTransit != "1 DD") {
                           oneDay++;
                         }
                       }
-                      total = monitor.length;
+                      total = monitor?.length??0;
                       return Row(
                         children: [
                           Expanded(
@@ -795,7 +797,7 @@ class _MonitorP8State extends State<MonitorP8> {
                               child: Container(
                                 decoration: BoxDecoration(
                                   border: Border.all(
-                                    color: Colors.grey[900],
+                                    color: Colors.grey[900]??Colors.grey,
                                     width: 1.0,
                                   ),
                                   borderRadius: BorderRadius.all(
@@ -915,13 +917,13 @@ class _MonitorP8State extends State<MonitorP8> {
                                               ),
                                               if(
                                               (
-                                                  user.user=="cezarbatista"||
-                                                      user.user=="marlielsongomes"||
-                                                      user.userCode=="002291"||
-                                                      user.userCode=="000001"||
-                                                      user.user=="jeansousa"||
-                                                      user.user=="danielsampaio"||
-                                                      user.user=="gabrielsilva"
+                                                  user?.user=="cezarbatista"||
+                                                      user?.user=="marlielsongomes"||
+                                                      user?.userCode=="002291"||
+                                                      user?.userCode=="000001"||
+                                                      user?.user=="jeansousa"||
+                                                      user?.user=="danielsampaio"||
+                                                      user?.user=="gabrielsilva"
                                               )&&
                                                   dropdownValue.toString().substring(0, 4)=="0110"||
                                                   dropdownValue.toString().substring(0, 4)=="0107"||
@@ -933,10 +935,11 @@ class _MonitorP8State extends State<MonitorP8> {
                                                     return Container(
                                                       margin: EdgeInsets.all(5),
 
-                                                      child: RaisedButton(
+                                                      child: ElevatedButton(
+                                                      /*  style: ButtonStyle(),
                                                         shape: RoundedRectangleBorder(
                                                             borderRadius: BorderRadius.circular(18.0),
-                                                            side: BorderSide(color: Colors.green[800],)),
+                                                            side: BorderSide(color: Colors.green[800],)),*/
                                                         onPressed: () async {
                                                           loadAta = true;
                                                           showGeneralDialog(
@@ -979,20 +982,20 @@ class _MonitorP8State extends State<MonitorP8> {
                                                               });
                                                           _streamController3.add(null);
                                                           bool f = false;
-                                                          for (audited = 0; audited<monitor.length;audited++) {
+                                                          for (audited = 0; audited<(monitor?.length??0);audited++) {
 
                                                             if(
-                                                            (monitor[audited].branchOrigin=="0112"&&monitor[audited].branchDestiny=="0109"&&monitor[audited].concierge!="S")||
-                                                                (monitor[audited].branchOrigin=="0115"&&monitor[audited].branchDestiny=="0116"&&monitor[audited].concierge!="S")||
-                                                                (monitor[audited].branchOrigin=="0111"&&monitor[audited].branchDestiny=="0107"&&monitor[audited].concierge!="S")||
-                                                                (monitor[audited].branchOrigin=="0102"&&monitor[audited].branchDestiny=="0110"&&monitor[audited].concierge!="S")
+                                                            (monitor?[audited]?.branchOrigin=="0112"&&monitor?[audited]?.branchDestiny=="0109"&&monitor?[audited]?.concierge!="S")||
+                                                                (monitor?[audited]?.branchOrigin=="0115"&&monitor?[audited]?.branchDestiny=="0116"&&monitor?[audited]?.concierge!="S")||
+                                                                (monitor?[audited]?.branchOrigin=="0111"&&monitor?[audited]?.branchDestiny=="0107"&&monitor?[audited]?.concierge!="S")||
+                                                                (monitor?[audited]?.branchOrigin=="0102"&&monitor?[audited]?.branchDestiny=="0110"&&monitor?[audited]?.concierge!="S")
                                                             ){
                                                               f = true;
                                                               total++;
-                                                              gfe = monitor[audited].gfe;
-                                                              plate = monitor[audited].automobilePlate;
-                                                              nfCode = monitor[audited].keyNfe;
-                                                              await Concierge.postConcierge(ori: monitor[audited].branchOrigin);
+                                                              gfe = monitor?[audited]?.gfe??"";
+                                                              plate = monitor?[audited]?.automobilePlate??"";
+                                                              nfCode = monitor?[audited]?.keyNfe??"";
+                                                              await Concierge.postConcierge(ori: monitor?[audited]?.branchOrigin??"");
                                                               _streamController4.add(null);
                                                             }
                                                           }
@@ -1043,15 +1046,15 @@ class _MonitorP8State extends State<MonitorP8> {
                                                           loadAta = false;
                                                           _streamController3.add(null);
                                                         },
-                                                        padding: EdgeInsets.all(10.0),
-                                                        color: Colors.white,
-                                                        textColor: Colors.green[800],
+                                                        //padding: EdgeInsets.all(10.0),
+                                                        //color: Colors.white,
+                                                        //textColor: Colors.green[800],
                                                         child:loadAta?Center(
                                                           child: Container(
                                                             width: 15,
                                                             height: 15,
                                                             child: CircularProgressIndicator(
-                                                              valueColor: AlwaysStoppedAnimation<Color>(Colors.green[800]),
+                                                              valueColor: AlwaysStoppedAnimation<Color>(Colors.green[800]??Colors.green),
                                                             ),
                                                           ),
                                                         ): Text("  Auditar Notas de Atacado  ",
@@ -1078,7 +1081,7 @@ class _MonitorP8State extends State<MonitorP8> {
                               child: Container(
                                 decoration: BoxDecoration(
                                   border: Border.all(
-                                    color: Colors.green[900],
+                                    color: Colors.green[900]??Colors.green,
                                     width: 1.0,
                                   ),
                                   borderRadius: BorderRadius.all(
@@ -1189,8 +1192,8 @@ class _MonitorP8State extends State<MonitorP8> {
                                 decoration: BoxDecoration(
                                   border: Border.all(
                                     color: colorApp != Colors.green
-                                        ? colorApp[900]
-                                        : Colors.grey[900],
+                                        ? colorApp[900]??Colors.green
+                                        : Colors.grey[900]??Colors.green,
                                     width: 1.0,
                                   ),
                                   borderRadius: BorderRadius.only(
@@ -1433,8 +1436,8 @@ class _MonitorP8State extends State<MonitorP8> {
                                             ),
                                           );
                                         }
-                                        List<Monitor> monitor = snapshot.data;
-                                        if (monitor.isEmpty) {
+                                        List<Monitor?>? monitor = snapshot.data;
+                                        if (monitor?.isEmpty??false) {
                                           return Center(
                                             child: Column(
                                               mainAxisAlignment:
@@ -1476,28 +1479,28 @@ class _MonitorP8State extends State<MonitorP8> {
                                         return Scrollbar(
                                           child: ListView.builder(
                                             padding: EdgeInsets.zero,
-                                            itemCount: monitor.length,
+                                            itemCount: monitor?.length,
                                             itemBuilder: (
                                               BuildContext context,
                                               int index,
                                             ) {
-                                              Monitor m = monitor[index];
-                                              key.add(m.keyNfe);
-                                              if (m.concierge == "N") {
+                                              Monitor? m = monitor?[index];
+                                              key.add(m?.keyNfe);
+                                              if (m?.concierge == "N") {
                                                 return Column(
                                                   children: [
                                                     lineMonitor(
-                                                      m.automobilePlate,
-                                                      m.gfe,
+                                                      m?.automobilePlate,
+                                                      m?.gfe,
                                                       key.length,
-                                                      m.branchOrigin,
-                                                      m.branchDestiny,
-                                                      m.nf,
-                                                      m.series,
-                                                      m.automobilePlate,
-                                                      m.entryDate,
-                                                      m.emissionDate,
-                                                      m.daysInTransit,
+                                                      m?.branchOrigin??'',
+                                                      m?.branchDestiny??'',
+                                                      m?.nf??'',
+                                                      m?.series??'',
+                                                      m?.automobilePlate??'',
+                                                      m?.entryDate??'',
+                                                      m?.emissionDate??'',
+                                                      m?.daysInTransit??'',
                                                       m,
                                                     ),
                                                     colorApp != Colors.green
@@ -1531,7 +1534,7 @@ class _MonitorP8State extends State<MonitorP8> {
                                     child: Container(
                                       decoration: BoxDecoration(
                                         border: Border.all(
-                                          color: colorApp[900],
+                                          color: colorApp[900]??colorApp,
                                           width: 1.0,
                                         ),
                                         borderRadius: BorderRadius.only(
@@ -1742,8 +1745,8 @@ class _MonitorP8State extends State<MonitorP8> {
                                                   ),
                                                 );
                                               }
-                                              List<Monitor> monitor = snapshot.data;
-                                              if (monitor.isEmpty) {
+                                              List<Monitor?>? monitor = snapshot.data;
+                                              if (monitor?.isEmpty??false) {
                                                 return Center(
                                                   child: Column(
                                                     mainAxisAlignment:
@@ -1781,28 +1784,28 @@ class _MonitorP8State extends State<MonitorP8> {
                                               return Scrollbar(
                                                 child: ListView.builder(
                                                   padding: EdgeInsets.zero,
-                                                  itemCount: monitor.length,
+                                                  itemCount: monitor?.length,
                                                   itemBuilder: (
                                                     BuildContext context,
                                                     int index,
                                                   ) {
-                                                    Monitor m = monitor[index];
-                                                    key.add(m.keyNfe);
-                                                    if (m.concierge == "S") {
+                                                    Monitor? m = monitor?[index];
+                                                    key.add(m?.keyNfe);
+                                                    if (m?.concierge == "S") {
                                                       return Column(
                                                         children: [
                                                           lineMonitorCheck(
-                                                            m.automobilePlate,
-                                                            m.gfe,
+                                                            m?.automobilePlate,
+                                                            m?.gfe,
                                                             key.length,
-                                                            m.branchOrigin,
-                                                            m.branchDestiny,
-                                                            m.nf,
-                                                            m.series,
-                                                            m.automobilePlate,
-                                                            m.entryDate,
-                                                            m.emissionDate,
-                                                            m.daysInTransit,
+                                                            m?.branchOrigin??'',
+                                                            m?.branchDestiny??'',
+                                                            m?.nf??'',
+                                                            m?.series??'',
+                                                            m?.automobilePlate??'',
+                                                            m?.entryDate??'',
+                                                            m?.emissionDate??'',
+                                                            m?.daysInTransit??'',
                                                             m,
                                                           ),
                                                           lineSep(),
@@ -1849,11 +1852,11 @@ class _MonitorP8State extends State<MonitorP8> {
 
     ));
     dataInitForm = DateFormat('yyyyMMdd').format(
-      dateInit,
+      dateInit!,
     );
     _streamController.add(null);
      monitor = [];
-    List<Monitor> monitorTemp= [];
+    List<Monitor?>? monitorTemp= [];
     for (int u = 0; u<100000;u++) {
       progress = false;
        monitorTemp =await MonitorConciergeP8.getMonitorP8(
@@ -1866,10 +1869,10 @@ class _MonitorP8State extends State<MonitorP8> {
 
       );
 
-      monitor += monitorTemp;
+      monitor += monitorTemp??[];
 
       _streamController.add(monitor);
-      if((u!=0&&monitorTemp.length<2000)||(u==0&&monitorTemp.length<1000)){
+      if((u!=0&&(monitorTemp?.length??0)<2000)||(u==0&&(monitorTemp?.length??0)<1000)){
         progress = true;
         _streamController.add(monitor);
        /* for (int s = 0; s<monitorTemp.length;s++) {
@@ -1896,7 +1899,7 @@ class _MonitorP8State extends State<MonitorP8> {
 
     _streamController.add(null);
 
-    List<Monitor> monitor = await MonitorConciergeP8.getMonitorP8(
+    List<Monitor?>? monitor = await MonitorConciergeP8.getMonitorP8(
       plate: _searchPlate.text.toUpperCase(),
       gfe: _searchGfe.text,
       dateInit: "$dataInitForm",
@@ -2302,18 +2305,8 @@ class _MonitorP8State extends State<MonitorP8> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                GestureDetector(
-                    onTap: () async {
-                      await clippy.write("$nf $series");
-                    },
-                    child: Icon(
-                      MdiIcons.noteMultipleOutline,
-                      color: Colors.grey,
-                    )),
-                SizedBox(
-                  width: 5,
-                ),
-                Text(
+
+                SelectableText(
                   "$nf $series",
                   textAlign: TextAlign.center,
                   style: TextStyle(color: Colors.black),
@@ -2354,7 +2347,7 @@ class _MonitorP8State extends State<MonitorP8> {
                   onTap: () {
                     alertStatus(m);
                   },
-                  child: m.concierge == "N"
+                  child: m?.concierge == "N"
                       ? iconStatus(
                           alertDetailsStatus(),
                           MdiIcons.truckFastOutline,
@@ -2388,7 +2381,7 @@ class _MonitorP8State extends State<MonitorP8> {
                             () async {
                           _loadDataNt();
 
-                          nfCode = m.keyNfe;
+                          nfCode = m?.keyNfe;
                           _nfCode.text = "";
                           var post = await Concierge.postConcierge();
 
@@ -2546,18 +2539,8 @@ class _MonitorP8State extends State<MonitorP8> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                GestureDetector(
-                    onTap: () async {
-                      await clippy.write(nf);
-                    },
-                    child: Icon(
-                      MdiIcons.noteMultipleOutline,
-                      color: colorApp,
-                    )),
-                SizedBox(
-                  width: 5,
-                ),
-                Text(
+
+                SelectableText(
                   "$nf $series",
                   textAlign: TextAlign.center,
                   style: TextStyle(color: Colors.black),
@@ -2604,7 +2587,7 @@ class _MonitorP8State extends State<MonitorP8> {
                   onTap: () {
                     alertStatus(m);
                   },
-                  child: m.concierge == "N"
+                  child: m?.concierge == "N"
                       ? iconStatus(
                           alertDetailsStatus(),
                           MdiIcons.truckFastOutline,
@@ -2616,7 +2599,7 @@ class _MonitorP8State extends State<MonitorP8> {
                           Colors.green[800],
                         ),
                 ),
-                m.checked == "S"
+                m?.checked == "S"
                     ? iconStatus(
                         alertDetailsStatus(),
                         MdiIcons.textBoxCheckOutline,
@@ -2666,7 +2649,7 @@ class _MonitorP8State extends State<MonitorP8> {
                           children: [
                             Align(
                               alignment: Alignment.topCenter,
-                              child: m.concierge == "N"
+                              child: m?.concierge == "N"
                                   ? Padding(
                                       padding: EdgeInsets.all(8.0),
                                       child: Column(
@@ -2707,7 +2690,7 @@ class _MonitorP8State extends State<MonitorP8> {
                                 Align(
                                   alignment: Alignment.center,
                                   child: Container(
-                                    color: m.concierge == "N"
+                                    color: m?.concierge == "N"
                                         ? Colors.grey
                                         : Colors.green,
                                     width: MediaQuery.of(
@@ -2725,7 +2708,7 @@ class _MonitorP8State extends State<MonitorP8> {
                                   child: Icon(
                                     Icons.arrow_drop_down,
                                     size: 40,
-                                    color: m.concierge == "N"
+                                    color: m?.concierge == "N"
                                         ? Colors.grey
                                         : Colors.green,
                                   ),
@@ -2733,13 +2716,13 @@ class _MonitorP8State extends State<MonitorP8> {
                                 Align(
                                   alignment: Alignment.topCenter,
                                   child: Text(
-                                    "${m.conciergeDate}",
+                                    "${m?.conciergeDate}",
                                     style: TextStyle(
                                       fontSize: MediaQuery.of(
                                             context,
                                           ).size.height *
                                           0.02,
-                                      color: m.concierge == "N"
+                                      color: m?.concierge == "N"
                                           ? Colors.grey
                                           : Colors.green,
                                     ),
@@ -2748,13 +2731,13 @@ class _MonitorP8State extends State<MonitorP8> {
                                 Align(
                                   alignment: Alignment.topCenter,
                                   child: Text(
-                                    "${m.conciergeUser}",
+                                    "${m?.conciergeUser}",
                                     style: TextStyle(
                                       fontSize: MediaQuery.of(
                                             context,
                                           ).size.height *
                                           0.02,
-                                      color: m.concierge == "N"
+                                      color: m?.concierge == "N"
                                           ? Colors.grey
                                           : Colors.green,
                                     ),
@@ -2777,7 +2760,7 @@ class _MonitorP8State extends State<MonitorP8> {
   }
 
   branchCrj(index) {
-    return   "${branch[index].code} ${branch[index].initials=="S/CLASS"?"":"- ${branch[index].initials}"} - ${branch[index].cidadeEmpresa}";
+    return   "${branch?[index]?.code} ${branch?[index]?.initials=="S/CLASS"?"":"- ${branch?[index]?.initials}"} - ${branch?[index]?.cidadeEmpresa}";
 
   }
 

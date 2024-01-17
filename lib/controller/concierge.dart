@@ -14,7 +14,7 @@ class Concierge {
       "filialorigem": "$ori",
       "filialdestino": "${dropdownValue.substring(0, 4)}",
       "chavenfe": "$nfCode",
-      "idUsr": user.userCode
+      "idUsr": user?.userCode
     };
 
     var body = json.encode(date);

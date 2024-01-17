@@ -19,7 +19,7 @@ dependencies:
   http: ^1.1.2
   material_design_icons_flutter: ^7.0.7296
   #clippy: ^1.0.0
-  #essential_xlsx: ^1.1.0
+  essential_xlsx: ^2.0.0
   package_info: ^2.0.2
   datetime_picker_formfield_new: ^2.1.0
   shared_preferences: ^2.2.2
