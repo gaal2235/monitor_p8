@@ -34,12 +34,12 @@ class _LoginPageState extends State<LoginPage> {
 
   bool _showProgress = false;
 
-  bool status = false;
+  bool status = true;
 
   void initState() {
     // TODO: implement initState
     super.initState();
-    colorApp = Colors.indigo;
+    colorApp = Colors.green;
     _loginPrefs();
   }
 

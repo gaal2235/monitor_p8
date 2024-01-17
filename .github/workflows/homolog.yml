@@ -12,7 +12,7 @@ env:
   labs_path: ${{ secrets.PATH_HMLG }}
   rollback_by_commit: ${{ secrets.rollback_by_commit }}
   api_base: ${{ secrets.API_HOMOLOG }}
-  project_url: 'monitorgeral'
+  project_url: 'monitorp8'
 
 jobs:
   build:
