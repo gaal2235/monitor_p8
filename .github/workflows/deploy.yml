@@ -5,14 +5,14 @@ on:
     branches: [ main ]
 
 env:
-  project: monitor-geral-p8
+  project: monitor_p8
   folder: production
   version: ""
   flutter_version: ${{ secrets.FLUTTER_VERSION }}
   labs_path: ${{ secrets.PATH_PROD }}
   rollback_by_commit: ${{ secrets.rollback_by_commit }}
   api_base: ${{ secrets.API_PROD }}
-  project_url: 'monitorgeral'
+  project_url: 'monitorp8'
 
 jobs:
   build:
